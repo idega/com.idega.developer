@@ -1,5 +1,6 @@
 package com.idega.development.presentation;
 
+import com.idega.builder.presentation.IBAddModuleWindow;
 import com.idega.presentation.*;
 import com.idega.presentation.ui.*;
 import com.idega.presentation.text.*;
@@ -53,7 +54,7 @@ public class BundleComponentManager extends Block {
       form.maintainParameter(IWDeveloper.actionParameter);
       add(form);
       Table table = new Table();
-        table.setCellpadding(5);
+	table.setCellpadding(5);
       Table selectTable = new Table(3,1);
       form.add(selectTable);
       form.add(Text.getBreak());
@@ -69,56 +70,56 @@ public class BundleComponentManager extends Block {
 
       if(bundleIdentifier!=null){
 
-        IWBundle iwb = iwma.getBundle(bundleIdentifier);
+	IWBundle iwb = iwma.getBundle(bundleIdentifier);
 
-        try{
-          doBusiness(iwc,iwb);
-        }
-        catch(Exception e){
-          add("Error: "+e.getClass().getName()+" "+e.getMessage());
-          e.printStackTrace();
-        }
+	try{
+	  doBusiness(iwc,iwb);
+	}
+	catch(Exception e){
+	  add("Error: "+e.getClass().getName()+" "+e.getMessage());
+	  e.printStackTrace();
+	}
 
-        DropdownMenu typesDrop = new DropdownMenu(this.TYPE_INPUT_NAME);
-        List componentTypes = ICObject.getAvailableComponentTypes();
-        Iterator iter = componentTypes.iterator();
+	DropdownMenu typesDrop = new DropdownMenu(this.TYPE_INPUT_NAME);
+	List componentTypes = ICObject.getAvailableComponentTypes();
+	Iterator iter = componentTypes.iterator();
 
-        CheckBox deleteBox = new CheckBox(DELETE_CHECKBOX_NAME);
+	CheckBox deleteBox = new CheckBox(DELETE_CHECKBOX_NAME);
 
-        while (iter.hasNext()) {
-          String type = (String)iter.next();
-          typesDrop.addMenuElement(type);
-        }
+	while (iter.hasNext()) {
+	  String type = (String)iter.next();
+	  typesDrop.addMenuElement(type);
+	}
 
-        TextInput classesInput = new TextInput(CLASS_INPUT_NAME);
+	TextInput classesInput = new TextInput(CLASS_INPUT_NAME);
 
-        int index = 2;
+	int index = 2;
 
-        table.add(IWDeveloper.getText("ClassName: "),1,1);
-        table.add(IWDeveloper.getText("Type: "),2,1);
-        table.add(IWDeveloper.getText("Remove?"),3,1);
+	table.add(IWDeveloper.getText("ClassName: "),1,1);
+	table.add(IWDeveloper.getText("Type: "),2,1);
+	table.add(IWDeveloper.getText("Remove?"),3,1);
 
-        List compList = iwb.getComponentKeys();
-        Iterator compIter = compList.iterator();
-        while (compIter.hasNext()) {
-          String className = (String)compIter.next();
-          String type = iwb.getComponentType(className);
+	List compList = iwb.getComponentKeys();
+	Iterator compIter = compList.iterator();
+	while (compIter.hasNext()) {
+	  String className = (String)compIter.next();
+	  String type = iwb.getComponentType(className);
 
-          table.add(getSmallText(className),1,index);
-          table.add(getSmallText(type),2,index);
+	  table.add(getSmallText(className),1,index);
+	  table.add(getSmallText(type),2,index);
 
-          CheckBox rowBox = (CheckBox)deleteBox.clone();
-          rowBox.setContent(className);
-          table.add(rowBox,3,index);
+	  CheckBox rowBox = (CheckBox)deleteBox.clone();
+	  rowBox.setContent(className);
+	  table.add(rowBox,3,index);
 
-          index++;
-        }
+	  index++;
+	}
 
-        table.add(classesInput,1,index);
-        table.add(typesDrop,2,index);
+	table.add(classesInput,1,index);
+	table.add(typesDrop,2,index);
 
-        table.setAlignment(3,index+1,"right");
-        table.add(new SubmitButton("Save","save"),3,index+1);
+	table.setAlignment(3,index+1,"right");
+	table.add(new SubmitButton("Save","save"),3,index+1);
       }
   }
 
@@ -128,33 +129,34 @@ public class BundleComponentManager extends Block {
 
       if((iwb!=null)&&(save!=null)){
 
-        String newComponentClass = iwc.getParameter(this.CLASS_INPUT_NAME);
-        if(newComponentClass==null){
-          newComponentClass=StringHandler.EMPTY_STRING;
-        }
+	String newComponentClass = iwc.getParameter(this.CLASS_INPUT_NAME);
+	if(newComponentClass==null){
+	  newComponentClass=StringHandler.EMPTY_STRING;
+	}
 
-        String newComponentType = iwc.getParameter(this.TYPE_INPUT_NAME);
-        if(newComponentType==null){
-          newComponentType=StringHandler.EMPTY_STRING;
-        }
+	String newComponentType = iwc.getParameter(this.TYPE_INPUT_NAME);
+	if(newComponentType==null){
+	  newComponentType=StringHandler.EMPTY_STRING;
+	}
 
-        String[] deletes = iwc.getParameterValues(this.DELETE_CHECKBOX_NAME);
-        if(deletes!=null){
-          for (int i = 0; i < deletes.length; i++) {
-            iwb.removeComponent(deletes[i]);
-          }
-        }
+	String[] deletes = iwc.getParameterValues(this.DELETE_CHECKBOX_NAME);
+	if(deletes!=null){
+	  for (int i = 0; i < deletes.length; i++) {
+	    iwb.removeComponent(deletes[i]);
+	  }
+	}
 
-        String emptyString = StringHandler.EMPTY_STRING;
+	String emptyString = StringHandler.EMPTY_STRING;
 
-        if(!(emptyString.equals(newComponentClass) || emptyString.equals(newComponentType))){
-            Class.forName(newComponentClass);
-            iwb.addComponent(newComponentClass,newComponentType);
-        }
+	if(!(emptyString.equals(newComponentClass) || emptyString.equals(newComponentType))){
+	    Class.forName(newComponentClass);
+	    iwb.addComponent(newComponentClass,newComponentType);
+	}
       }
       else if( (iwb!= null) && (save==null) ){
 
       }
+      IBAddModuleWindow.removeAttributes(iwc);
   }
 
   private Text getSmallText(String text) {

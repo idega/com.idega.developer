@@ -73,31 +73,43 @@ public class BundlePropertySetter extends Block {
       String bundleIdentifier = iwc.getParameter(BUNDLE_PARAMETER);
       String save = iwc.getParameter("Save");
       String reload = iwc.getParameter("Reload");
+      String mode = iwc.getParameter("mode");
       IWMainApplication iwma = iwc.getApplication();
+      IWBundle bundle = null;
+      if ( bundleIdentifier != null )
+	bundle = iwma.getBundle(bundleIdentifier);
+
+      if ( mode != null ) {
+	String[] values = iwc.getParameterValues("property");
+	if ( values != null && bundle != null ) {
+	  for ( int a = 0; a < values.length; a++ ) {
+	    bundle.removeProperty(values[a]);
+	  }
+	}
+      }
 
       if((bundleIdentifier!=null)&&(save!=null)){
-        String KeyName = iwc.getParameter(this.PROPERTY_KEY_NAME_PARAMETER);
-        String KeyValue = iwc.getParameter(this.PROPERTY_VALUE_PARAMETER);
-        IWBundle bundle = iwma.getBundle(bundleIdentifier);
-        bundle.setProperty(KeyName,KeyValue);
-        bundle.storeState();
-        add(IWDeveloper.getText("Status: "));
-        add("Property set successfully and saved to files");
-        add(Text.getBreak());
-        add(Text.getBreak());
-        add(IWDeveloper.getText("Available Keys:"));
-        add(getParametersTable(iwma,bundleIdentifier));
+	String KeyName = iwc.getParameter(this.PROPERTY_KEY_NAME_PARAMETER);
+	String KeyValue = iwc.getParameter(this.PROPERTY_VALUE_PARAMETER);
+	bundle.setProperty(KeyName,KeyValue);
+	bundle.storeState();
+	add(IWDeveloper.getText("Status: "));
+	add("Property set successfully and saved to files");
+	add(Text.getBreak());
+	add(Text.getBreak());
+	add(IWDeveloper.getText("Available Keys:"));
+	add(getParametersTable(bundle,bundleIdentifier));
       }
       else if( (bundleIdentifier!= null) && (save==null) ){
-          if(reload!=null){
-            iwma.getBundle(bundleIdentifier).reloadBundle();
-            add(IWDeveloper.getText("Status: "));
-            add("Bundle reloaded from files");
-            add(Text.getBreak());
-            add(Text.getBreak());
-          }
-          add(IWDeveloper.getText("Available BundleProperties:"));
-         add(getParametersTable(iwma,bundleIdentifier));
+	  if(reload!=null){
+	    iwma.getBundle(bundleIdentifier).reloadBundle();
+	    add(IWDeveloper.getText("Status: "));
+	    add("Bundle reloaded from files");
+	    add(Text.getBreak());
+	    add(Text.getBreak());
+	  }
+	  add(IWDeveloper.getText("Available BundleProperties:"));
+	 add(getParametersTable(bundle,bundleIdentifier));
       }
   }
 
@@ -113,13 +125,18 @@ public class BundlePropertySetter extends Block {
     return down;
   }
 
-   public static Table getParametersTable(IWMainApplication iwma,String bundleIdentifier){
-    IWBundle bundle = iwma.getBundle(bundleIdentifier);
+   public static Form getParametersTable(IWBundle bundle,String bundleIdentifier){
     String[] strings = bundle.getAvailableProperties();
 
-    Table table = new Table(2,strings.length);
+    Form form = new Form();
+    form.setMethod("get");
+    form.add(new HiddenInput(BUNDLE_PARAMETER,bundleIdentifier));
+
+    Table table = new Table(3,strings.length+1);
       table.setColumnVerticalAlignment(1,"top");
       table.setCellpadding(5);
+      table.setCellspacing(0);
+      table.setColumnAlignment(3,"center");
     String localizedString;
     Text name;
     for (int i = 0; i < strings.length; i++) {
@@ -128,12 +145,16 @@ public class BundlePropertySetter extends Block {
       localizedString = bundle.getProperty( strings[i] );
       if (localizedString==null) localizedString = "";
       table.add(localizedString ,2,i+1);
+      table.add(new CheckBox("property",strings[i]),3,i+1);
     }
 
     table.setWidth(400);
     table.setColor("#9FA9B3");
+    table.setRowColor(strings.length+1,"#FFFFFF");
+    table.add(new SubmitButton("Delete","mode","delete"),3,strings.length+1);
+    form.add(table);
 
-    return table;
+    return form;
   }
 
   public String getBundleIdentifier(){

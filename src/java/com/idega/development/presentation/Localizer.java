@@ -1,5 +1,6 @@
 package com.idega.development.presentation;
 
+import com.idega.builder.presentation.IBAddModuleWindow;
 import com.idega.presentation.ui.*;
 import com.idega.presentation.*;
 import com.idega.presentation.text.*;
@@ -60,9 +61,9 @@ public class Localizer extends PresentationObjectContainer {
       add(form);
       Table Frame = new Table();
       Table table = new Table(2,6);
-        table.setAlignment(2,6,"right");
-        table.setColumnVerticalAlignment(1,"top");
-        table.setWidth(1,"150");
+	table.setAlignment(2,6,"right");
+	table.setColumnVerticalAlignment(1,"top");
+	table.setWidth(1,"150");
       Frame.add(table,1,1);
       form.add(Frame);
       table.add(IWDeveloper.getText("Bundle:"),1,1);
@@ -71,111 +72,112 @@ public class Localizer extends PresentationObjectContainer {
       table.add(localesDrop,2,2);
 
       if(selectedBundle ==null){
-        //stringsDrop = new DropdownMenu(stringsParameter);
-        table.setAlignment(2,3,"right");
-        table.add(new SubmitButton("Get Available Keys",subAction,"choose"),2,3);
+	//stringsDrop = new DropdownMenu(stringsParameter);
+	table.setAlignment(2,3,"right");
+	table.add(new SubmitButton("Get Available Keys",subAction,"choose"),2,3);
       }
       else{
 
-        IWBundle iwb = iwma.getBundle(selectedBundle);
-        IWResourceBundle iwrb = iwb.getResourceBundle(LocaleUtil.getLocale(iwc.getParameter(localesParameter)));
-        String stringsKey = iwc.getParameter(stringsParameter);
-        String areaText = iwc.getParameter(areaParameter);
-        String newStringsKey = iwc.getParameter(this.newStringKeyParameter);
-        if(stringsKey==null && newStringsKey!=null){
-          stringsKey=newStringsKey;
-        }
+	IWBundle iwb = iwma.getBundle(selectedBundle);
+	IWResourceBundle iwrb = iwb.getResourceBundle(LocaleUtil.getLocale(iwc.getParameter(localesParameter)));
+	String stringsKey = iwc.getParameter(stringsParameter);
+	String areaText = iwc.getParameter(areaParameter);
+	String newStringsKey = iwc.getParameter(this.newStringKeyParameter);
+	if(stringsKey==null && newStringsKey!=null){
+	  stringsKey=newStringsKey;
+	}
 
-        if(stringsKey!=null){
-          String oldStringValue = iwrb.getLocalizedString(stringsKey);
-          if(areaText==null){
-            PresentationObject area = getTextArea(areaParameter,oldStringValue);
-            table.add(area,2,5);
-          }
-          else{
-            if(areaText.equals("")){
-              PresentationObject area;
-              if(oldStringValue!=null){
-                area = getTextArea(areaParameter,oldStringValue);
-              }
-              else{
-                area = getTextArea(areaParameter,"");
-              }
-              table.add(area,2,5);
-            }
-           else if(this.isDeleteable(iwc)){
-              iwb.removeLocalizableString(stringsKey);
-              //boolean b = iwrb.removeString(stringsKey);
-              iwrb.storeState();
-            }
-            else{
-              PresentationObject area;
-              /**
-               * Saving possible
-               */
-              if(this.isSaveable(iwc)){
-                String newKey = iwc.getParameter(newStringKeyParameter);
+	if(stringsKey!=null){
+	  String oldStringValue = iwrb.getLocalizedString(stringsKey);
+	  if(areaText==null){
+	    PresentationObject area = getTextArea(areaParameter,oldStringValue);
+	    table.add(area,2,5);
+	  }
+	  else{
+	    if(areaText.equals("")){
+	      PresentationObject area;
+	      if(oldStringValue!=null){
+		area = getTextArea(areaParameter,oldStringValue);
+	      }
+	      else{
+		area = getTextArea(areaParameter,"");
+	      }
+	      table.add(area,2,5);
+	    }
+	   else if(this.isDeleteable(iwc)){
+	      iwb.removeLocalizableString(stringsKey);
+	      //boolean b = iwrb.removeString(stringsKey);
+	      iwrb.storeState();
+	    }
+	    else{
+	      PresentationObject area;
+	      /**
+	       * Saving possible
+	       */
+	      if(this.isSaveable(iwc)){
+		String newKey = iwc.getParameter(newStringKeyParameter);
 
-                if(newKey !=null){
-                  if(newKey.equals("")){
-                    iwrb.setString(stringsKey,areaText);
-                  }
-                  else{
-                    iwrb.setString(newKey,areaText);
-                  }
-                }
-                area = getTextArea(areaParameter,areaText);
-              }
-              /**
-               * Not Saving
-               */
-              else{
+		if(newKey !=null){
+		  if(newKey.equals("")){
+		    iwrb.setString(stringsKey,areaText);
+		  }
+		  else{
+		    iwrb.setString(newKey,areaText);
+		  }
+		}
+		area = getTextArea(areaParameter,areaText);
+	      }
+	      /**
+	       * Not Saving
+	       */
+	      else{
 
-                //String areaValue = iwrb.getStringChecked(stringsKey);
-                String areaValue = iwc.getParameter(this.areaParameter);
-                if(areaValue==null){
-                  area = getTextArea(areaParameter,"");
-                }
-                else{
-                  if(oldStringValue==null){
-                    area = getTextArea(areaParameter,"");
-                  }
-                  else{
-                    area = getTextArea(areaParameter,oldStringValue);
-                  }
-                }
-              }
-               table.add(area,2,5);
-            }
+		//String areaValue = iwrb.getStringChecked(stringsKey);
+		String areaValue = iwc.getParameter(this.areaParameter);
+		if(areaValue==null){
+		  area = getTextArea(areaParameter,"");
+		}
+		else{
+		  if(oldStringValue==null){
+		    area = getTextArea(areaParameter,"");
+		  }
+		  else{
+		    area = getTextArea(areaParameter,oldStringValue);
+		  }
+		}
+	      }
+	       table.add(area,2,5);
+	    }
+	    IBAddModuleWindow.removeAttributes(iwc);
 
-          }
-          table.add(new SubmitButton("Save",subAction,"save"),2,6);
-          table.add(new SubmitButton("Delete",subAction,"delete"),2,6);
-          table.add(IWDeveloper.getText("New String key:"),1,4);
-          table.add(IWDeveloper.getText("New String value:"),1,5);
-          TextInput newInput = new TextInput(newStringKeyParameter);
-          table.add(newInput,2,4);
-        }
-        else{
-          table.add(getTextArea(areaParameter,""),2,5);
-          table.add(new SubmitButton("Save",subAction,"save"),2,6);
-          table.add(IWDeveloper.getText("New String key:"),1,4);
-          table.add(IWDeveloper.getText("New String value:"),1,5);
-          TextInput newInput = new TextInput(newStringKeyParameter);
-          table.add(newInput,2,4);
-        }
+	  }
+	  table.add(new SubmitButton("Save",subAction,"save"),2,6);
+	  table.add(new SubmitButton("Delete",subAction,"delete"),2,6);
+	  table.add(IWDeveloper.getText("New String key:"),1,4);
+	  table.add(IWDeveloper.getText("New String value:"),1,5);
+	  TextInput newInput = new TextInput(newStringKeyParameter);
+	  table.add(newInput,2,4);
+	}
+	else{
+	  table.add(getTextArea(areaParameter,""),2,5);
+	  table.add(new SubmitButton("Save",subAction,"save"),2,6);
+	  table.add(IWDeveloper.getText("New String key:"),1,4);
+	  table.add(IWDeveloper.getText("New String value:"),1,5);
+	  TextInput newInput = new TextInput(newStringKeyParameter);
+	  table.add(newInput,2,4);
+	}
 
-        //table.add(new SubmitButton("Select Locale",subAction,"select"),2,1);
-        table.add(IWDeveloper.getText("String:"),1,3);
-        stringsDrop = this.getLocalizeableStringsMenu(iwma,selectedBundle,stringsParameter);
-        stringsDrop.keepStatusOnAction();
-        stringsDrop.setToSubmit();
-        table.add(stringsDrop,2,3);
-        //table.add(new SubmitButton("Choose String",subAction,"choose"),3,1);
+	//table.add(new SubmitButton("Select Locale",subAction,"select"),2,1);
+	table.add(IWDeveloper.getText("String:"),1,3);
+	stringsDrop = this.getLocalizeableStringsMenu(iwma,selectedBundle,stringsParameter);
+	stringsDrop.keepStatusOnAction();
+	stringsDrop.setToSubmit();
+	table.add(stringsDrop,2,3);
+	//table.add(new SubmitButton("Choose String",subAction,"choose"),3,1);
 
-        Frame.add(IWDeveloper.getText("Available Strings:"),1,3);
-        Frame.add(Text.getBreak(),1,3);
-        Frame.add(this.getLocalizeableStringsTable(iwma,selectedBundle,iwrb,stringsParameter,templateLink),1,3);
+	Frame.add(IWDeveloper.getText("Available Strings:"),1,3);
+	Frame.add(Text.getBreak(),1,3);
+	Frame.add(this.getLocalizeableStringsTable(iwma,selectedBundle,iwrb,stringsParameter,templateLink),1,3);
 
       }
   }
@@ -216,7 +218,7 @@ public class Localizer extends PresentationObjectContainer {
     DropdownMenu down = getAvailableLocalesDropdown(iwma,com.idega.core.localisation.business.LocaleSwitcher.languageParameterString);
       Locale l = iwc.getCurrentLocale();
       if( l != null){
-        down.setSelectedElement(l.toString());
+	down.setSelectedElement(l.toString());
       }
 
       down.keepStatusOnAction();
@@ -267,26 +269,26 @@ public class Localizer extends PresentationObjectContainer {
   private boolean isSaveable(IWContext iwc){
       String subActioner = iwc.getParameter(subAction);
       if(subActioner==null){
-        return false;
+	return false;
       }
       else{
-        if(subActioner.equals("save")){
-          return true;
-        }
-        return false;
+	if(subActioner.equals("save")){
+	  return true;
+	}
+	return false;
       }
   }
 
   private boolean isDeleteable(IWContext iwc){
       String subActioner = iwc.getParameter(subAction);
       if(subActioner==null){
-        return false;
+	return false;
       }
       else{
-        if(subActioner.equals("delete")){
-          return true;
-        }
-        return false;
+	if(subActioner.equals("delete")){
+	  return true;
+	}
+	return false;
       }
   }
 

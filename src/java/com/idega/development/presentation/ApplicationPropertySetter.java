@@ -27,6 +27,7 @@ public class ApplicationPropertySetter extends Block {
   private static final String PROPERTY_KEY_NAME_PARAMETER="iw_a_p_s_k";
   private static final String PROPERTY_VALUE_PARAMETER="iw_a_p_s_v";
   private static final String ENTITY_AUTOCREATE_PARAMETER="iw_e_a_c_p";
+  private static final String DEBUG_PARAMETER="iw_d_p";
 
 
   public ApplicationPropertySetter() {
@@ -43,11 +44,11 @@ public class ApplicationPropertySetter extends Block {
       Form form = new Form();
       form.maintainParameter(IWDeveloper.actionParameter);
       add(form);
-      Table table = new Table(2,5);
-        table.setCellpadding(5);
-        table.mergeCells(1,1,2,1);
-        table.mergeCells(1,5,2,5);
-        table.setAlignment(1,5,"right");
+      Table table = new Table(2,6);
+	table.setCellpadding(5);
+	table.mergeCells(1,1,2,1);
+	table.mergeCells(1,6,2,6);
+	table.setAlignment(1,6,"right");
       form.add(table);
       TextInput name = new TextInput(this.PROPERTY_KEY_NAME_PARAMETER);
       TextInput value = new TextInput(this.PROPERTY_VALUE_PARAMETER);
@@ -64,43 +65,57 @@ public class ApplicationPropertySetter extends Block {
       }
       table.add(IWDeveloper.getText("Autocreate Data Entities:"),1,4);
       table.add(box,2,4);
-      table.add(new SubmitButton("Save",APPLICATION_SETTER_PARAMETER,"save"),1,5);
-      table.add(new SubmitButton("Store Application state",APPLICATION_SETTER_PARAMETER,"store"),1,5);
+      CheckBox box2 = new CheckBox(DEBUG_PARAMETER);
+      if(iwma.getSettings().getIfDebug()){
+       box2.setChecked(true);
+      }
+      table.add(IWDeveloper.getText("Debug:"),1,5);
+      table.add(box2,2,5);
+      table.add(new SubmitButton("Save",APPLICATION_SETTER_PARAMETER,"save"),1,6);
+      table.add(new SubmitButton("Store Application state",APPLICATION_SETTER_PARAMETER,"store"),1,6);
 
       add(getParametersTable(iwma));
   }
 
   private void doBusiness(IWContext iwc){
+      String[] values = iwc.getParameterValues("property");
+      if ( values != null ) {
+	for ( int a = 0; a < values.length; a++ ) {
+	  iwc.getApplication().getSettings().removeProperty(values[a]);
+	}
+      }
       String setterState = iwc.getParameter(APPLICATION_SETTER_PARAMETER);
       if(setterState!=null){
-        String entityAutoCreate = iwc.getParameter(ENTITY_AUTOCREATE_PARAMETER);
-        String KeyName = iwc.getParameter(this.PROPERTY_KEY_NAME_PARAMETER);
-        String KeyValue = iwc.getParameter(this.PROPERTY_VALUE_PARAMETER);
-        iwc.getApplication().getSettings().setProperty(KeyName,KeyValue);
-        if(entityAutoCreate!=null){
-          /*if(entityAutoCreate.equalsIgnoreCase("Y")){
-            iwc.getApplication().getSettings().setEntityAutoCreation(true);
-          }
-          else{
-            iwc.getApplication().getSettings().setEntityAutoCreation(true);
-          }*/
-          // added by Aron 23.01.2001
-          iwc.getApplication().getSettings().setEntityAutoCreation(true);
-        }
-        else
-          iwc.getApplication().getSettings().setEntityAutoCreation(false);
-        if(setterState.equalsIgnoreCase("store")){
-          iwc.getApplication().storeStatus();
-        }
+	String entityAutoCreate = iwc.getParameter(ENTITY_AUTOCREATE_PARAMETER);
+	String debug = iwc.getParameter(DEBUG_PARAMETER);
+	String KeyName = iwc.getParameter(this.PROPERTY_KEY_NAME_PARAMETER);
+	String KeyValue = iwc.getParameter(this.PROPERTY_VALUE_PARAMETER);
+	if ( KeyName != null && KeyName.length() > 0 )
+	  iwc.getApplication().getSettings().setProperty(KeyName,KeyValue);
+	if(entityAutoCreate!=null){
+	  iwc.getApplication().getSettings().setEntityAutoCreation(true);
+	}
+	else
+	  iwc.getApplication().getSettings().setEntityAutoCreation(false);
+	if(setterState.equalsIgnoreCase("store")){
+	  iwc.getApplication().storeStatus();
+	}
+	if(debug!=null){
+	  iwc.getApplication().getSettings().setDebug(true);
+	}
+	else {
+	  iwc.getApplication().getSettings().setDebug(false);
+	}
 
-        add(IWDeveloper.getText("Status: "));
-        add("Property set successfully");
+	add(IWDeveloper.getText("Status: "));
+	add("Property set successfully");
       }
   }
 
-  public static Table getParametersTable(IWMainApplication iwma){
+  public static Form getParametersTable(IWMainApplication iwma){
     java.util.Iterator iter =  iwma.getSettings().getIWPropertyListIterator();
 
+    Form form = new Form();
     Table table = new Table();
 
     String localizedString;
@@ -113,7 +128,8 @@ public class ApplicationPropertySetter extends Block {
       table.add(new Text(property.getName(),true,false,false),1,row);
       value = property.getValue();
       if(value!=null)
-        table.add(new Text(value,true,false,false),2,row);
+	table.add(new Text(value,true,false,false),2,row);
+      table.add(new CheckBox("property",property.getName()),3,row);
       row++;
     }
     /*
@@ -127,10 +143,15 @@ public class ApplicationPropertySetter extends Block {
 */
     table.setColumnVerticalAlignment(1,"top");
     table.setCellpadding(5);
+    table.setCellspacing(0);
     table.setWidth(400);
     table.setColor("#9FA9B3");
+    table.setRowColor(table.getRows()+1,"#FFFFFF");
+    table.add(new SubmitButton("Delete","mode","delete"),3,table.getRows());
+    table.setColumnAlignment(3,"center");
+    form.add(table);
 
-    return table;
+    return form;
   }
 
   public static DropdownMenu getRegisteredBundlesDropdown(IWMainApplication iwma,String name){
