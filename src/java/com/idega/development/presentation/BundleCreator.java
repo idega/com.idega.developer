@@ -6,6 +6,9 @@ import com.idega.presentation.text.*;
 import com.idega.idegaweb.IWMainApplication;
 import com.idega.idegaweb.IWBundle;
 import java.io.File;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Title:        idega Framework
@@ -34,7 +37,7 @@ public class BundleCreator extends Block {
       Form form = new Form();
       form.maintainParameter(IWDeveloper.actionParameter);
       add(form);
-      Table table = new Table(2,3);
+      Table table = new Table(2,4);
         table.setAlignment(2,3,"right");
       form.add(table);
       TextInput name = new TextInput(this.NEW_BUNDLE_NAME_PARAMETER);
@@ -47,7 +50,26 @@ public class BundleCreator extends Block {
       //table.add(path,2,2);
       table.add(new Parameter(NEW_BUNDLE_PARAMETER,"dummy"));
       table.add(new SubmitButton("Create",this.NEW_BUNDLE_PARAMETER,"save"),2,3);
+      
       doBusiness(iwc);
+      
+      table.add(getRegisteredBundles(iwc),1,4);
+      table.mergeCells(1,4,2,4);
+  }
+  
+  private Table getRegisteredBundles(IWContext iwc){
+  	Table T = new Table();
+  	int row = 1;
+  	T.add(IWDeveloper.getText("Registered bundles:"),1,row++);
+  		List bundles = iwc.getApplication().getRegisteredBundles();
+	    Collections.sort(bundles);
+	   
+	    Iterator iter = bundles.iterator();
+	    while (iter.hasNext()) {
+	      IWBundle item = (IWBundle)iter.next();
+	      T.add(item.getBundleIdentifier(),1,row++);
+	    }
+	  return T;
   }
 
   private void doBusiness(IWContext iwc)throws Exception{

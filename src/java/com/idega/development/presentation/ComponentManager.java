@@ -63,11 +63,14 @@ public class ComponentManager extends Block {
       add(form);
 
       Table table = new Table();
+      Table propertyTable = new Table();
         table.setCellpadding(5);
         //table.setBorder(1);
       add(Text.getBreak());
       add(Text.getBreak());
       form.add(table);
+      form.add(Text.getBreak());
+      
 
       int yindex = 1;
 
@@ -95,7 +98,9 @@ public class ComponentManager extends Block {
         Iterator iter = componentNames.iterator();
         while (iter.hasNext()) {
           String component = (String)iter.next();
-          componentsDrop.addMenuElement(component);
+          String display = component.substring(component.lastIndexOf(".")+1);
+          
+          componentsDrop.addMenuElement(component,display);
         }
 
         table.add(IWDeveloper.getText("Component:"),1,yindex);
@@ -114,8 +119,8 @@ public class ComponentManager extends Block {
           //table.add(IWDeveloper.getText("Method:"),1,yindex);
           //table.add(methodsDrop,2,yindex);
           table.add(newPropertyOpener,2,yindex);
-          SubmitButton button3 = new SubmitButton("Select");
-          table.add(button3,3,yindex);
+          //SubmitButton button3 = new SubmitButton("Select");
+          //table.add(button3,3,yindex);
 
 
           String selectedMethodIdentifier = iwc.getParameter(METHOD_PARAMETER);
@@ -156,39 +161,58 @@ public class ComponentManager extends Block {
 
           IWPropertyList methodsList = IBPropertyHandler.getInstance().getMethods(iwb,selectedComponentKey);
           if(methodsList!=null){
-            CheckBox deleteBox = new CheckBox(DELETE_CHECKBOX_NAME);
+          	
+            
             IWPropertyListIterator methodsIter = methodsList.getIWPropertyListIterator();
-            yindex++;
-            yindex++;
-            table.add(IWDeveloper.getText("Remove?"),1,yindex);
-            while (methodsIter.hasNext()) {
-              yindex++;
-              IWProperty prop = methodsIter.nextProperty();
-
-              String identifier = IBPropertyHandler.getInstance().getMethodIdentifier(prop);
-              String description = IBPropertyHandler.getInstance().getMethodDescription(prop,iwc);
-              Method method = null;
-              Class selectedClass=Class.forName(selectedComponentKey);
-              try{
-                //System.out.println("ComponentManager: "+identifier);
-                method = MethodFinder.getInstance().getMethod(identifier,selectedClass);
-              }
-              catch(Exception e){
-                e.printStackTrace();
-              }
-
-              table.add(getSmallText(description),2,yindex);
-              //table.add(getSmallText(identifier),3,yindex);
-              if(method!=null){
-                table.add(getSmallText(method.toString()),3,yindex);
-              }
-              CheckBox rowBox = (CheckBox)deleteBox.clone();
-              rowBox.setContent(identifier);
-              table.add(rowBox,1,yindex);
-
-            }
-            yindex++;
-            table.add(new SubmitButton("Update"),1,yindex);
+            if(methodsIter.hasNext()){
+              	form.add(propertyTable);
+            	CheckBox deleteBox = new CheckBox(DELETE_CHECKBOX_NAME);
+          
+	            String methodName ;
+	            //yindex++;
+	            //yindex++;
+	            yindex = 1;
+	            
+	            propertyTable.add(IWDeveloper.getText("Remove?"),1,yindex);
+	            propertyTable.add(IWDeveloper.getText("Property"),2,yindex);
+	            propertyTable.add(IWDeveloper.getText("Method used"),3,yindex);
+	            while (methodsIter.hasNext()) {
+	              yindex++;
+	              IWProperty prop = methodsIter.nextProperty();
+	
+	              String identifier = IBPropertyHandler.getInstance().getMethodIdentifier(prop);
+	              String description = IBPropertyHandler.getInstance().getMethodDescription(prop,iwc);
+	              Method method = null;
+	              Class selectedClass=Class.forName(selectedComponentKey);
+	              try{
+	                //System.out.println("ComponentManager: "+identifier);
+	                method = MethodFinder.getInstance().getMethod(identifier,selectedClass);
+	              }
+	              catch(Exception e){
+	                e.printStackTrace();
+	              }
+	
+	              propertyTable.add(getSmallText(description),2,yindex);
+	              //table.add(getSmallText(identifier),3,yindex);
+	              if(method!=null){
+	              	methodName = method.getName()+"( ";
+	              	for (int i = 0; i < method.getParameterTypes().length; i++) {
+						if(i!=0)
+							methodName += " , ";
+						methodName += method.getParameterTypes()[i].getName();
+					}
+	              	methodName += " )";
+	                propertyTable.add(getSmallText(methodName),3,yindex);
+	              }
+	              CheckBox rowBox = (CheckBox)deleteBox.clone();
+	              rowBox.setContent(identifier);
+	              propertyTable.add(rowBox,1,yindex);
+	
+	            }
+	            yindex++;
+	            propertyTable.add(new SubmitButton("Update"),1,yindex);
+	            propertyTable.mergeCells(1,yindex,3,yindex);
+	          }
           }
         }
 
