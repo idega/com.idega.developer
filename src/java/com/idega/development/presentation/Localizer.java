@@ -11,6 +11,7 @@ import java.util.Locale;
 import java.util.List;
 import java.util.Iterator;
 import com.idega.util.LocaleUtil;
+import com.idega.core.localisation.business.ICLocaleBusiness;
 
 /**
  * Title:        idega Framework
@@ -180,7 +181,7 @@ public class Localizer extends PresentationObjectContainer {
   }
 
   public static DropdownMenu getAvailableLocalesDropdown(IWMainApplication iwma,String name){
-    List locales = iwma.getAvailableLocales();
+    List locales = ICLocaleBusiness.listOfLocalesJAVA();
     DropdownMenu down = new DropdownMenu(name);
     Iterator iter = locales.iterator();
     while (iter.hasNext()) {
