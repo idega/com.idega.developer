@@ -27,6 +27,7 @@ import com.idega.presentation.ui.SubmitButton;
 import com.idega.presentation.ui.TextArea;
 import com.idega.presentation.ui.TextInput;
 import com.idega.util.SQLDataDumper;
+import com.idega.util.database.ConnectionBroker;
 /**
 
 *@author <a href="mailto:tryggvi@idega.is">Tryggvi Larusson</a>
@@ -339,6 +340,15 @@ public class SQLQueryer extends Block {
 	protected void freeConnection(IWContext iwc,Connection conn){
 		this.freeConnection(conn);
 	}	
+	
+	public Connection getConnection()
+	{
+		return ConnectionBroker.getConnection();
+	}
+	public void freeConnection(Connection conn)
+	{
+		ConnectionBroker.freeConnection(conn);
+	}
 	
 	public Object clone() {
 		SQLQueryer obj = null;
