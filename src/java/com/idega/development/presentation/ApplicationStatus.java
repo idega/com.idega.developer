@@ -44,7 +44,7 @@ public class ApplicationStatus extends Block {
   private void doBusiness(IWContext iwc)throws Exception{
       String check = iwc.getParameter(RESTART_PARAMETER);
       if(check!=null){
-        add(IWDeveloper.getText("Restarting..."));
+        add(IWDeveloper.getText("Done Restarting!"));
         iwc.getApplication().restartApplication();
       }
   }
