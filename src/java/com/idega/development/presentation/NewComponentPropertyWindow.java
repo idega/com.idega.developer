@@ -11,6 +11,7 @@ import com.idega.idegaweb.*;
 
 import com.idega.core.data.ICObject;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
 import java.util.Iterator;
@@ -300,14 +301,26 @@ public class NewComponentPropertyWindow extends Window {
     return cBox;
   }
 
+
   public DropdownMenu getMethodsDropdown(String selectedComponentKey){
     return getMethodsDropdown(selectedComponentKey,PARAMETER_METHOD);
+  }
+
+  private void putMethodsInMap(Map m,Method[] methods){
+    for (int i = 0; i < methods.length; i++) {
+      Method method = methods[i];
+      String name = method.getName();
+      if(name.startsWith("set")){
+        m.put(name,method);
+      }
+    }
   }
 
   public DropdownMenu getMethodsDropdown(String selectedComponentKey,String name){
       Class selectedClass=null;
       BeanInfo info = null;
       Method[] methods = null;
+      Map methodsMap = new HashMap();
       try{
       selectedClass = Class.forName(selectedComponentKey);
 
@@ -328,8 +341,10 @@ public class NewComponentPropertyWindow extends Window {
             Method[] newArray = new Method[oldLength+newMethods.length];
             System.arraycopy(methods,0,newArray,0,oldLength);
             System.arraycopy(newMethods,0,newArray,oldLength,newMethods.length);
-            methods = newArray;
+            //methods = newArray;
           }
+          putMethodsInMap(methodsMap,newMethods);
+
           introspectionClass = introspectionClass.getSuperclass();
         }
 
@@ -337,6 +352,7 @@ public class NewComponentPropertyWindow extends Window {
       catch(Exception e){
         e.printStackTrace();
       }
+      methods = (Method[])methodsMap.entrySet().toArray(new Method[0]);
       java.util.Arrays.sort(methods,com.idega.util.Comparators.getMethodComparator());
       //MethodDescriptor[] descriptors = info.getMethodDescriptors();
       //java.util.Arrays.sort(descriptors,com.idega.util.Comparators.getMethodDescriptorComparator());
