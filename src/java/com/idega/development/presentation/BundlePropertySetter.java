@@ -32,13 +32,15 @@ public class BundlePropertySetter extends JModuleObject {
 
       IWMainApplication iwma = modinfo.getApplication();
       DropdownMenu bundles = getRegisteredBundlesDropdown(iwma,BUNDLE_PARAMETER);
-
+      bundles.keepStatusOnAction();
+      bundles.setToSubmit();
 
       Form form = new Form();
       form.maintainParameter(IWDeveloper.actionParameter);
       add(form);
       Table table = new Table(3,2);
       form.add(table);
+      form.setMethod("GET");
       TextInput name = new TextInput(this.PROPERTY_KEY_NAME_PARAMETER);
       TextInput value = new TextInput(this.PROPERTY_VALUE_PARAMETER);
 
@@ -53,16 +55,26 @@ public class BundlePropertySetter extends JModuleObject {
       table.add(new SubmitButton("Save","save"),3,2);
 
       doBusiness(modinfo);
+
+
+
+
   }
 
   private void doBusiness(ModuleInfo modinfo){
       String bundleIdentifier = modinfo.getParameter(BUNDLE_PARAMETER);
-      if(bundleIdentifier!=null){
+      String save = modinfo.getParameter("Save");
+      IWMainApplication iwma = modinfo.getApplication();
+
+      if((bundleIdentifier!=null)&&(save!=null)){
         String KeyName = modinfo.getParameter(this.PROPERTY_KEY_NAME_PARAMETER);
         String KeyValue = modinfo.getParameter(this.PROPERTY_VALUE_PARAMETER);
-        IWMainApplication iwma = modinfo.getApplication();
         iwma.getBundle(bundleIdentifier).setProperty(KeyName,KeyValue);
         add("Property set successfully");
+        add(getParametersTable(iwma,bundleIdentifier));
+      }
+      else if( (bundleIdentifier!= null) && (save==null) ){
+         add(getParametersTable(iwma,bundleIdentifier));
       }
   }
 
@@ -75,5 +87,26 @@ public class BundlePropertySetter extends JModuleObject {
       down.addMenuElement(item.getBundleIdentifier());
     }
     return down;
+  }
+
+   public static Table getParametersTable(IWMainApplication iwma,String bundleIdentifier){
+    IWBundle bundle = iwma.getBundle(bundleIdentifier);
+    String[] strings = bundle.getAvailableProperties();
+
+    Table table = new Table(2,strings.length);
+    String localizedString;
+    Text name;
+    for (int i = 0; i < strings.length; i++) {
+      name = new Text(strings[i],true,false,false);
+      table.add(name,1,i+1);
+      localizedString = bundle.getProperty( strings[i] );
+      if (localizedString==null) localizedString = "";
+      table.add(localizedString ,2,i+1);
+    }
+
+    table.setWidth(300);
+    table.setColor("#9FA9B3");
+
+    return table;
   }
 }
