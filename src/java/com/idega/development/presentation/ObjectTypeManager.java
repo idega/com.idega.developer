@@ -14,6 +14,7 @@ import com.idega.core.data.ICObjectType;
 import com.idega.core.data.ICObjectTypeHome;
 import com.idega.data.IDOLookup;
 import com.idega.data.IDOLookupException;
+import com.idega.development.presentation.comp.BundleComponentFactory;
 import com.idega.presentation.Block;
 import com.idega.presentation.IWContext;
 import com.idega.presentation.Table;
@@ -76,9 +77,6 @@ public class ObjectTypeManager extends Block {
  	}
  	
  	private void handleInsert(IWContext iwc){
- 		
-
- 		
  		String name = iwc.getParameter(PARAMETER_NAME);
  		String type = iwc.getParameter(PARAMETER_TYPE);
  		String rSuper = iwc.getParameter(PARAMETER_REQUIRED_SUPER_CLASS);
@@ -99,31 +97,42 @@ public class ObjectTypeManager extends Block {
 		 		}
 		 		ot.setName(name);
 		 		ot.setType(type);
-		 		if (rSuper != null && !rSuper.equals("")) {
-					Class.forName(rSuper);
-		 			ot.setRequiredSuperClassName(rSuper);
+		 		if (rSuper != null) {
+		 			if (rSuper.equals("")) {
+		 				ot.setRequiredSuperClassName(null);
+		 			} else {
+						Class.forName(rSuper);
+		 				ot.setRequiredSuperClassName(rSuper);
+		 			}
 		 		}
-				if (rInter != null && !rInter.equals("")) {
-					Vector vector = ot.seperateStringIntoVector(rInter);
-					if (vector != null) {
-						Iterator iter = vector.iterator();
-						String className;
-						while (iter.hasNext()) {
-							className = (String) iter.next();
-							Class.forName(className);
+				if (rInter != null) {
+					if ( rInter.equals("") ) {
+						ot.setRequiredInterfacesString(null);
+					} else {
+						Vector vector = ot.seperateStringIntoVector(rInter);
+						if (vector != null) {
+							Iterator iter = vector.iterator();
+							String className;
+							while (iter.hasNext()) {
+								className = (String) iter.next();
+								Class.forName(className);
+							}
 						}
+			 			ot.setRequiredInterfacesString(rInter);
 					}
-		 			ot.setRequiredInterfacesString(rInter);
 				}
-				if (refl != null && !refl.equals("")) {
-					Class.forName(refl);
-		 			ot.setFinalReflectionClassName(refl);
+				if (refl != null) {
+					if (refl.equals("")) {
+						ot.setFinalReflectionClassName(null);
+					} else {
+						Class.forName(refl);
+		 				ot.setFinalReflectionClassName(refl);
+					}
 				}
-				if (filters != null && !filters.equals("")) {
+				if (filters != null) {
 		 			ot.setMethodStartFiltersString(filters);
 				}
 		 		ot.store();
-		 		
 		 		objectTypeToEdit = null;
 			} catch (IDOLookupException e) {
 				add(IWDeveloper.getText("ObjectType was not created ("+e.getMessage()+")"));
@@ -133,12 +142,14 @@ public class ObjectTypeManager extends Block {
 				e.printStackTrace();
 			} catch (ClassNotFoundException e) {
 				add(IWDeveloper.getText("ObjectType was not created, could not find class "+e.getMessage()+Text.BREAK));
+				e.printStackTrace();
 			}
 	 		
  		} else {
  			add(IWDeveloper.getText("ObjectType was not created"));
  		}
- 		
+		BundleComponentFactory.getInstance().refreshCache();
+
  	}
  	
  	private void handleDelete(IWContext iwc) {
@@ -176,6 +187,7 @@ public class ObjectTypeManager extends Block {
 				e.printStackTrace();
 			}
  		}
+		BundleComponentFactory.getInstance().refreshCache();
  	}
 
 	private void listObjectUsingType(IWContext iwc, String icObjectTypePk) {
@@ -254,6 +266,17 @@ public class ObjectTypeManager extends Block {
 				table.add(objectType.getFinalReflectionClassName(), 5, row);
 				if (objectType.getMethodStartFiltersString() != null)
 				table.add(objectType.getMethodStartFiltersString(), 6, row);
+				/*
+				String[] filt = objectType.getMethodStartFilters();
+				if (filt == null) {
+					System.out.println("Filters for "+objectType.getName()+" == null");
+				} else {
+					System.out.println("Filters for "+objectType.getName()+" = "+filt.length);
+					for (int i = 0; i < filt.length; i++) {
+						System.out.println("Filter "+(i+1)+" = "+filt[i]);
+					}
+				}
+				*/
 				table.add(delete, 7, row);
 			}
 			
