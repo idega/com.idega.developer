@@ -59,7 +59,7 @@ public class BundleCreator extends Block {
         if(bundleDir.indexOf(IWMainApplication.BUNDLES_STANDARD_DIRECTORY)==-1){
           bundleDir=IWMainApplication.BUNDLES_STANDARD_DIRECTORY + File.separator + bundleDir;
         }
-        iwma.registerBundle(bundleIdentifier,bundleDir);
+        iwma.registerBundle(bundleIdentifier,bundleDir,true);
         add(IWDeveloper.getText("Creation Successful"));
       }
   }
