@@ -55,6 +55,11 @@ public class BundleComponentFactory {
 		return getBundleComponent(icobject.getObjectType());
 	}
 	
+	public void refreshCache() {
+		lookup = new HashMap();
+		createLookupTable();
+	}
+	
 	private void createLookupTable(){
 		try {
 			ICObjectTypeHome home = (ICObjectTypeHome) IDOLookup.getHome(ICObjectType.class);
