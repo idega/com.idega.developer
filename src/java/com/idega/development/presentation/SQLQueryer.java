@@ -206,7 +206,8 @@ public class SQLQueryer extends Block {
 					//String fileURI = virtualFolderPath+"/"+file.getName();
 					//Link fileLink =new Link(file.getName(),fileURI);
 					//fileLink.setTarget(Link.TARGET_NEW_WINDOW);
-					DownloadLink fileLink = new DownloadLink(file.getName(),file.getAbsolutePath());
+					DownloadLink fileLink = new DownloadLink(file.getName());
+					fileLink.setAbsoluteFilePath(file.getAbsolutePath());
 					innerTable.add(Text.getNonBrakingSpace(),1,4);
 					innerTable.add(fileLink,1,4);
 					
