@@ -63,10 +63,10 @@ public class IWDeveloper extends com.idega.presentation.app.IWApplication {
 				
 			Layer topLayer = new Layer(Layer.DIV);
 			topLayer.setZIndex(3);
-			topLayer.setPositionType("fixed");
+			topLayer.setPositionType(Layer.FIXED);
 			topLayer.setTopPosition(0);
 			topLayer.setLeftPosition(0);
-			topLayer.setMarkupAttribute("background-color", "#0E2456");
+			topLayer.setBackgroundColor("#0E2456");
 			topLayer.setWidth(Table.HUNDRED_PERCENT);
 			topLayer.setHeight(25);
 			add(topLayer);
@@ -88,12 +88,12 @@ public class IWDeveloper extends com.idega.presentation.app.IWApplication {
 			
 			Layer leftLayer = new Layer(Layer.DIV);
 			leftLayer.setZIndex(2);
-			leftLayer.setPositionType("fixed");
+			leftLayer.setPositionType(Layer.FIXED);
 			leftLayer.setTopPosition(25);
 			leftLayer.setLeftPosition(0);
-			leftLayer.setMarkupAttribute("padding", "5px");
-			leftLayer.setMarkupAttribute("background-color", "#B0B29D");
-			leftLayer.setWidth("180");
+			leftLayer.setPadding(5);
+			leftLayer.setBackgroundColor("#B0B29D");
+			leftLayer.setWidth(180);
 			leftLayer.setHeight(Table.HUNDRED_PERCENT);
 			add(leftLayer);
 			
@@ -104,7 +104,7 @@ public class IWDeveloper extends com.idega.presentation.app.IWApplication {
 			rightLayer.setZIndex(1);
 			rightLayer.setPositionType(Layer.ABSOLUTE);
 			rightLayer.setTopPosition(25);
-			rightLayer.setMarkupAttribute("padding", "5px");
+			rightLayer.setPadding(5);
 			if (iwc.isIE()) {
 				rightLayer.setBackgroundColor("#FFFFFF");
 				rightLayer.setWidth(Table.HUNDRED_PERCENT);
