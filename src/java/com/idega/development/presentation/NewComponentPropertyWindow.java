@@ -48,6 +48,7 @@ public class NewComponentPropertyWindow extends Window {
   public NewComponentPropertyWindow(){
     setWidth(700);
     setTitle("Add New Property");
+    setResizable(true);
   }
 
   public void main(IWContext iwc){
