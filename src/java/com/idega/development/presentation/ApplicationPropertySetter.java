@@ -46,11 +46,11 @@ public class ApplicationPropertySetter extends Block {
       Form form = new Form();
       form.maintainParameter(IWDeveloper.actionParameter);
       add(form);
-      Table table = new Table(2,7);
+      Table table = new Table(2,8);
 	table.setCellpadding(5);
 	table.mergeCells(1,1,2,1);
-	table.mergeCells(1,7,2,7);
-	table.setAlignment(1,7,"right");
+	table.mergeCells(1,8,2,8);
+	table.setAlignment(1,8,"right");
       form.add(table);
       TextInput name = new TextInput(this.PROPERTY_KEY_NAME_PARAMETER);
       TextInput value = new TextInput(this.PROPERTY_VALUE_PARAMETER);
@@ -80,17 +80,17 @@ public class ApplicationPropertySetter extends Block {
       if(iwma.getSettings().isAutoCreatePropertiesActive()){
        box4.setChecked(true);
       }
-      table.add(IWDeveloper.getText("Autocreate Properties:"),1,5);
-      table.add(box4,2,5);
+      table.add(IWDeveloper.getText("Autocreate Properties:"),1,6);
+      table.add(box4,2,6);
 
       CheckBox box2 = new CheckBox(DEBUG_PARAMETER);
       if(iwma.getSettings().getIfDebug()){
        box2.setChecked(true);
       }
-      table.add(IWDeveloper.getText("Debug:"),1,6);
-      table.add(box2,2,6);
-      table.add(new SubmitButton("Save",APPLICATION_SETTER_PARAMETER,"save"),1,7);
-      table.add(new SubmitButton("Store Application state",APPLICATION_SETTER_PARAMETER,"store"),1,7);
+      table.add(IWDeveloper.getText("Debug:"),1,7);
+      table.add(box2,2,7);
+      table.add(new SubmitButton("Save",APPLICATION_SETTER_PARAMETER,"save"),1,8);
+      table.add(new SubmitButton("Store Application state",APPLICATION_SETTER_PARAMETER,"store"),1,8);
 
       add(getParametersTable(iwma));
   }
