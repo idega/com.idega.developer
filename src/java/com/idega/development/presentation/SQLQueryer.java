@@ -13,6 +13,7 @@ import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import com.idega.presentation.Block;
 import com.idega.presentation.IWContext;
@@ -224,53 +225,64 @@ public class SQLQueryer extends Block {
 						resultsPane.add(text);
 						resultsPane.addBreak();
 					}
-					Table table = new Table();
-					table.setColor("white");
-					resultsPane.add(table);
+					
 					Statement stmt = conn.createStatement();
-					if (queryString.trim().toLowerCase().startsWith("select") ) {
-						ResultSet rs = stmt.executeQuery(queryString);
-						ResultSetMetaData rsMeta = rs.getMetaData();
-						// Get the N of Cols in the ResultSet
-						int noCols = rsMeta.getColumnCount();
-						//out.println("<tr>");
-						int y = 1;
-						int x = 1;
-						for (int c = 1; c <= noCols; c++) {
-							String el = rsMeta.getColumnLabel(c);
-							//out.println("<th> " + el + " </th>");
-							table.add(el, x, y);
-							x++;
-						}
-						//out.println("</tr>");
-						y++;
-						table.setRowColor(1, "#D0D0D0");
-						int counter=0;
-						while (rs.next()&&(counter<numberOfViewedResults)) {
-							//out.println("<tr>");
-							x = 1;
-							for (int c = 1; c <= noCols; c++) {
-								String el = rs.getString(c);
-								table.add(el, x, y);
-								x++;
-								//out.println("<td> " + el + " </td>");
+					StringTokenizer tokener = new StringTokenizer(queryString,";");
+					int alterCount = 0;
+					while(tokener.hasMoreTokens()){
+					    queryString = tokener.nextToken();
+					    if(!"".equals(queryString)){
+							if (queryString.trim().toLowerCase().startsWith("select") ) {
+							    Table table = new Table();
+								table.setColor("white");
+								resultsPane.add(table);
+								ResultSet rs = stmt.executeQuery(queryString);
+								ResultSetMetaData rsMeta = rs.getMetaData();
+								// Get the N of Cols in the ResultSet
+								int noCols = rsMeta.getColumnCount();
+								//out.println("<tr>");
+								int row = 1;
+								int col = 1;
+								for (int c = 1; c <= noCols; c++) {
+									String el = rsMeta.getColumnLabel(c);
+									//out.println("<th> " + el + " </th>");
+									table.add(el, col, row);
+									col++;
+								}
+								//out.println("</tr>");
+								row++;
+								table.setRowColor(1, "#D0D0D0");
+								int counter=0;
+								while (rs.next()&&(counter<numberOfViewedResults)) {
+									//out.println("<tr>");
+									col = 1;
+									for (int c = 1; c <= noCols; c++) {
+										String el = rs.getString(c);
+										table.add(el, col, row);
+										col++;
+										//out.println("<td> " + el + " </td>");
+									}
+									counter++;
+									row++;
+									//out.println("</tr>");
+								}
 							}
-							counter++;
-							y++;
-							//out.println("</tr>");
-						}
+							else if (queryString.trim().toLowerCase().startsWith("commit") ) {
+								resultsPane.add("AutoCommit is on");
+							}
+							else{
+								int i = stmt.executeUpdate(queryString);
+								//if (i>0){
+								//resultsPane.add(i + " rows altered");
+								alterCount +=i;
+								//}
+								//else{
+								//}
+							}
+					    }
 					}
-					else if (queryString.trim().toLowerCase().startsWith("commit") ) {
-						resultsPane.add("AutoCommit is on");
-					}
-					else{
-						int i = stmt.executeUpdate(queryString);
-						//if (i>0){
-						resultsPane.add(i + " rows altered");
-						//}
-						//else{
-						//}
-					}
+					if(alterCount>0)
+					    resultsPane.add(alterCount + " rows altered");
 					//out.println("</table>");
 					
 					
