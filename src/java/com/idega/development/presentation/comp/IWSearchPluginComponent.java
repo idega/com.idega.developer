@@ -8,23 +8,20 @@ package com.idega.development.presentation.comp;
 
 import com.idega.core.component.data.BundleComponent;
 import com.idega.core.component.data.ICObjectBMPBean;
-import com.idega.core.search.business.Searchable;
+import com.idega.core.search.business.SearchPlugin;
 
 /**
- * <p>Title: idegaWeb</p>
- * <p>Description: </p>
- * <p>Copyright: Copyright (c) 2004</p>
- * <p>Company: idega Software</p>
+ * Adds the iw.searchplugin type
  * @author eiki
  * @version 1.0
  */
-public class IWSearchableComponent extends IWBaseComponent implements BundleComponent {
+public class IWSearchPluginComponent extends IWBaseComponent implements BundleComponent {
 	
 	/* (non-Javadoc)
 	 * @see com.idega.development.presentation.comp.BundleComponent#type()
 	 */
 	public String type() {
-		return ICObjectBMPBean.COMPONENT_TYPE_SEARCHABLE;
+		return ICObjectBMPBean.COMPONENT_TYPE_SEARCH_PLUGIN;
 	}
 
 	/* (non-Javadoc)
@@ -32,7 +29,7 @@ public class IWSearchableComponent extends IWBaseComponent implements BundleComp
 	 */
 	public Class[] getRequiredInterfaces() {
 		Class[] array= new Class[1];
-		array[0] = Searchable.class;
+		array[0] = SearchPlugin.class;
 		return array;
 	}
 

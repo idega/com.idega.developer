@@ -102,7 +102,7 @@ public class BundleComponentFactory {
 		lookup.put(comp.type(),comp);
 		comp = new IWHandlerComponent();
 		lookup.put(comp.type(),comp);
-		comp = new IWSearchableComponent();
+		comp = new IWSearchPluginComponent();
 		lookup.put(comp.type(),comp);
 	}
 	
