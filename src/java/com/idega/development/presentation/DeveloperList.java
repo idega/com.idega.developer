@@ -36,6 +36,7 @@ private static String styleName = "iwdClass";
     addToList(getClassLink(iwc, Localizer.class,"Localizer"),image);
     addToList(getClassLink(iwc, LocaleSwitcher.class,"Locale Switcher"),image);
     addToList(getClassLink(iwc, LocaleSetter.class,"Locale Setter"),image);
+    addToList(getClassLink(iwc, ObjectTypeManager.class,"Object Types"), image);
     addToList(getClassLink(iwc, BundleCreator.class,"Bundle Creator"),image);
     addToList(getClassLink(iwc, BundlePropertySetter.class,"Bundle Property Setter"),image);
     addToList(getClassLink(iwc, BundleComponentManager.class,"Bundle Components"),image);
