@@ -1,5 +1,6 @@
 package com.idega.development.presentation;
 
+import com.idega.block.text.business.TextFormatter;
 import com.idega.builder.presentation.IBAddModuleWindow;
 import com.idega.business.IBOLookup;
 import com.idega.core.localisation.presentation.LocalePresentationUtil;
@@ -59,7 +60,7 @@ public class Localizer extends PresentationObjectContainer {
 		localesDrop.keepStatusOnAction();
 		localesDrop.setToSubmit();
 
-		DropdownMenu stringsDrop;
+		//DropdownMenu stringsDrop;
 
 		String selectedBundle = iwc.getParameter(bundlesParameter);
 
@@ -76,7 +77,9 @@ public class Localizer extends PresentationObjectContainer {
 		//form.setTarget(IWDeveloper.frameName);
 		add(form);
 		Table Frame = new Table();
+		Frame.setWidth(Table.HUNDRED_PERCENT);
 		Table table = new Table(2, 6);
+		table.setWidth(Table.HUNDRED_PERCENT);
 		table.setAlignment(2, 6, "right");
 		table.setColumnVerticalAlignment(1, "top");
 		table.setWidth(1, "150");
@@ -192,11 +195,11 @@ public class Localizer extends PresentationObjectContainer {
 			}
 
 			//table.add(new SubmitButton("Select Locale",subAction,"select"),2,1);
-			table.add(IWDeveloper.getText("String:"), 1, 3);
+			/*table.add(IWDeveloper.getText("String:"), 1, 3);
 			stringsDrop = this.getLocalizeableStringsMenu(iwma, selectedBundle, stringsParameter);
 			stringsDrop.keepStatusOnAction();
 			stringsDrop.setToSubmit();
-			table.add(stringsDrop, 2, 3);
+			table.add(stringsDrop, 2, 3);*/
 			//table.add(new SubmitButton("Choose String",subAction,"choose"),3,1);
 
 			Frame.add(IWDeveloper.getText("Available Strings:"), 1, 3);
@@ -223,6 +226,7 @@ public class Localizer extends PresentationObjectContainer {
 		IWBundle bundle = iwma.getBundle(bundleIdentifier);
 		String[] strings = bundle.getLocalizableStrings();
 		Table table = new Table(2, strings.length);
+		table.setWidth(Table.HUNDRED_PERCENT);
 		table.setColumnVerticalAlignment(1, "top");
 		table.setCellpadding(5);
 		String localizedString;
@@ -236,25 +240,29 @@ public class Localizer extends PresentationObjectContainer {
 			localizedString = iwrb.getLocalizedString(key);
 			if (localizedString == null || StringHandler.EMPTY_STRING.equals(localizedString)){
 				String defaultString = bundle.getLocalizableStringDefaultValue(key);
+				defaultString = TextFormatter.formatText(defaultString);
 				stringValueText = new Text(defaultString);
 				stringValueText.setFontColor("#FF0000");
 				keyLink.setFontColor("#FF0000");
 			}
 			else{
+				localizedString = TextFormatter.formatText(localizedString);
 				stringValueText = new Text(localizedString);
 			}
 			
 			keyLink.setText(strings[i]);
+			keyLink.setStyleAttribute("font-size:10px;font-family:Arial;");
 			keyLink.setBold();
 			keyLink.addParameter(parameterName, strings[i]);
 			keyLink.maintainParameter(IWDeveloper.PARAMETER_CLASS_NAME, iwc);
+			stringValueText.setStyleAttribute("font-size:10px;font-family:Arial;");
 			//name.setTarget(IWDeveloper.frameName);
 			//name.setClassToInstanciate(Localizer.class);
 			table.add(keyLink, 1, i + 1);
 
 			table.add(stringValueText, 2, i + 1);
 		}
-		table.setWidth(400);
+		//table.setWidth(400);
 		table.setColor("#9FA9B3");
 		return table;
 	}
@@ -314,7 +322,9 @@ public class Localizer extends PresentationObjectContainer {
 
 	private PresentationObject getTextArea(String name, String startValue) {
 		TextArea area = new TextArea(name, startValue);
-		area.setWidth(30);
+		area.setWidth("400");
+		area.setHeight("120");
+		area.setStyleAttribute("font-size:10px;");
 		return area;
 	}
 	
