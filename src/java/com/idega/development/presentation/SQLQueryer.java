@@ -10,11 +10,15 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import com.idega.presentation.Block;
 import com.idega.presentation.IWContext;
 import com.idega.presentation.Table;
 import com.idega.presentation.text.Text;
+import com.idega.presentation.ui.DropdownMenu;
 import com.idega.presentation.ui.Form;
 import com.idega.presentation.ui.FramePane;
 import com.idega.presentation.ui.SubmitButton;
@@ -31,6 +35,8 @@ public class SQLQueryer extends Block {
 	public final static String IW_BUNDLE_IDENTIFIER = "com.idega.developer";
 	private static String PARAM_QUERY = "sql_qry_str";
 	private static String PARAM_NUM_RECORDS = "sql_num_rec";
+	private static String PARAM_QUERY_NAME = "sql_hist_qry_name";
+	private static String HISTORY_QUERIES = "sql_hist_queries";
 	
 	private FramePane queryPane;
 	private FramePane resultsPane;
@@ -38,6 +44,8 @@ public class SQLQueryer extends Block {
 	private boolean displayForm = true;
 	private String resultName = "Result";
 	private int numberOfViewedResults = 100;
+	private Map historyQueries = null;
+	private String historyQueryName = null;
 	public SQLQueryer() {
 	}
 	//public void add(PresentationObject obj) {
@@ -68,6 +76,20 @@ public class SQLQueryer extends Block {
 		if (iwc.isLoggedOn()) {
 			
 			String queryString = iwc.getParameter(PARAM_QUERY);
+			if(iwc.isParameterSet("clearhist")){
+				iwc.removeApplicationAttribute(HISTORY_QUERIES);
+				queryString = null;
+			}
+			historyQueryName = iwc.getParameter(PARAM_QUERY_NAME);
+			historyQueries = (Map) iwc.getApplicationAttribute(HISTORY_QUERIES);
+			if(historyQueries==null)
+				historyQueries = new HashMap();
+			
+			if(historyQueryName!=null && !"".equals(historyQueryName) ){
+				historyQueries.put(historyQueryName,queryString);
+				iwc.setApplicationAttribute(HISTORY_QUERIES,historyQueries);
+			}
+			
 			try{
 				numberOfViewedResults=Integer.parseInt(iwc.getParameter(PARAM_NUM_RECORDS));
 			}
@@ -81,20 +103,35 @@ public class SQLQueryer extends Block {
 				//form.setTarget(IWDeveloper.frameName);
 				queryPane.add(form);
 				TextArea input = new TextArea(PARAM_QUERY);
-				input.setColumns(60);
+				input.setColumns(70);
 				input.setRows(5);
 				if (queryString != null) {
 					input.setContent(queryString);
 				}
-				Table innerTable = new Table(2, 2);
+				Table innerTable = new Table(3, 3);
 				form.add(innerTable);
-				innerTable.add(input, 1, 1);
-				innerTable.add(new SubmitButton("Execute"), 1, 2);
-				innerTable.add("Max. number of results:",2,1);
+				
+				DropdownMenu drp = getSessionQueryDrop();
+				if(drp!=null){
+					innerTable.mergeCells(1,1,2,1);
+					innerTable.add(drp,1,1);
+					innerTable.setAlignment(3,1,innerTable.HORIZONTAL_ALIGN_RIGHT);
+					innerTable.add(new SubmitButton("clearhist","Clear history"),3,1);
+				}
+					
+				innerTable.mergeCells(1,2,3,2);
+				innerTable.add(input, 1, 2);
+				innerTable.add("Max. number of results:",1,3);
 				TextInput maxNumInput = new TextInput(PARAM_NUM_RECORDS);
+				maxNumInput.setLength(6);
 				maxNumInput.setValue(numberOfViewedResults);
-				innerTable.add(Text.getBreak(),2,1);
-				innerTable.add(maxNumInput,2,1);
+				//innerTable.add(Text.getBreak(),2,1);
+				innerTable.add(maxNumInput,1,3);
+				innerTable.add("Query history name",2,3);
+				TextInput sessQueryNameInput = new TextInput(PARAM_QUERY_NAME);
+				innerTable.add(sessQueryNameInput,2,3);
+				innerTable.setAlignment(3,3,innerTable.HORIZONTAL_ALIGN_RIGHT);
+				innerTable.add(new SubmitButton("Execute"), 3, 3);
 			}
 			Connection conn = getConnection(iwc);
 			if (queryString == null)
@@ -158,6 +195,8 @@ public class SQLQueryer extends Block {
 						//}
 					}
 					//out.println("</table>");
+					
+					
 				} //end if querystring
 
 			} //end of try
@@ -182,6 +221,20 @@ public class SQLQueryer extends Block {
 		}
 	}
 	
+	private DropdownMenu getSessionQueryDrop(){
+		if(historyQueries==null || historyQueries.isEmpty() )
+			return null;
+		DropdownMenu drop = new DropdownMenu("sql_sess_qry_drp");
+		drop.addMenuElement(" ","History");
+		drop.addMenuElement("select * from","Select * from");
+		Iterator iter = historyQueries.entrySet().iterator();
+		while(iter.hasNext()){
+			Map.Entry entry = (Map.Entry) iter.next();
+			drop.addMenuElement((String)entry.getValue(),(String)entry.getKey());
+		}
+		drop.setOnChange("this.form."+PARAM_QUERY+".value = this.options[this.selectedIndex].value;");
+		return drop;
+	}
 	
 	protected Connection getConnection(IWContext iwc){
 		return getConnection();
