@@ -19,6 +19,7 @@ import com.idega.presentation.ui.SubmitButton;
 import com.idega.presentation.ui.TextArea;
 import com.idega.presentation.ui.TextInput;
 import com.idega.util.LocaleUtil;
+import com.idega.util.StringHandler;
 import com.idega.versioncontrol.business.UpdateService;
 
 /**
@@ -92,8 +93,6 @@ public class Localizer extends PresentationObjectContainer {
 			table.add(new SubmitButton("Get Available Keys", subAction, "choose"), 2, 3);
 		}
 		else {
-
-			
 			
 			IWBundle iwb = iwma.getBundle(selectedBundle);
 			IWResourceBundle iwrb = iwb.getResourceBundle(LocaleUtil.getLocale(iwc.getParameter(localesParameter)));
@@ -111,6 +110,12 @@ public class Localizer extends PresentationObjectContainer {
 
 			if (stringsKey != null) {
 				String oldStringValue = iwrb.getLocalizedString(stringsKey);
+				if (this.isDeleting(iwc)) {
+					iwb.removeLocalizableString(stringsKey);
+					//boolean b = iwrb.removeString(stringsKey);
+					iwrb.storeState();
+				}
+				
 				if (areaText == null) {
 					PresentationObject area = getTextArea(areaParameter, oldStringValue);
 					table.add(area, 2, 5);
@@ -125,11 +130,6 @@ public class Localizer extends PresentationObjectContainer {
 							area = getTextArea(areaParameter, "");
 						}
 						table.add(area, 2, 5);
-					}
-					else if (this.isDeleting(iwc)) {
-						iwb.removeLocalizableString(stringsKey);
-						//boolean b = iwrb.removeString(stringsKey);
-						iwrb.storeState();
 					}
 					else {
 						PresentationObject area;
@@ -226,22 +226,33 @@ public class Localizer extends PresentationObjectContainer {
 		table.setColumnVerticalAlignment(1, "top");
 		table.setCellpadding(5);
 		String localizedString;
-		Link name;
+		Link keyLink;
+		Text stringValueText;
 		for (int i = 0; i < strings.length; i++) {
 			//name = new Text(strings[i],true,false,false);
 			//name = new Link(strings[i]);
-			name = (Link) templateLink.clone();
-			name.setText(strings[i]);
-			name.setBold();
-			name.addParameter(parameterName, strings[i]);
-			name.maintainParameter(IWDeveloper.PARAMETER_CLASS_NAME, iwc);
+			keyLink = (Link) templateLink.clone();
+			String key = strings[i];
+			localizedString = iwrb.getLocalizedString(key);
+			if (localizedString == null || StringHandler.EMPTY_STRING.equals(localizedString)){
+				String defaultString = bundle.getLocalizableStringDefaultValue(key);
+				stringValueText = new Text(defaultString);
+				stringValueText.setFontColor("#FF0000");
+				keyLink.setFontColor("#FF0000");
+			}
+			else{
+				stringValueText = new Text(localizedString);
+			}
+			
+			keyLink.setText(strings[i]);
+			keyLink.setBold();
+			keyLink.addParameter(parameterName, strings[i]);
+			keyLink.maintainParameter(IWDeveloper.PARAMETER_CLASS_NAME, iwc);
 			//name.setTarget(IWDeveloper.frameName);
 			//name.setClassToInstanciate(Localizer.class);
-			table.add(name, 1, i + 1);
-			localizedString = iwrb.getLocalizedString(strings[i]);
-			if (localizedString == null)
-				localizedString = "";
-			table.add(localizedString, 2, i + 1);
+			table.add(keyLink, 1, i + 1);
+
+			table.add(stringValueText, 2, i + 1);
 		}
 		table.setWidth(400);
 		table.setColor("#9FA9B3");
