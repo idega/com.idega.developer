@@ -153,7 +153,7 @@ public class UserTransformer extends Block{
 			java.util.ArrayList users = new java.util.ArrayList();
 			
 			java.util.HashMap groupMap = new java.util.HashMap();
-			int i = 0;
+			//int i = 0;
 			System.out.println("Starting olduser->newuser transformation");
 			while(rs.next()){
 				String[] userinfo = new String[5];
@@ -206,9 +206,9 @@ public class UserTransformer extends Block{
 				
 				String userID = userinfo[0];
 				String firstName = userinfo[1];
-				String middleName = userinfo[2];
+				//String middleName = userinfo[2];
 				String lastName = userinfo[3];
-				String userGroupID = userinfo[4];
+				//String userGroupID = userinfo[4];
 				
 				System.out.println("Checking ic_group with id "+userID);
 				checkGroupExistance.setString(1,userID);
