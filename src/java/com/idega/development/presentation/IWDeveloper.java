@@ -19,7 +19,7 @@ public class IWDeveloper extends JModuleObject {
 
   private static String localizerParameter = "iw_localizer";
   private static String localeswitcherParameter = "iw_localeswitcher";
-  private static String bundleInstallerParameter = "iw_bundleinstaller";
+  private static String bundleCreatorParameter = "iw_bundlecreator";
   private static String applicationPropertiesParameter = "iw_application_properties_setter";
   private static String bundlesPropertiesParameter = "iw_bundle_properties_setter";
   public static String actionParameter = "iw_developer_action";
@@ -39,7 +39,7 @@ public class IWDeveloper extends JModuleObject {
 
     addToMenu("Localizer",localizerParameter);
     addToMenu("Localeswitcher",localeswitcherParameter);
-    addToMenu("BundleInstaller",bundleInstallerParameter);
+    addToMenu("BundleCreator",bundleCreatorParameter);
     addToMenu("BundlePropertySetter",bundlesPropertiesParameter);
     addToMenu("ApplicationPropertySetter",applicationPropertiesParameter);
 
@@ -52,8 +52,8 @@ public class IWDeveloper extends JModuleObject {
       if(action.equals(localeswitcherParameter)){
         useDeveloperModule(new LocaleSwitcher());
       }
-      if(action.equals(this.bundleInstallerParameter)){
-        useDeveloperModule(new BundleInstaller());
+      if(action.equals(this.bundleCreatorParameter)){
+        useDeveloperModule(new BundleCreator());
       }
       if(action.equals(this.bundlesPropertiesParameter)){
         useDeveloperModule(new BundlePropertySetter());

@@ -47,6 +47,11 @@ public class Localizer extends ModuleObjectContainer {
       String selectedLocale = modinfo.getParameter(localesParameter);
       String selectedBundle = modinfo.getParameter(bundlesParameter);
 
+      Link templateLink = new Link();
+      templateLink.maintainParameter(IWDeveloper.actionParameter,modinfo);
+      templateLink.maintainParameter(localesParameter,modinfo);
+      templateLink.maintainParameter(bundlesParameter,modinfo);
+
       Form form = new Form();
       form.maintainParameter(IWDeveloper.actionParameter);
       add(form);
@@ -156,7 +161,7 @@ public class Localizer extends ModuleObjectContainer {
         table.add(stringsDrop,2,3);
         //table.add(new SubmitButton("Choose String",subAction,"choose"),3,1);
 
-        Frame.add(this.getLocalizeableStringsTable(iwma,selectedBundle,iwrb),1,2);
+        Frame.add(this.getLocalizeableStringsTable(iwma,selectedBundle,iwrb,stringsParameter,templateLink),1,2);
 
       }
 
@@ -176,23 +181,26 @@ public class Localizer extends ModuleObjectContainer {
     return down;
   }
 
-   public static Table getLocalizeableStringsTable(IWMainApplication iwma,String bundleIdentifier, IWResourceBundle iwrb){
+   public static Table getLocalizeableStringsTable(IWMainApplication iwma,String bundleIdentifier, IWResourceBundle iwrb,String parameterName,Link templateLink){
     IWBundle bundle = iwma.getBundle(bundleIdentifier);
     String[] strings = bundle.getLocalizableStrings();
     Table table = new Table(2,strings.length);
     String localizedString;
-    Text name;
+    Link name;
     for (int i = 0; i < strings.length; i++) {
-      name = new Text(strings[i],true,false,false);
+      //name = new Text(strings[i],true,false,false);
+      //name = new Link(strings[i]);
+      name = (Link)templateLink.clone();
+      name.setText(strings[i]);
+      name.setBold();
+      name.addParameter(parameterName,strings[i]);
       table.add(name,1,i+1);
       localizedString = iwrb.getLocalizedString(strings[i]);
       if (localizedString==null) localizedString = "";
       table.add(localizedString ,2,i+1);
     }
-
     table.setWidth(300);
     table.setColor("#9FA9B3");
-
     return table;
   }
 
