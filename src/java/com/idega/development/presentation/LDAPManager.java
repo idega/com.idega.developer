@@ -371,6 +371,7 @@ public class LDAPManager extends Block implements LDAPReplicationConstants,Embed
 		
 		Form form = new Form();
 		form.maintainParameter(IWDeveloper.PARAMETER_CLASS_NAME);
+		
 		Table buttons = new Table(4,1);
 		SubmitButton newRep = new SubmitButton(PARAM_NEW_REPLICATION_SETTINGS,iwrb.getLocalizedString("LDAPMANAGER.new.replication.settings","new replicator"));
 		SubmitButton startAll = new SubmitButton(PARAM_START_ALL_REPLICATORS,iwrb.getLocalizedString("LDAPMANAGER.start.all.replicators","start all active replicators"));
@@ -378,8 +379,13 @@ public class LDAPManager extends Block implements LDAPReplicationConstants,Embed
 		buttons.add(newRep,1,1);
 		buttons.add(startAll,3,1);
 		buttons.add(stopAll,4,1);
+		
+		Text text = new Text(iwrb.getLocalizedString("LDAPMANAGER.replication.scheduler.help.text","<b>Scheduler timer string format (-1 means every day/week/month/year...) :</b><br><i>\"minute (-1 or 0-59), hour (-1 or 0-23), day of month (-1 or 1-31), month (-1 or 0-11), day Of Week (-1 or 1-7) ,year (-1 or xxxx)\"</i>"));
+
 		form.add(buttons);
 		add(form);
+		addBreak();
+		add(text);
 		addBreak();
 		
 		addSettings(iwc,PARAM_SAVE_REPLICATION_SETTINGS, repProps,null,editable,invisible,checkBoxes,splitter,specialIOMap,false);
