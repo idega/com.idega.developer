@@ -43,7 +43,6 @@ public class IWDeveloper extends com.idega.jmodule.object.app.IWApplication {
   public static class IWDevPage extends com.idega.idegaweb.presentation.IWAdminWindow{
 
     public IWDevPage(){
-      setMerged();
     }
 
     private Table mainTable;
@@ -65,7 +64,7 @@ public class IWDeveloper extends com.idega.jmodule.object.app.IWApplication {
         mainTable.setVerticalAlignment(1,1,"top");
         mainTable.setVerticalAlignment(2,1,"top");
         mainTable.setColor(IWConstants.DEFAULT_LIGHT_INTERFACE_COLOR);
-      addBottom(mainTable);
+      add(mainTable);
 
       IFrame menuFrame = new IFrame("menu",DeveloperList.class);
         menuFrame.setWidth(200);
