@@ -8,7 +8,7 @@ import com.idega.business.IBOLookup;
 import com.idega.data.IDOContainer;
 import com.idega.idegaweb.IWMainApplication;
 import com.idega.idegaweb.IWBundle;
-import com.idega.util.idegaTimestamp;
+import com.idega.util.IWTimeStamp;
 import java.io.File;
 /**
  * Title:        idega Framework
