@@ -95,11 +95,18 @@ public class Localizer extends PresentationObjectContainer {
 		}
 		else {
 
+			
+			
 			IWBundle iwb = iwma.getBundle(selectedBundle);
 			IWResourceBundle iwrb = iwb.getResourceBundle(LocaleUtil.getLocale(iwc.getParameter(localesParameter)));
 			String stringsKey = iwc.getParameter(stringsParameter);
 			String areaText = iwc.getParameter(areaParameter);
 			String newStringsKey = iwc.getParameter(this.newStringKeyParameter);
+			
+			if (this.isCommitting(iwc)) {
+				this.commitLocalizationFile(iwc);
+			}
+			
 			if (stringsKey == null && newStringsKey != null) {
 				stringsKey = newStringsKey;
 			}
@@ -125,9 +132,6 @@ public class Localizer extends PresentationObjectContainer {
 						iwb.removeLocalizableString(stringsKey);
 						//boolean b = iwrb.removeString(stringsKey);
 						iwrb.storeState();
-					}
-					else if (this.isCommitting(iwc)) {
-							this.commitLocalizationFile(iwc);
 					}
 					else {
 						PresentationObject area;
