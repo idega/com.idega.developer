@@ -67,9 +67,26 @@ public class BundleComponentFactory {
 				lookup.put(type,comp);
 			}
 		} catch (Exception e) {
+			createLookupTableOld();
 			e.printStackTrace();
 		}
-
+	}
+	
+	private void createLookupTableOld(){
+		BundleComponent comp = new IWBlockComponent();
+		lookup.put(comp.type(),comp);
+		comp = new IWElementComponent();
+		lookup.put(comp.type(),comp);
+		comp = new IWApplicationComponent();
+		lookup.put(comp.type(),comp);
+		comp = new IWAppCompComponent();
+		lookup.put(comp.type(),comp);
+		comp = new IWDataComponent();
+		lookup.put(comp.type(),comp);
+		comp = new IWHomeComponent();
+		lookup.put(comp.type(),comp);
+		comp = new IWHandlerComponent();
+		lookup.put(comp.type(),comp);
 	}
 	
 }
