@@ -41,6 +41,7 @@ private IWBundle iwb;
     addToList(ApplicationStatus.class,image,"Application Status",IWDeveloper.frameName);
     addToList(Caches.class,image,"Caches",IWDeveloper.frameName);
     addToList(Logs.class,image,"Logs",IWDeveloper.frameName);
+    addToList(Versions.class,image,"Versions",IWDeveloper.frameName);
     setZebraColors("#B0B29D","#B0B29D");
   }
 
