@@ -6,9 +6,14 @@
  */
 package com.idega.development.presentation.comp;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import com.idega.core.data.ICObject;
+import com.idega.core.data.ICObjectType;
+import com.idega.core.data.ICObjectTypeHome;
+import com.idega.data.IDOLookup;
 
 /**
  * <p>Title: BundleComponentFactory</p>
@@ -51,20 +56,20 @@ public class BundleComponentFactory {
 	}
 	
 	private void createLookupTable(){
-		BundleComponent comp = new IWBlockComponent();
-		lookup.put(comp.type(),comp);
-		comp = new IWElementComponent();
-		lookup.put(comp.type(),comp);
-		comp = new IWApplicationComponent();
-		lookup.put(comp.type(),comp);
-		comp = new IWAppCompComponent();
-		lookup.put(comp.type(),comp);
-		comp = new IWDataComponent();
-		lookup.put(comp.type(),comp);
-		comp = new IWHomeComponent();
-		lookup.put(comp.type(),comp);
-		comp = new IWHandlerComponent();
-		lookup.put(comp.type(),comp);
+		try {
+			ICObjectTypeHome home = (ICObjectTypeHome) IDOLookup.getHome(ICObjectType.class);
+			Collection allObjectTypes = home.findAll();
+			Iterator iter = allObjectTypes.iterator();
+			String type;
+			while (iter.hasNext()) {
+				type = (String) iter.next();
+				BundleComponent comp = home.findByPrimaryKey(type);
+				lookup.put(type,comp);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 	}
 	
 }
