@@ -27,6 +27,7 @@ public class ApplicationPropertySetter extends Block {
   private static final String PROPERTY_KEY_NAME_PARAMETER="iw_a_p_s_k";
   private static final String PROPERTY_VALUE_PARAMETER="iw_a_p_s_v";
   private static final String ENTITY_AUTOCREATE_PARAMETER="iw_e_a_c_p";
+  private static final String AUTOCREATE_STRINGS_PARAMETER="iw_a_c_s_p";
   private static final String DEBUG_PARAMETER="iw_d_p";
 
 
@@ -44,11 +45,11 @@ public class ApplicationPropertySetter extends Block {
       Form form = new Form();
       form.maintainParameter(IWDeveloper.actionParameter);
       add(form);
-      Table table = new Table(2,6);
+      Table table = new Table(2,7);
 	table.setCellpadding(5);
 	table.mergeCells(1,1,2,1);
-	table.mergeCells(1,6,2,6);
-	table.setAlignment(1,6,"right");
+	table.mergeCells(1,7,2,7);
+	table.setAlignment(1,7,"right");
       form.add(table);
       TextInput name = new TextInput(this.PROPERTY_KEY_NAME_PARAMETER);
       TextInput value = new TextInput(this.PROPERTY_VALUE_PARAMETER);
@@ -65,14 +66,20 @@ public class ApplicationPropertySetter extends Block {
       }
       table.add(IWDeveloper.getText("Autocreate Data Entities:"),1,4);
       table.add(box,2,4);
+      CheckBox box3 = new CheckBox(AUTOCREATE_STRINGS_PARAMETER);
+      if(iwma.getSettings().isAutoCreateStringsActive()){
+       box3.setChecked(true);
+      }
+      table.add(IWDeveloper.getText("Autocreate Localized Strings:"),1,5);
+      table.add(box3,2,5);
       CheckBox box2 = new CheckBox(DEBUG_PARAMETER);
       if(iwma.getSettings().getIfDebug()){
        box2.setChecked(true);
       }
-      table.add(IWDeveloper.getText("Debug:"),1,5);
-      table.add(box2,2,5);
-      table.add(new SubmitButton("Save",APPLICATION_SETTER_PARAMETER,"save"),1,6);
-      table.add(new SubmitButton("Store Application state",APPLICATION_SETTER_PARAMETER,"store"),1,6);
+      table.add(IWDeveloper.getText("Debug:"),1,6);
+      table.add(box2,2,6);
+      table.add(new SubmitButton("Save",APPLICATION_SETTER_PARAMETER,"save"),1,7);
+      table.add(new SubmitButton("Store Application state",APPLICATION_SETTER_PARAMETER,"store"),1,7);
 
       add(getParametersTable(iwma));
   }
@@ -87,6 +94,7 @@ public class ApplicationPropertySetter extends Block {
       String setterState = iwc.getParameter(APPLICATION_SETTER_PARAMETER);
       if(setterState!=null){
 	String entityAutoCreate = iwc.getParameter(ENTITY_AUTOCREATE_PARAMETER);
+	String autoCreateStrings = iwc.getParameter(AUTOCREATE_STRINGS_PARAMETER);
 	String debug = iwc.getParameter(DEBUG_PARAMETER);
 	String KeyName = iwc.getParameter(this.PROPERTY_KEY_NAME_PARAMETER);
 	String KeyValue = iwc.getParameter(this.PROPERTY_VALUE_PARAMETER);
@@ -97,6 +105,11 @@ public class ApplicationPropertySetter extends Block {
 	}
 	else
 	  iwc.getApplication().getSettings().setEntityAutoCreation(false);
+	if(autoCreateStrings!=null){
+	  iwc.getApplication().getSettings().setAutoCreateStrings(true);
+	}
+	else
+	  iwc.getApplication().getSettings().setAutoCreateStrings(false);
 	if(setterState.equalsIgnoreCase("store")){
 	  iwc.getApplication().storeStatus();
 	}
