@@ -39,6 +39,7 @@ private IWBundle iwb;
     addToList(DBPoolStatusViewer.class,image,"DBPool Status Viewer",IWDeveloper.frameName);
     addToList(SQLQueryer.class,image,"SQL Queryer",IWDeveloper.frameName);
     addToList(ApplicationStatus.class,image,"Application Status",IWDeveloper.frameName);
+	addToList(Caches.class,image,"Caches",IWDeveloper.frameName);
 
     setZebraColors("#B0B29D","#B0B29D");
   }
