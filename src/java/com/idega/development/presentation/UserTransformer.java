@@ -118,6 +118,7 @@ public class UserTransformer extends Block{
 			user = userBiz.insertUser("testuserfn", "testusermn", "testuserln", "testuserdn", "testuser for userTransformer", new Integer(0), null, new Integer(-1));
 		} catch(Exception e) {
 			// try using hardcoded id for group that exists
+			e.printStackTrace();
 			try {
 				user = userBiz.insertUser("testuserfn", "testusermn", "testuserln", "testuserdn", "testuser for userTransformer", new Integer(0), null, new Integer(24));
 			} catch(Exception e2) {
@@ -191,7 +192,7 @@ public class UserTransformer extends Block{
 		String deleteUserGroupRelationSQL = " delete from ic_group_tree where child_ic_group_id = ?";
 		String deleteUserGroupRelationSQL2 = " delete from ic_group_relation where related_ic_group_id = ?";
 		String deleteUserGroupSQL = "delete from ic_group where ic_group_id = ?";
-		String insertGroupSQL 	= "insert into ic_group (ic_group_id,group_type,name,extra_info) values (?,'ic_user_representative',?,'Fixed "+df.format(new Date())+"')";
+		String insertGroupSQL = "insert into ic_group (ic_group_id,group_type,name,extra_info) values (?,'ic_user_representative',?,'Fixed "+df.format(new Date())+"')";
 		String insertGroupRelationSQL = "insert into ic_group_relation(IC_GROUP_ID,RELATIONSHIP_TYPE,INITIATION_DATE ,RELATED_IC_GROUP_ID ,GROUP_RELATION_STATUS ,INIT_MODIFICATION_DATE) values (?,'GROUP_PARENT', '"+com.idega.util.IWTimestamp.RightNow().toSQLString()+"',?,'ST_ACTIVE','"+com.idega.util.IWTimestamp.RightNow().toSQLString()+"')";
 		if (sap) {
 			insertGroupRelationSQL = "insert into ic_group_relation(IC_GROUP_ID,RELATIONSHIP_TYPE,INITIATION_DATE ,RELATED_IC_GROUP_ID ,GROUP_RELATION_STATUS ,INIT_MODIFICATION_DATE,IC_GROUP_RELATION_ID) values (?,'GROUP_PARENT', '"+com.idega.util.IWTimestamp.RightNow().toSQLString()+"',?,'ST_ACTIVE','"+com.idega.util.IWTimestamp.RightNow().toSQLString()+"', ?)";
@@ -249,8 +250,12 @@ public class UserTransformer extends Block{
 			GroupHome gHome = (GroupHome) IDOLookup.getHome(Group.class);
 			while (rs2.next()) {
 				Group g = gHome.findByPrimaryKey(new Integer(rs2.getString("ic_group_id")));
-				System.out.println("adding groupID = "+g.getPrimaryKey()+" to domain = "+this.getIWApplicationContext().getDomain().getDomainName());
-				gBus.addGroupUnderDomainRoot(this.getIWApplicationContext().getDomain(),g);
+				try {
+					gBus.addGroupUnderDomainRoot(this.getIWApplicationContext().getDomain(),g);
+					System.out.println("adding groupID = "+g.getPrimaryKey()+" to domain = "+this.getIWApplicationContext().getDomain().getDomainName());
+				} catch(Exception e) {
+					e.printStackTrace();
+				}
 				fixGroupRelatiosRecursive(g, insertGroupRelationStatement, groupRelationNextVal, sap);
 			}
 			rs2.close();
