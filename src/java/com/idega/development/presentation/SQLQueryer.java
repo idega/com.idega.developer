@@ -188,6 +188,7 @@ public class SQLQueryer extends Block {
 				DropdownMenu dumpTypes = new DropdownMenu(DUMP_TYPE);
 				dumpTypes.addMenuElement(SQLDataDumper.TYPE_CSV,"CSV");
 				dumpTypes.addMenuElement(SQLDataDumper.TYPE_SQL_INSERT,"SQL inserts");
+				dumpTypes.addMenuElement(SQLDataDumper.TYPE_SQL_UPDATE,"SQL updates");
 				dumpTypes.keepStatusOnAction(true);
 				innerTable.add(dumpFileNameInput,1,4);
 				innerTable.add(dumpTypes,1,4);
