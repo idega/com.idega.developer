@@ -198,7 +198,7 @@ public class ComponentManager extends Block {
               IWProperty prop = methodsIter.nextProperty();
 
               String identifier = IBPropertyHandler.getInstance().getMethodIdentifier(prop);
-              String description = IBPropertyHandler.getInstance().getMethodDescription(prop);
+              String description = IBPropertyHandler.getInstance().getMethodDescription(prop,iwc);
               Method method = null;
               try{
                 method = MethodFinder.getInstance().getMethod(identifier,selectedClass);
