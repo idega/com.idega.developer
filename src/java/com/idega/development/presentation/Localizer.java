@@ -154,7 +154,6 @@ public class Localizer extends ModuleObjectContainer {
 
         //table.add(new SubmitButton("Select Locale",subAction,"select"),2,1);
         table.add("String",1,3);
-        table.add("New String key",1,4);
         stringsDrop = this.getLocalizeableStringsMenu(iwma,selectedBundle,stringsParameter);
         stringsDrop.keepStatusOnAction();
         stringsDrop.setToSubmit();
@@ -164,10 +163,6 @@ public class Localizer extends ModuleObjectContainer {
         Frame.add(this.getLocalizeableStringsTable(iwma,selectedBundle,iwrb,stringsParameter,templateLink),1,2);
 
       }
-
-
-
-
   }
 
   public static DropdownMenu getAvailableLocalesDropdown(IWMainApplication iwma,String name){
