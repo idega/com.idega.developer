@@ -216,8 +216,8 @@ public class NewComponentPropertyWindow extends Window {
       System.out.println("primaryKeys["+i+"]: "+primaryKeys[i]);
     }
 
-
     propertySave(iwb,component,method,description,multivalued,handlers,descriptions,primaryKeys);
+
   }
 
 
@@ -269,7 +269,19 @@ public class NewComponentPropertyWindow extends Window {
 
 
   public void propertySave(IWBundle iwb,String componentIdentifier,String methodIdentifier,String description,boolean isMultivalued,String[] handlers, String[] descriptions,boolean[] primaryKeys)throws Exception{
-    IBPropertyHandler.getInstance().saveNewProperty(iwb,componentIdentifier,methodIdentifier,description,isMultivalued,handlers,descriptions,primaryKeys);
+    boolean save = false;
+    try{
+      save =IBPropertyHandler.getInstance().saveNewProperty(iwb,componentIdentifier,methodIdentifier,description,isMultivalued,handlers,descriptions,primaryKeys);
+    }
+    catch(Exception e){
+      e.printStackTrace();
+    }
+    if(save){
+      add("Property saved successfully");
+    }
+    else{
+      add("Property already exists, please delete before creating again");
+    }
   }
 
   public TextInput getDescriptionInput(int index){
