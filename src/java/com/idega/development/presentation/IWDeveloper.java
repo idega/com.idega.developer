@@ -51,8 +51,6 @@ public class IWDeveloper extends com.idega.jmodule.object.app.IWApplication {
     private int count = 1;
 
     public void main(ModuleInfo modinfo)throws Exception{
-      super.main(modinfo);
-
       mainTable = new Table(2,1);
         mainTable.setHeight("100%");
         mainTable.setWidth("100%");

@@ -54,16 +54,15 @@ public class ComponentManager extends JModuleObject {
       bundles.keepStatusOnAction();
       bundles.setToSubmit();
 
-      /*Form form = new Form();
-      form.maintainParameter(IWDeveloper.actionParameter);
-      add(form);*/
+      Form form = new Form();
+      add(form);
 
       Table table = new Table();
         table.setCellpadding(5);
-        table.setBorder(1);
+        //table.setBorder(1);
       add(Text.getBreak());
       add(Text.getBreak());
-      add(table);
+      form.add(table);
 
       int yindex = 1;
 
@@ -97,7 +96,7 @@ public class ComponentManager extends JModuleObject {
         table.add(IWDeveloper.getText("Component:"),1,yindex);
         table.add(componentsDrop,2,yindex);
         SubmitButton button2 = new SubmitButton("Select");
-        table.add(button2,2,yindex);
+        table.add(button2,3,yindex);
 
         String selectedComponentKey = modinfo.getParameter(CLASS_PARAMETER);
         if(selectedComponentKey!=null){
@@ -141,7 +140,7 @@ public class ComponentManager extends JModuleObject {
           table.add(IWDeveloper.getText("Method:"),1,yindex);
           table.add(methodsDrop,2,yindex);
           SubmitButton button3 = new SubmitButton("Select");
-          table.add(button3,2,yindex);
+          table.add(button3,3,yindex);
 
 
           String selectedMethodIdentifier = modinfo.getParameter(METHOD_PARAMETER);
@@ -151,7 +150,7 @@ public class ComponentManager extends JModuleObject {
               table.add(IWDeveloper.getText("MethodDescription:"),1,yindex);
               table.add(methodDesc,2,yindex);
               SubmitButton button4 = new SubmitButton("Register Method");
-              table.add(button4,2,yindex);
+              table.add(button4,3,yindex);
 
               String selectedMethodDesc = modinfo.getParameter(METHOD_DESCRIPTION_PARAMETER);
               if(selectedMethodDesc!=null){
@@ -173,6 +172,7 @@ public class ComponentManager extends JModuleObject {
             CheckBox deleteBox = new CheckBox(DELETE_CHECKBOX_NAME);
             IWPropertyListIterator methodsIter = methodsList.getIWPropertyListIterator();
             yindex++;
+            yindex++;
             table.add(IWDeveloper.getText("Remove?"),1,yindex);
             while (methodsIter.hasNext()) {
               yindex++;
@@ -188,10 +188,10 @@ public class ComponentManager extends JModuleObject {
                 e.printStackTrace();
               }
 
-              table.add(description,2,yindex);
-              table.add(identifier,3,yindex);
+              table.add(getSmallText(description),2,yindex);
+              table.add(getSmallText(identifier),3,yindex);
               if(method!=null){
-                table.add(method.toString(),4,yindex);
+                table.add(getSmallText(method.toString()),4,yindex);
               }
               CheckBox rowBox = (CheckBox)deleteBox.clone();
               rowBox.setContent(identifier);
@@ -204,6 +204,8 @@ public class ComponentManager extends JModuleObject {
         }
 
       }
+
+      table.setWidth(1,"160");
 
 
   }
@@ -221,5 +223,11 @@ public class ComponentManager extends JModuleObject {
 
   }
 
+  private Text getSmallText(String text) {
+    Text T = new Text(text);
+      T.setFontFace(Text.FONT_FACE_VERDANA);
+      T.setFontSize(Text.FONT_SIZE_7_HTML_1);
+    return T;
+  }
 
 }
