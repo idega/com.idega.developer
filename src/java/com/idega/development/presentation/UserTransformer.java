@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.util.Date;
 import com.idega.core.accesscontrol.business.AccessController;
+import com.idega.core.user.business.UserBusiness;
 import com.idega.data.DatastoreInterface;
 import com.idega.data.IDOLookup;
 import com.idega.data.SapDBDatastoreInterface;
@@ -34,6 +35,9 @@ import com.idega.util.IWTimestamp;
  * UserTransformer transforms old users to new users
  */
 public class UserTransformer extends Block{
+	private static final String PARAM_NAME_TRANSFORM = "transform_old_users";
+	private static final String PARAM_NAME_SHOW_OLD = "show_old_users";
+	private static final String PARAM_NAME_CREATE_OLD = "create_old";
 	
 	DateFormat df;
 	String currentDate = null;
@@ -52,10 +56,12 @@ public class UserTransformer extends Block{
 		Table table = new Table();
 		table.add("Tranforms selected users from old user to new user",1,row++);
 		table.add(ta,1,row++);
-		SubmitButton fix = new SubmitButton("Transform users", "transform_old_users", "true");
-		SubmitButton show = new SubmitButton("Show users", "show_old_users", "true");
+		SubmitButton fix = new SubmitButton("Transform users", PARAM_NAME_TRANSFORM, "true");
+		SubmitButton show = new SubmitButton("Show users", PARAM_NAME_SHOW_OLD, "true");
+		SubmitButton createTestUser = new SubmitButton("Create Test User", PARAM_NAME_CREATE_OLD, "true");
 		table.add(show,1,row);
 		table.add(fix,1,row);
+		table.add(createTestUser,1,row);
 		row++;
 		CheckBox requireGroupCreation = new CheckBox("req_grp_crtn","true");
 		table.add(requireGroupCreation,1,row);
@@ -67,17 +73,46 @@ public class UserTransformer extends Block{
 		BusyBar busyBar = new BusyBar("fix_busy");
 		busyBar.addBusyObject(fix);
 		busyBar.addBusyObject(show);
+		busyBar.addBusyObject(createTestUser);
 		table.add(busyBar,1,row++);
 		table.add("DEFAULT SQL: "+getDefaultUserSelectSQL(),1,row++);
 		table.add("WARNING: Only select fields  \"ic_user_id, first_name,middle_name,last_name,user_representative\" in same order",1,row++);
 		form.add(table);
 		add(form);
-		if(iwc.isParameterSet("transform_old_users")){
+		if(iwc.isParameterSet(PARAM_NAME_TRANSFORM)){
 			runFix(iwc.getParameter("user_select_sql"),iwc.isParameterSet("req_grp_crtn"), iwc.isParameterSet("reg_mv_grp"));
 			showUsers(sql);
 		}
-		if(iwc.isParameterSet("show_old_users")){
+		if(iwc.isParameterSet(PARAM_NAME_SHOW_OLD)){
 			showUsers(sql);
+		}
+		if(iwc.isParameterSet(PARAM_NAME_CREATE_OLD)) {
+			createOldUser(iwc);
+			showUsers(sql);
+		}
+	}
+	
+	public void createOldUser(IWContext iwc) {
+		Object objUserSysAtt = iwc.getApplicationSettings().getProperty("IW_USER_SYSTEM");
+		boolean isOldSystemUsed = objUserSysAtt != null && objUserSysAtt.toString().equals("OLD");
+		if(!isOldSystemUsed) {
+			addText("Creating an old user can only be done if the application property \"IW_USER_SYSTEM\" is set to \"OLD\"");
+			return;
+		}
+		UserBusiness userBiz = UserBusiness.getInstance();
+		com.idega.core.user.data.User user = null;
+		try {
+			user = userBiz.insertUser("testuserfn", "testusermn", "testuserln", "testuserdn", "testuser for userTransformer", new Integer(0), null, new Integer(-1));
+		} catch(Exception e) {
+			// try using hardcoded id for group that exists
+			try {
+				user = userBiz.insertUser("testuserfn", "testusermn", "testuserln", "testuserdn", "testuser for userTransformer", new Integer(0), null, new Integer(24));
+			} catch(Exception e2) {
+				e2.printStackTrace();
+			}
+		}
+		if(user!=null) {
+			addText("Added user \"" + user.getDisplayName() + "\"");
 		}
 	}
 	
@@ -155,7 +190,7 @@ public class UserTransformer extends Block{
 		String updateGroupAddressSQL = "update ic_group_address set ic_group_id = ? where ic_group_id = ?";
 		String updateGroupEmailSQL = "update ic_group_email set ic_group_id = ? where ic_group_id = ?";
 		String updateGroupPhoneSQL = "update ic_group_phone set ic_group_id = ? where ic_group_id = ?";
-		String updateGroupPermissionSQL = "update ic_permission set ic_group_id = ? where ic_group_id = ?";
+		String updateGroupPermissionSQL = "update ic_permission set group_id = ? where group_id = ?";
 		String updateGroupPermissionSQL2 = "update ic_permission set PERMISSION_CONTEXT_VALUE = ? where PERMISSION_CONTEXT_VALUE = ? and PERMISSION_CONTEXT_TYPE = '"+AccessController.CATEGORY_STRING_GROUP_ID+"'";
 
 		String groupRelationNextValSQL = "select ic_group_relation_seq.NEXTVAL AS NEXTID FROM DUAL";
