@@ -24,7 +24,7 @@ private IWBundle iwb;
 
   public void main(IWContext iwc) {
     iwb = getBundle(iwc);
-    setLinkStyle("font-family: Verdana, Arial, sans-serif; font-weight: bold; font-size: 7pt; text-decoration: none;");
+    setLinkStyle("font-family: Verdana, Arial, sans-serif; font-weight: bold; font-size: 7pt; text-decoration: none;color:#000000;");
 
     Image image = iwb.getImage("/developer/listbutton.gif","",13,13);
 
