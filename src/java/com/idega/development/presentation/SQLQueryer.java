@@ -75,7 +75,8 @@ public class SQLQueryer extends Block {
 				queryPane = new FramePane("Query");
 				super.add(queryPane);
 				Form form = new Form();
-				form.setTarget(IWDeveloper.frameName);
+				form.maintainParameter(IWDeveloper.PARAMETER_CLASS_NAME);
+				//form.setTarget(IWDeveloper.frameName);
 				queryPane.add(form);
 				TextArea input = new TextArea(PARAM_QUERY);
 				input.setColumns(60);

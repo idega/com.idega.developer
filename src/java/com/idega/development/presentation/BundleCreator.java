@@ -39,7 +39,8 @@ public class BundleCreator extends Block {
 
 		Form form = new Form();
 		form.maintainParameter(IWDeveloper.actionParameter);
-		form.setTarget(IWDeveloper.frameName);
+		form.maintainParameter(IWDeveloper.PARAMETER_CLASS_NAME);
+		//form.setTarget(IWDeveloper.frameName);
 		add(form);
 		Table table = new Table(2, 4);
 		table.setAlignment(2, 3, "right");

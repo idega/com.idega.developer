@@ -3,6 +3,7 @@ package com.idega.development.presentation;
 import com.idega.presentation.FrameList;
 import com.idega.presentation.IWContext;
 import com.idega.presentation.Image;
+import com.idega.presentation.text.Link;
 import com.idega.idegaweb.IWBundle;
 
 /**
@@ -18,6 +19,7 @@ public class DeveloperList extends FrameList {
 
 private final static String IW_BUNDLE_IDENTIFIER="com.idega.core";
 private IWBundle iwb;
+private static String styleName = "iwdClass";
 
   public DeveloperList() {
   }
@@ -25,30 +27,35 @@ private IWBundle iwb;
   public void main(IWContext iwc) {
     iwb = getBundle(iwc);
     setLinkStyle("font-family: Verdana, Arial, sans-serif; font-weight: bold; font-size: 11px; text-decoration: none;color:#000000;");
+		getParentPage().setStyleDefinition("."+styleName, "font-family: Verdana, Arial, sans-serif; font-weight: bold; font-size: 10px; text-decoration: none;color:#000000;");
+		getParentPage().setStyleDefinition("."+styleName+":hover", "font-family: Verdana, Arial, sans-serif; font-weight: bold; font-size: 10px; text-decoration: none;color:#999999;");
 
     Image image = iwb.getImage("/developer/listbutton.gif","",13,13);
 
-    addToList(Localizer.class,image,"Localizer",IWDeveloper.frameName);
-    addToList(LocaleSwitcher.class,image,"Locale Switcher",IWDeveloper.frameName);
-    addToList(LocaleSetter.class,image,"Locale Setter",IWDeveloper.frameName);
-    addToList(BundleCreator.class,image,"Bundle Creator",IWDeveloper.frameName);
-    addToList(BundlePropertySetter.class,image,"Bundle Property Setter",IWDeveloper.frameName);
-    addToList(BundleComponentManager.class,image,"Bundle Components",IWDeveloper.frameName);
-    addToList(ComponentManager.class,image,"Component Manager",IWDeveloper.frameName);
-    addToList(ApplicationPropertySetter.class,image,"Application Property Setter",IWDeveloper.frameName);
-    addToList(DBPoolStatusViewer.class,image,"DBPool Status Viewer",IWDeveloper.frameName);
-    addToList(SQLQueryer.class,image,"SQL Queryer",IWDeveloper.frameName);
-    addToList(ApplicationStatus.class,image,"Application Status",IWDeveloper.frameName);
-    addToList(Caches.class,image,"Caches",IWDeveloper.frameName);
-    addToList(Logs.class,image,"Logs",IWDeveloper.frameName);
-    addToList(Versions.class,image,"Versions",IWDeveloper.frameName);
+    addToList(getClassLink(iwc, Localizer.class,"Localizer"),image);
+    addToList(getClassLink(iwc, LocaleSwitcher.class,"Locale Switcher"),image);
+    addToList(getClassLink(iwc, LocaleSetter.class,"Locale Setter"),image);
+    addToList(getClassLink(iwc, BundleCreator.class,"Bundle Creator"),image);
+    addToList(getClassLink(iwc, BundlePropertySetter.class,"Bundle Property Setter"),image);
+    addToList(getClassLink(iwc, BundleComponentManager.class,"Bundle Components"),image);
+    addToList(getClassLink(iwc, ComponentManager.class,"Component Manager"),image);
+    addToList(getClassLink(iwc, ApplicationPropertySetter.class,"Application Property Setter"),image);
+    addToList(getClassLink(iwc, DBPoolStatusViewer.class,"DBPool Status Viewer"),image);
+    addToList(getClassLink(iwc, SQLQueryer.class,"SQL Queryer"),image);
+    addToList(getClassLink(iwc, ApplicationStatus.class,"Application Status"),image);
+    addToList(getClassLink(iwc, Caches.class,"Caches"),image);
+    addToList(getClassLink(iwc, Logs.class,"Logs"),image);
+    addToList(getClassLink(iwc, Versions.class,"Versions"),image);
     setZebraColors("#B0B29D","#B0B29D");
   }
 
-  private String getClassName(Class listClass) {
-    return listClass.getName().substring(listClass.getName().lastIndexOf(".")+1);
+  private Link getClassLink(IWContext iwc, Class linkClass, String linkName) {
+  	Link link = new Link(linkName);
+  	link.setStyleClass(styleName);
+  	link.addParameter(IWDeveloper.PARAMETER_CLASS_NAME, iwc.getApplication().getEncryptedClassName(linkClass));
+  	return link;
   }
-
+  
   public String getBundleIdentifier(){
     return IW_BUNDLE_IDENTIFIER;
   }

@@ -26,8 +26,9 @@ public class Logs extends Block {
 		add(IWDeveloper.getTitleTable(this.getClass()));
 		getParentPage().setBackgroundColor("#FFFFFF");
 		Form form = new Form();
+		form.maintainParameter(IWDeveloper.PARAMETER_CLASS_NAME);
 		form.maintainParameter(IWDeveloper.actionParameter);
-		form.setTarget(IWDeveloper.frameName);
+		//form.setTarget(IWDeveloper.frameName);
 		add(form);
 		Table table = new Table(1, 2);
 		table.setHeight(1, 1, "30");

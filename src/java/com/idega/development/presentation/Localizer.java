@@ -61,11 +61,13 @@ public class Localizer extends PresentationObjectContainer {
 		templateLink.maintainParameter(IWDeveloper.actionParameter, iwc);
 		templateLink.maintainParameter(localesParameter, iwc);
 		templateLink.maintainParameter(bundlesParameter, iwc);
-		templateLink.setTarget(IWDeveloper.frameName);
+		templateLink.maintainParameter(IWDeveloper.PARAMETER_CLASS_NAME, iwc);
+		//templateLink.setTarget(IWDeveloper.frameName);
 
 		Form form = new Form();
 		form.maintainParameter(IWDeveloper.actionParameter);
-		form.setTarget(IWDeveloper.frameName);
+		form.maintainParameter(IWDeveloper.PARAMETER_CLASS_NAME);
+		//form.setTarget(IWDeveloper.frameName);
 		add(form);
 		Table Frame = new Table();
 		Table table = new Table(2, 6);
@@ -185,7 +187,7 @@ public class Localizer extends PresentationObjectContainer {
 
 			Frame.add(IWDeveloper.getText("Available Strings:"), 1, 3);
 			Frame.add(Text.getBreak(), 1, 3);
-			Frame.add(this.getLocalizeableStringsTable(iwma, selectedBundle, iwrb, stringsParameter, templateLink), 1, 3);
+			Frame.add(this.getLocalizeableStringsTable(iwc, iwma, selectedBundle, iwrb, stringsParameter, templateLink), 1, 3);
 
 		}
 	}
@@ -235,7 +237,7 @@ public class Localizer extends PresentationObjectContainer {
 		return down;
 	}
 
-	public static Table getLocalizeableStringsTable(IWMainApplication iwma, String bundleIdentifier, IWResourceBundle iwrb, String parameterName, Link templateLink) {
+	public static Table getLocalizeableStringsTable(IWContext iwc, IWMainApplication iwma, String bundleIdentifier, IWResourceBundle iwrb, String parameterName, Link templateLink) {
 		IWBundle bundle = iwma.getBundle(bundleIdentifier);
 		String[] strings = bundle.getLocalizableStrings();
 		Table table = new Table(2, strings.length);
@@ -250,7 +252,8 @@ public class Localizer extends PresentationObjectContainer {
 			name.setText(strings[i]);
 			name.setBold();
 			name.addParameter(parameterName, strings[i]);
-			name.setTarget(IWDeveloper.frameName);
+			name.maintainParameter(IWDeveloper.PARAMETER_CLASS_NAME, iwc);
+			//name.setTarget(IWDeveloper.frameName);
 			name.setClassToInstanciate(Localizer.class);
 			table.add(name, 1, i + 1);
 			localizedString = iwrb.getLocalizedString(strings[i]);

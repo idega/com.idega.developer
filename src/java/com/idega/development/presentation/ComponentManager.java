@@ -56,7 +56,8 @@ public class ComponentManager extends Block {
 		bundles.setToSubmit();
 
 		Form form = new Form();
-		form.setTarget(IWDeveloper.frameName);
+		form.maintainParameter(IWDeveloper.PARAMETER_CLASS_NAME);
+		//form.setTarget(IWDeveloper.frameName);
 		add(form);
 
 		Table table = new Table();

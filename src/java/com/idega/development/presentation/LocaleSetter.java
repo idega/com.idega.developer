@@ -46,7 +46,8 @@ public class LocaleSetter extends PresentationObjectContainer {
 		ICLocale icDefLocale = ICLocaleBusiness.getICLocale(defLocale);
 
 		Form form = new Form();
-		form.setTarget(IWDeveloper.frameName);
+		form.maintainParameter(IWDeveloper.PARAMETER_CLASS_NAME);
+		//form.setTarget(IWDeveloper.frameName);
 		Table T = new Table();
 		T.add(IWDeveloper.getText("Use"), 1, 1);
 		T.add(IWDeveloper.getText("Country"), 2, 1);

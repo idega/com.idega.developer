@@ -1,13 +1,13 @@
 package com.idega.development.presentation;
 
 import java.util.Enumeration;
-import java.util.Locale;
+//import java.util.Locale;
 
 import com.idega.idegaweb.IWMainApplication;
 import com.idega.presentation.IWContext;
 import com.idega.presentation.ui.DropdownMenu;
 import com.idega.presentation.ui.Form;
-import com.idega.util.LocaleUtil;
+//import com.idega.util.LocaleUtil;
 
 /**
  * Title:        idega Framework
@@ -35,14 +35,15 @@ public class LocaleSwitcher extends com.idega.idegaweb.presentation.LocaleChange
 		getParentPage().setBackgroundColor("#FFFFFF");
 		IWMainApplication iwma = iwc.getApplication();
 
-		DropdownMenu localesDrop = Localizer.getAvailableLocalesDropdown(iwma, localesParameter);
+		DropdownMenu localesDrop = Localizer.getAvailableLocalesDropdown(iwma, com.idega.core.localisation.business.LocaleSwitcher.languageParameterString);
 		localesDrop.keepStatusOnAction();
 		localesDrop.setToSubmit();
 		localesDrop.setSelectedElement(iwc.getCurrentLocale().toString());
 
 		Form form = new Form();
 		form.maintainParameter(IWDeveloper.actionParameter);
-		form.setTarget(IWDeveloper.frameName);
+		form.maintainParameter(IWDeveloper.PARAMETER_CLASS_NAME);
+		//form.setTarget(IWDeveloper.frameName);
 		add(form);
 		form.add(IWDeveloper.getText("Select language:&nbsp;&nbsp;"));
 		form.add(localesDrop);
@@ -52,13 +53,13 @@ public class LocaleSwitcher extends com.idega.idegaweb.presentation.LocaleChange
 			form.maintainParameter((String) enum.nextElement());
 		}
 
-		doBusiness(iwc);
+		//doBusiness(iwc);
 
 		add(IWDeveloper.getText("Current Locale:&nbsp;&nbsp;"));
 		add(iwc.getCurrentLocale().getDisplayName() + " (" + iwc.getCurrentLocale().toString() + ")");
 	}
 
-	private void doBusiness(IWContext iwc) {
+	/*private void doBusiness(IWContext iwc) {
 		String localeValue = iwc.getParameter(localesParameter);
 		if (localeValue != null) {
 			Locale locale = LocaleUtil.getLocale(localeValue);
@@ -66,7 +67,7 @@ public class LocaleSwitcher extends com.idega.idegaweb.presentation.LocaleChange
 				iwc.setCurrentLocale(locale);
 			}
 		}
-	}
+	}*/
 
 	public String getBundleIdentifier() {
 		return IW_BUNDLE_IDENTIFIER;

@@ -27,7 +27,8 @@ public class Caches extends Block {
 		getParentPage().setBackgroundColor("#FFFFFF");
 		Form form = new Form();
 		form.maintainParameter(IWDeveloper.actionParameter);
-		form.setTarget(IWDeveloper.frameName);
+		form.maintainParameter(IWDeveloper.PARAMETER_CLASS_NAME);
+		//form.setTarget(IWDeveloper.frameName);
 		add(form);
 		Table table = new Table();
 		table.setAlignment(3, 1, "right");
