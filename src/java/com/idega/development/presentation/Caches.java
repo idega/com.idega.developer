@@ -2,6 +2,7 @@ package com.idega.development.presentation;
 import com.idega.builder.business.BuilderLogic;
 import com.idega.business.IBOLookup;
 import com.idega.data.IDOContainer;
+import com.idega.idegaweb.IWCacheManager;
 import com.idega.presentation.Block;
 import com.idega.presentation.IWContext;
 import com.idega.presentation.Table;
@@ -20,6 +21,8 @@ public class Caches extends Block {
 	private static final String PARAM_LOOKUP = "iw_cache_lookup";
 	private static final String PARAM_IDO_BEAN = "iw_cache_ido_bean";
 	private static final String PARAM_IDO_QUERY = "iw_cache_ido_query";
+	private static final String PARAM_IWCACHEMANAGER = "iw_cache_iwcachemanager";
+	
 	public Caches() {
 	}
 	public void main(IWContext iwc) throws Exception {
@@ -39,10 +42,12 @@ public class Caches extends Block {
 		SubmitButton lookup = new SubmitButton(PARAM_LOOKUP, "Clear all Lookup Cache");
 		SubmitButton ido_bean = new SubmitButton(PARAM_IDO_BEAN, "Clear all IDO Bean Cache");
 		SubmitButton ido_query = new SubmitButton(PARAM_IDO_QUERY, "Clear all IDO Query Cache");
+		SubmitButton iw_cacheman = new SubmitButton(PARAM_IWCACHEMANAGER, "Clear all IWCacheManager Cache");
 		table.add(ib_pages, 3, 1);
 		table.add(lookup, 3, 2);
 		table.add(ido_bean, 3, 3);
 		table.add(ido_query, 3, 4);
+		table.add(iw_cacheman, 3, 5);
 
 		processBusiness(iwc);
 	}
@@ -66,6 +71,11 @@ public class Caches extends Block {
 		if (idoquery != null) {
 			IDOContainer.getInstance().flushAllQueryCache();
 			add(IWDeveloper.getText("Flushed all IDO query cache!"));
+		}
+		String iwcacheman = iwc.getParameter(PARAM_IWCACHEMANAGER);
+		if (iwcacheman != null) {
+			IWCacheManager.getInstance(iwc.getIWMainApplication()).clearAllCaches();
+			add(IWDeveloper.getText("Flushed all IWCachemanager cache!"));
 		}
 
 	}
