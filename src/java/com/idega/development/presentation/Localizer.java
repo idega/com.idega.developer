@@ -70,14 +70,14 @@ public class Localizer extends ModuleObjectContainer {
       }
       else{
 
-
-        IWResourceBundle iwrb = iwma.getBundle(selectedBundle).getResourceBundle(LocaleUtil.getLocale(modinfo.getParameter(localesParameter)));
+        IWBundle iwb = iwma.getBundle(selectedBundle);
+        IWResourceBundle iwrb = iwb.getResourceBundle(LocaleUtil.getLocale(modinfo.getParameter(localesParameter)));
         String stringsKey = modinfo.getParameter(stringsParameter);
         String areaText = modinfo.getParameter(areaParameter);
         String newStringsKey = modinfo.getParameter(this.newStringKeyParameter);
-         if(stringsKey==null && newStringsKey!=null){
-            stringsKey=newStringsKey;
-          }
+        if(stringsKey==null && newStringsKey!=null){
+          stringsKey=newStringsKey;
+        }
 
         if(stringsKey!=null){
           String oldStringValue = iwrb.getLocalizedString(stringsKey);
@@ -95,6 +95,11 @@ public class Localizer extends ModuleObjectContainer {
                 area = getTextArea(areaParameter,"");
               }
               table.add(area,2,5);
+            }
+           else if(this.isDeleteable(modinfo)){
+              iwb.removeLocalizableString(stringsKey);
+              //boolean b = iwrb.removeString(stringsKey);
+              iwrb.storeState();
             }
             else{
               ModuleObject area;
@@ -129,7 +134,7 @@ public class Localizer extends ModuleObjectContainer {
                     area = getTextArea(areaParameter,"");
                   }
                   else{
-                      area = getTextArea(areaParameter,oldStringValue);
+                    area = getTextArea(areaParameter,oldStringValue);
                   }
                 }
               }
@@ -138,6 +143,7 @@ public class Localizer extends ModuleObjectContainer {
 
           }
           table.add(new SubmitButton("Save",subAction,"save"),2,5);
+          table.add(new SubmitButton("Delete",subAction,"delete"),2,5);
           table.add("New String key",1,4);
           table.add("New String value",1,5);
           TextInput newInput = new TextInput(newStringKeyParameter);
@@ -220,6 +226,19 @@ public class Localizer extends ModuleObjectContainer {
       }
       else{
         if(subActioner.equals("save")){
+          return true;
+        }
+        return false;
+      }
+  }
+
+  private boolean isDeleteable(ModuleInfo modinfo){
+      String subActioner = modinfo.getParameter(subAction);
+      if(subActioner==null){
+        return false;
+      }
+      else{
+        if(subActioner.equals("delete")){
           return true;
         }
         return false;
