@@ -60,7 +60,7 @@ public class Localizer extends PresentationObjectContainer {
 		localesDrop.keepStatusOnAction();
 		localesDrop.setToSubmit();
 
-		//DropdownMenu stringsDrop;
+		DropdownMenu stringsDrop;
 
 		String selectedBundle = iwc.getParameter(bundlesParameter);
 
@@ -91,7 +91,7 @@ public class Localizer extends PresentationObjectContainer {
 		table.add(localesDrop, 2, 2);
 
 		if (selectedBundle == null) {
-			//stringsDrop = new DropdownMenu(stringsParameter);
+			stringsDrop = new DropdownMenu(stringsParameter);
 			table.setAlignment(2, 3, "right");
 			table.add(new SubmitButton("Get Available Keys", subAction, "choose"), 2, 3);
 		}
@@ -194,12 +194,12 @@ public class Localizer extends PresentationObjectContainer {
 				table.add(newInput, 2, 4);
 			}
 
-			//table.add(new SubmitButton("Select Locale",subAction,"select"),2,1);
-			/*table.add(IWDeveloper.getText("String:"), 1, 3);
+			table.add(new SubmitButton("Select Locale",subAction,"select"),2,1);
+			table.add(IWDeveloper.getText("String:"), 1, 3);
 			stringsDrop = this.getLocalizeableStringsMenu(iwma, selectedBundle, stringsParameter);
 			stringsDrop.keepStatusOnAction();
 			stringsDrop.setToSubmit();
-			table.add(stringsDrop, 2, 3);*/
+			table.add(stringsDrop, 2, 3);
 			//table.add(new SubmitButton("Choose String",subAction,"choose"),3,1);
 
 			Frame.add(IWDeveloper.getText("Available Strings:"), 1, 3);
