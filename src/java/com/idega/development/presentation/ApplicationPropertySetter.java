@@ -32,6 +32,8 @@ public class ApplicationPropertySetter extends JModuleObject {
 
   public void main(ModuleInfo modinfo){
 
+      doBusiness(modinfo);
+
       IWMainApplication iwma = modinfo.getApplication();
       DropdownMenu bundles = getRegisteredBundlesDropdown(iwma,APPLICATION_SETTER_PARAMETER);
 
@@ -58,7 +60,7 @@ public class ApplicationPropertySetter extends JModuleObject {
       table.add(box,2,3);
       table.add(new SubmitButton("Save",APPLICATION_SETTER_PARAMETER,"save"),3,4);
 
-      doBusiness(modinfo);
+
   }
 
   private void doBusiness(ModuleInfo modinfo){
