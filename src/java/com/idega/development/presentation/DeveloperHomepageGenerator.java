@@ -1,6 +1,7 @@
 package com.idega.development.presentation;
 
 import com.idega.presentation.PresentationObjectType;
+import com.idega.repository.data.ImplementorPlaceholder;
 
 /**
  * <p>Title: idegaWeb</p>
@@ -11,6 +12,6 @@ import com.idega.presentation.PresentationObjectType;
  * @version 1.0
  * Created on Jul 20, 2004
  */
-public interface DeveloperHomepageGenerator extends PresentationObjectType {
+public interface DeveloperHomepageGenerator extends PresentationObjectType, ImplementorPlaceholder {
 	// placeholder for an implementation of a homepage generator
 }
