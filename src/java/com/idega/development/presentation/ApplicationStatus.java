@@ -5,7 +5,7 @@ import com.idega.presentation.ui.*;
 import com.idega.presentation.text.*;
 import com.idega.idegaweb.IWMainApplication;
 import com.idega.idegaweb.IWBundle;
-import com.idega.util.IWTimeStamp;
+import com.idega.util.IWTimestamp;
 import java.io.File;
 
 /**
@@ -45,13 +45,13 @@ public class ApplicationStatus extends Block {
       String shutdown = iwc.getApplicationSettings().getProperty("last_shutdown");
       String startup = iwc.getApplicationSettings().getProperty("last_startup");
       String reboot = iwc.getApplicationSettings().getProperty("last_restart");
-      IWTimeStamp start = null,shut = null,rest = null;
+      IWTimestamp start = null,shut = null,rest = null;
       if(shutdown!=null && !shutdown.equals(""))
-        shut = new IWTimeStamp(shutdown);
+        shut = new IWTimestamp(shutdown);
       if(startup!=null && !startup.equals(""))
-        start = new IWTimeStamp(startup);
+        start = new IWTimestamp(startup);
       if(reboot!=null && !reboot.equals(""))
-        rest = new IWTimeStamp(reboot);
+        rest = new IWTimestamp(reboot);
 
       table.add(IWDeveloper.getText("Last startup"),1,3);
       if(shut!=null)
@@ -72,7 +72,7 @@ public class ApplicationStatus extends Block {
         table.add(IWDeveloper.getText("Unknown"),3,5);
 
       table.add(IWDeveloper.getText("Uptime"),1,7);
-      IWTimeStamp now = IWTimeStamp.RightNow();
+      IWTimestamp now = IWTimestamp.RightNow();
       int minutes = 0,maxmin = 0;
       String MaxMinutes = iwc.getApplicationSettings().getProperty("max_minutes");
       if(MaxMinutes!=null && !MaxMinutes.equals("")){
@@ -80,11 +80,11 @@ public class ApplicationStatus extends Block {
       }
 
       if(rest!=null){
-        minutes = IWTimeStamp.getMinutesBetween(rest,now);
+        minutes = IWTimestamp.getMinutesBetween(rest,now);
         table.add(IWDeveloper.getText(minutes+" Minutes"),3,7);
       }
       else if(shut!=null){
-        minutes = IWTimeStamp.getMinutesBetween(shut,now);
+        minutes = IWTimestamp.getMinutesBetween(shut,now);
         table.add(IWDeveloper.getText(minutes+" Minutes"),3,7);
       }
       else
@@ -106,7 +106,7 @@ public class ApplicationStatus extends Block {
       String check = iwc.getParameter(RESTART_PARAMETER);
       if(check!=null){
         add(IWDeveloper.getText("Done Restarting!"));
-        iwc.getApplicationSettings().setProperty("last_restart",com.idega.util.IWTimeStamp.RightNow().toString());
+        iwc.getApplicationSettings().setProperty("last_restart",com.idega.util.IWTimestamp.RightNow().toString());
         iwc.getApplication().restartApplication();
       }
   }
