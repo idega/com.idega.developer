@@ -47,13 +47,8 @@ public class ComponentManager extends JModuleObject {
   public ComponentManager() {
   }
 
-<<<<<<< ComponentManager.java
-  public void main(ModuleInfo modinfo)throws Exception{
-=======
   public void main(ModuleInfo modinfo){
       add(IWDeveloper.getTitleTable(this.getClass()));
->>>>>>> 1.2
-
       IWMainApplication iwma = modinfo.getApplication();
       DropdownMenu bundles = BundlePropertySetter.getRegisteredBundlesDropdown(iwma,BUNDLE_PARAMETER);
       bundles.keepStatusOnAction();
@@ -70,19 +65,13 @@ public class ComponentManager extends JModuleObject {
       form.add(Text.getBreak());
       form.add(table);
 
-<<<<<<< ComponentManager.java
       int yindex = 1;
 
       table.add("Bundle:",1,yindex);
       table.add(bundles,2,yindex);
       SubmitButton button1 = new SubmitButton("Select");
       table.add(button1,2,yindex);
-=======
-      selectTable.add(IWDeveloper.getText("Bundle:"),1,1);
-      selectTable.add(bundles,2,1);
-      SubmitButton button1 = new SubmitButton("Go");
-      selectTable.add(button1,3,1);
->>>>>>> 1.2
+
 
       String bundleIdentifier = modinfo.getParameter(BUNDLE_PARAMETER);
 
@@ -90,21 +79,9 @@ public class ComponentManager extends JModuleObject {
 
         IWBundle iwb = iwma.getBundle(bundleIdentifier);
 
-<<<<<<< ComponentManager.java
-        yindex++;
-=======
-        try{
-          doBusiness(modinfo,iwb);
-        }
-        catch(Exception e){
-          add("Error: "+e.getClass().getName()+" "+e.getMessage());
-          e.printStackTrace();
-        }
 
-        DropdownMenu typesDrop = new DropdownMenu(this.TYPE_INPUT_NAME);
-        List componentTypes = ICObject.getAvailableComponentTypes();
-        Iterator iter = componentTypes.iterator();
->>>>>>> 1.2
+        yindex++;
+
 
         List componentNames = iwb.getComponentKeys();
         DropdownMenu componentsDrop = new DropdownMenu(this.CLASS_PARAMETER);
@@ -126,11 +103,16 @@ public class ComponentManager extends JModuleObject {
         if(selectedComponentKey!=null){
 
           yindex++;
-          Class selectedClass = Class.forName(selectedComponentKey);
-
-          //Method[] methods = selectedClass.getMethods();
-
-          BeanInfo info = Introspector.getBeanInfo(selectedClass,ModuleObject.class);
+          Class selectedClass=null;
+          BeanInfo info = null;
+          try{
+          selectedClass = Class.forName(selectedComponentKey);
+            //Method[] methods = selectedClass.getMethods();
+            info = Introspector.getBeanInfo(selectedClass,ModuleObject.class);
+          }
+          catch(Exception e){
+            e.printStackTrace();
+          }
           MethodDescriptor[] descriptors = info.getMethodDescriptors();
           DropdownMenu methodsDrop = new DropdownMenu(METHOD_PARAMETER);
           methodsDrop.keepStatusOnAction();
@@ -155,7 +137,7 @@ public class ComponentManager extends JModuleObject {
             }
           }
 
-<<<<<<< ComponentManager.java
+
           table.add("Method:",1,yindex);
           table.add(methodsDrop,2,yindex);
           SubmitButton button3 = new SubmitButton("Select");
@@ -178,11 +160,9 @@ public class ComponentManager extends JModuleObject {
                 }
               }
           }
-=======
-        int index = 2;
->>>>>>> 1.2
 
-<<<<<<< ComponentManager.java
+
+
           String[] methodsToDelete = modinfo.getParameterValues(DELETE_CHECKBOX_NAME);
           if(methodsToDelete!=null){
             deleteMethods(iwb,selectedComponentKey,methodsToDelete);
@@ -221,98 +201,25 @@ public class ComponentManager extends JModuleObject {
             yindex++;
             table.add(new SubmitButton("Update"),1,yindex);
           }
-=======
-        table.add(IWDeveloper.getText("ClassName: "),1,1);
-        table.add(IWDeveloper.getText("Type: "),2,1);
-        table.add(IWDeveloper.getText("Remove?"),3,1);
-
-        List compList = iwb.getComponentKeys();
-        Iterator compIter = compList.iterator();
-        while (compIter.hasNext()) {
-          String className = (String)compIter.next();
-          String type = iwb.getComponentType(className);
-
-          table.add(getSmallText(className),1,index);
-          table.add(getSmallText(type),2,index);
-
-          CheckBox rowBox = (CheckBox)deleteBox.clone();
-          rowBox.setContent(className);
-          table.add(rowBox,3,index);
-
-          index++;
->>>>>>> 1.2
         }
-<<<<<<< ComponentManager.java
-=======
 
-        table.add(classesInput,1,index);
-        table.add(typesDrop,2,index);
-
-        table.setAlignment(3,index+1,"right");
-        table.add(new SubmitButton("Save","save"),3,index+1);
->>>>>>> 1.2
       }
-<<<<<<< ComponentManager.java
+
 
   }
 
   private void doBusiness(IWBundle iwb,String selectedComponentKey,String selectedMethodIdentifier,String selectedMethodDesc){
       IBPropertyHandler handler = IBPropertyHandler.getInstance();
       handler.setMethod(iwb,selectedComponentKey,selectedMethodIdentifier,selectedMethodDesc);
-=======
->>>>>>> 1.2
   }
 
-<<<<<<< ComponentManager.java
+
   public void deleteMethods(IWBundle iwb,String selectedComponentKey,String[] methodIdentifiers){
     for (int i = 0; i < methodIdentifiers.length; i++) {
       IBPropertyHandler.getInstance().removeMethod(iwb,selectedComponentKey,methodIdentifiers[i]);
     }
-=======
-  private void doBusiness(ModuleInfo modinfo,IWBundle iwb)throws Exception{
-      String save = modinfo.getParameter("Save");
-      String reload = modinfo.getParameter("Reload");
 
-      if((iwb!=null)&&(save!=null)){
-
-        String newComponentClass = modinfo.getParameter(this.CLASS_INPUT_NAME);
-        if(newComponentClass==null){
-          newComponentClass=StringHandler.EMPTY_STRING;
-        }
-
-        String newComponentType = modinfo.getParameter(this.TYPE_INPUT_NAME);
-        if(newComponentType==null){
-          newComponentType=StringHandler.EMPTY_STRING;
-        }
-
-        String[] deletes = modinfo.getParameterValues(this.DELETE_CHECKBOX_NAME);
-        if(deletes!=null){
-          for (int i = 0; i < deletes.length; i++) {
-            iwb.removeComponent(deletes[i]);
-          }
-        }
-
-        String emptyString = StringHandler.EMPTY_STRING;
-
-        if(!(emptyString.equals(newComponentClass) || emptyString.equals(newComponentType))){
-            Class.forName(newComponentClass);
-            iwb.addComponent(newComponentClass,newComponentType);
-        }
-      }
-      else if( (iwb!= null) && (save==null) ){
-
-      }
->>>>>>> 1.2
   }
 
-<<<<<<< ComponentManager.java
 
-=======
-  private Text getSmallText(String text) {
-    Text T = new Text(text);
-      T.setFontFace(Text.FONT_FACE_VERDANA);
-      T.setFontSize(Text.FONT_SIZE_7_HTML_1);
-    return T;
-  }
->>>>>>> 1.2
 }
