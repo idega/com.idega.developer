@@ -78,13 +78,17 @@ public class ApplicationPropertySetter extends Block {
         String KeyValue = iwc.getParameter(this.PROPERTY_VALUE_PARAMETER);
         iwc.getApplication().getSettings().setProperty(KeyName,KeyValue);
         if(entityAutoCreate!=null){
-          if(entityAutoCreate.equalsIgnoreCase("Y")){
+          /*if(entityAutoCreate.equalsIgnoreCase("Y")){
             iwc.getApplication().getSettings().setEntityAutoCreation(true);
           }
           else{
             iwc.getApplication().getSettings().setEntityAutoCreation(true);
-          }
+          }*/
+          // added by Aron 23.01.2001
+          iwc.getApplication().getSettings().setEntityAutoCreation(true);
         }
+        else
+          iwc.getApplication().getSettings().setEntityAutoCreation(false);
         if(setterState.equalsIgnoreCase("store")){
           iwc.getApplication().storeStatus();
         }
