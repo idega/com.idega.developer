@@ -32,6 +32,7 @@ private IWBundle iwb;
     addToList(LocaleSwitcher.class,image,getClassName(LocaleSwitcher.class),IWDeveloper.frameName);
     addToList(BundleCreator.class,image,getClassName(BundleCreator.class),IWDeveloper.frameName);
     addToList(BundlePropertySetter.class,image,getClassName(BundlePropertySetter.class),IWDeveloper.frameName);
+    addToList(BundleComponentManager.class,image,"BundleComponents",IWDeveloper.frameName);
     addToList(ComponentManager.class,image,getClassName(ComponentManager.class),IWDeveloper.frameName);
     addToList(ApplicationPropertySetter.class,image,getClassName(ApplicationPropertySetter.class),IWDeveloper.frameName);
     addToList(DBPoolStatusViewer.class,image,getClassName(DBPoolStatusViewer.class),IWDeveloper.frameName);
