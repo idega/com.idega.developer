@@ -10,7 +10,9 @@ package com.idega.development.presentation;
 
 import java.sql.SQLException;
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import com.idega.core.accesscontrol.business.AccessController;
 import com.idega.core.user.business.UserBusiness;
 import com.idega.data.DatastoreInterface;
@@ -363,7 +365,24 @@ public class UserTransformer extends Block{
 						group.setName(firstName+" "+lastName);
 						group.setExtraInfo("UserTransformer, old group is now id = "+newGroupPK+", "+df.format(new Date()));
 						group.store();
-	
+						
+						ArrayList list = (ArrayList) groupMap.get(userID);
+						ArrayList newList = new ArrayList();
+						if (list != null) {
+							Iterator itera = list.iterator();
+							String gID;
+							while (itera.hasNext()) {
+								gID = (String) itera.next();
+								if (gID.equals(oldGroupPK)) {
+									newList.add(newGroupPK);
+								} else {
+									newList.add(gID);
+								}
+							}
+						}
+						
+						groupMap.put(userID, newList);
+						
 						userRelations(sap, insertGroupRelationStatement, groupRelationNextVal, groupMap, userID);
 					} else {
 						System.out.println("User "+userID+" has a wrong kind of group");
