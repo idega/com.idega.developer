@@ -85,11 +85,11 @@ public class LocaleSetter extends PresentationObjectContainer {
 				count++;
 				icLocale = (ICLocale) I.next();
 				javaLocale = ICLocaleBusiness.getLocaleFromLocaleString(icLocale.getLocale());
-				chk = new CheckBox("loc_chk" + count, String.valueOf(icLocale.getID()));
+				chk = new CheckBox("loc_chk" + count, String.valueOf(icLocale.getLocaleID()));
 				chk.setChecked(icLocale.getInUse());
 				if (javaLocale.equals(_coreLocale)) {
 					chk.setDisabled(true);
-					T.add(new HiddenInput("loc_chk" + count, String.valueOf(icLocale.getID())), 1, count);
+					T.add(new HiddenInput("loc_chk" + count, String.valueOf(icLocale.getLocaleID())), 1, count);
 				}
 				T.add(chk, 1, count);
 				T.add(IWDeveloper.getText(javaLocale.getDisplayCountry()), 2, count);
@@ -98,7 +98,7 @@ public class LocaleSetter extends PresentationObjectContainer {
 				if (defLocale != null && icLocale.getInUse()) {
 					rb = new RadioButton("default_locale", icLocale.getName());
 					T.add(rb, 5, count);
-					if (defLocale.getID() == icLocale.getID())
+					if (defLocale.getLocaleID() == icLocale.getLocaleID())
 						rb.setSelected();
 				}
 			}
