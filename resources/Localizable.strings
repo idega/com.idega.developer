@@ -7,6 +7,7 @@ LDAPMANAGER.embedded.server.status.running=Running
 LDAPMANAGER.embedded.server.status.stopped=Stopped
 LDAPMANAGER.ldap.settings=LDAP Settings
 LDAPMANAGER.new.replication.settings=new replicator
+LDAPMANAGER.replication.scheduler.help.text=<b>Scheduler timer string format (-1 means every day/week/month/year...) \:</b><br><i>"minute (-1 or 0-59), hour (-1 or 0-23), day of month (-1 or 1-31), month (-1 or 0-11), day Of Week (-1 or 1-7) ,year (-1 or xxxx)"</i>
 LDAPMANAGER.replication.settings=Replication Settings
 LDAPMANAGER.run.process=run process
 LDAPMANAGER.run.process.confirm=Are you sure you want to run the process? It could affect all users and groups in the database.
