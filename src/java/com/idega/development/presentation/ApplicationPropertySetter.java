@@ -29,6 +29,8 @@ public class ApplicationPropertySetter extends Block {
   private static final String ENTITY_AUTOCREATE_PARAMETER="iw_e_a_c_p";
   private static final String AUTOCREATE_STRINGS_PARAMETER="iw_a_c_s_p";
   private static final String AUTOCREATE_PROPERTIES_PARAMETER="iw_a_c_p_p";
+  private static final String IDO_ENTITY_BEAN_CACHING_PARAMETER="iw_e_b_c_p";
+  private static final String IDO_ENTITY_QUERY_CACHING_PARAMETER="iw_e_q_c_p";
   private static final String DEBUG_PARAMETER="iw_d_p";
 
 
@@ -46,11 +48,11 @@ public class ApplicationPropertySetter extends Block {
       Form form = new Form();
       form.maintainParameter(IWDeveloper.actionParameter);
       add(form);
-      Table table = new Table(2,8);
+      Table table = new Table(2,10);
 	table.setCellpadding(5);
 	table.mergeCells(1,1,2,1);
-	table.mergeCells(1,8,2,8);
-	table.setAlignment(1,8,"right");
+	table.mergeCells(1,10,2,10);
+	table.setAlignment(1,10,"right");
       form.add(table);
       TextInput name = new TextInput(this.PROPERTY_KEY_NAME_PARAMETER);
       TextInput value = new TextInput(this.PROPERTY_VALUE_PARAMETER);
@@ -89,8 +91,23 @@ public class ApplicationPropertySetter extends Block {
       }
       table.add(IWDeveloper.getText("Debug:"),1,7);
       table.add(box2,2,7);
-      table.add(new SubmitButton("Save",APPLICATION_SETTER_PARAMETER,"save"),1,8);
-      table.add(new SubmitButton("Store Application state",APPLICATION_SETTER_PARAMETER,"store"),1,8);
+
+      CheckBox box6 = new CheckBox(IDO_ENTITY_BEAN_CACHING_PARAMETER);
+      if(iwma.getSettings().getIfEntityBeanCaching()){
+       box6.setChecked(true);
+      }
+      table.add(IWDeveloper.getText("Entity Bean caching:"),1,8);
+      table.add(box6,2,8);
+
+      CheckBox box7 = new CheckBox(IDO_ENTITY_QUERY_CACHING_PARAMETER);
+      if(iwma.getSettings().getIfEntityQueryCaching()){
+       box7.setChecked(true);
+      }
+      table.add(IWDeveloper.getText("Entity Query caching:"),1,9);
+      table.add(box7,2,9);
+
+      table.add(new SubmitButton("Save",APPLICATION_SETTER_PARAMETER,"save"),1,10);
+      table.add(new SubmitButton("Store Application state",APPLICATION_SETTER_PARAMETER,"store"),1,10);
 
       add(getParametersTable(iwma));
   }
@@ -107,19 +124,25 @@ public class ApplicationPropertySetter extends Block {
 	String entityAutoCreate = iwc.getParameter(ENTITY_AUTOCREATE_PARAMETER);
 	String autoCreateStrings = iwc.getParameter(AUTOCREATE_STRINGS_PARAMETER);
 	String autoCreateProperties = iwc.getParameter(AUTOCREATE_PROPERTIES_PARAMETER);
+    String entityBeanCache = iwc.getParameter(this.IDO_ENTITY_BEAN_CACHING_PARAMETER);
+    String entityQueryCache = iwc.getParameter(this.IDO_ENTITY_QUERY_CACHING_PARAMETER);
 	String debug = iwc.getParameter(DEBUG_PARAMETER);
 	String KeyName = iwc.getParameter(this.PROPERTY_KEY_NAME_PARAMETER);
 	String KeyValue = iwc.getParameter(this.PROPERTY_VALUE_PARAMETER);
 	if ( KeyName != null && KeyName.length() > 0 )
 	  iwc.getApplication().getSettings().setProperty(KeyName,KeyValue);
 
-	if(entityAutoCreate!=null){
-	  iwc.getApplication().getSettings().setEntityAutoCreation(true);
-	}
-	else
-	  iwc.getApplication().getSettings().setEntityAutoCreation(false);
+	if(entityAutoCreate!=null) iwc.getApplication().getSettings().setEntityAutoCreation(true);
+	else iwc.getApplication().getSettings().setEntityAutoCreation(false);
 
-	if(autoCreateStrings!=null){
+	if(entityBeanCache!=null) iwc.getApplication().getSettings().setEntityBeanCaching(true);
+	else iwc.getApplication().getSettings().setEntityBeanCaching(false);
+
+	if(entityQueryCache!=null) iwc.getApplication().getSettings().setEntityQueryCaching(true);
+	else iwc.getApplication().getSettings().setEntityQueryCaching(false);
+
+
+    if(autoCreateStrings!=null){
 	  iwc.getApplication().getSettings().setAutoCreateStrings(true);
 	}
 	else
