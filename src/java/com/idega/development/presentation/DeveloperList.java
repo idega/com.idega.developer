@@ -39,6 +39,7 @@ private static String styleName = "iwdClass";
     addToList(getClassLink(iwc, ObjectTypeManager.class,"Object Types"), image);
     addToList(getClassLink(iwc, BundleCreator.class,"Bundle Creator"),image);
     addToList(getClassLink(iwc, BundlePropertySetter.class,"Bundle Property Setter"),image);
+    addToList(getClassLink(iwc, BundleResourceManager.class,"Bundle Resource Manager"),image);
     addToList(getClassLink(iwc, BundleComponentManager.class,"Bundle Components"),image);
     addToList(getClassLink(iwc, ComponentManager.class,"Component Manager"),image);
     addToList(getClassLink(iwc, ApplicationPropertySetter.class,"Application Property Setter"),image);
