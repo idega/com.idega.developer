@@ -11,7 +11,6 @@ import com.idega.util.*;
 import com.idega.presentation.text.*;
 import	com.idega.presentation.*;
 import	com.idega.presentation.ui.*;
-import	com.idega.jmodule.news.data.*;
 import	com.idega.data.*;
 import com.idega.util.text.*;
 

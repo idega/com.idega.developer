@@ -37,7 +37,7 @@ private IWBundle iwb;
     addToList(ComponentManager.class,image,getClassName(ComponentManager.class),IWDeveloper.frameName);
     addToList(ApplicationPropertySetter.class,image,getClassName(ApplicationPropertySetter.class),IWDeveloper.frameName);
     addToList(DBPoolStatusViewer.class,image,getClassName(DBPoolStatusViewer.class),IWDeveloper.frameName);
-    addToList(com.idega.jmodule.datastore.presentation.SQLQueryer.class,image,getClassName(com.idega.jmodule.datastore.presentation.SQLQueryer.class),IWDeveloper.frameName);
+    addToList(SQLQueryer.class,image,getClassName(SQLQueryer.class),IWDeveloper.frameName);
 
     setZebraColors("#FFFFFF","#ECECEC");
   }
