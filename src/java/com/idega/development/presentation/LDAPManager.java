@@ -265,6 +265,7 @@ public class LDAPManager extends Block implements LDAPReplicationConstants,Embed
 			toggleBooleanProperty(replicationSettings, PROPS_REPLICATOR_PREFIX +i+ PROPS_REPLICATOR_REPLICATE_BASE_RDN, iwc);
 			toggleBooleanProperty(replicationSettings, PROPS_REPLICATOR_PREFIX +i+ PROPS_REPLICATOR_MATCH_BY_UNIQUE_ID, iwc);
 			toggleBooleanProperty(replicationSettings, PROPS_REPLICATOR_PREFIX +i+ PROPS_REPLICATOR_ACTIVE, iwc);
+			toggleBooleanProperty(replicationSettings, PROPS_REPLICATOR_PREFIX +i+ PROPS_REPLICATOR_REPEAT, iwc);
 			
 		}
 		
