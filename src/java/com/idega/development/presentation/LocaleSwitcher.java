@@ -36,9 +36,12 @@ public class LocaleSwitcher extends com.idega.idegaweb.presentation.LocaleChange
 		IWMainApplication iwma = iwc.getApplication();
 
 		DropdownMenu localesDrop = Localizer.getAvailableLocalesDropdown(iwma, com.idega.core.localisation.business.LocaleSwitcher.languageParameterString);
-		localesDrop.keepStatusOnAction();
+		//localesDrop.keepStatusOnAction();
 		localesDrop.setToSubmit();
-		localesDrop.setSelectedElement(iwc.getCurrentLocale().toString());
+		if (!iwc.isParameterSet(com.idega.core.localisation.business.LocaleSwitcher.languageParameterString))
+			localesDrop.setSelectedElement(iwc.getCurrentLocale().toString());
+		else
+			localesDrop.setSelectedElement(iwc.getParameter(com.idega.core.localisation.business.LocaleSwitcher.languageParameterString));
 
 		Form form = new Form();
 		form.maintainParameter(IWDeveloper.actionParameter);
