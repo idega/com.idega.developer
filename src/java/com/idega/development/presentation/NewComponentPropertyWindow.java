@@ -46,6 +46,12 @@ public class NewComponentPropertyWindow extends Window {
 
   public static final String PARAMETER_SAVE = "iw_n_p_save";
 
+
+   private final static String openingParentheses = "(";
+   private final static String closingParentheses = ")";
+   private final static String comma = ",";
+
+
   public NewComponentPropertyWindow(){
     setWidth(700);
     setTitle("Add New Property");
@@ -309,7 +315,7 @@ public class NewComponentPropertyWindow extends Window {
   private void putMethodsInMap(Map m,Method[] methods){
     for (int i = 0; i < methods.length; i++) {
       Method method = methods[i];
-      String name = method.getName();
+      String name = getMethodNameWidthParameters(method);
       if(name.startsWith("set")){
         m.put(name,method);
         System.out.println("Putting method for "+name);
@@ -359,14 +365,22 @@ public class NewComponentPropertyWindow extends Window {
       DropdownMenu methodsDrop = new DropdownMenu(name);
       methodsDrop.keepStatusOnAction();
       methodsDrop.setToSubmit();
-      String openingParentheses = "(";
-      String closingParentheses = ")";
-      String comma = ",";
+
       for (int i = 0; i < methods.length; i++) {
       //for (int i = 0; i < descriptors.length; i++) {
         Method method = methods[i];
         //Method method = descriptors[i].getMethod();
-          String methodToString = method.getName()+openingParentheses;
+          String methodToString =getMethodNameWidthParameters(method);
+
+          String methodIdentifier = MethodFinder.getInstance().getMethodIdentifierWithoutDeclaringClass(method);
+          methodsDrop.addMenuElement(methodIdentifier,methodToString);
+        }
+
+    return methodsDrop;
+  }
+
+  public String getMethodNameWidthParameters(Method method){
+      String methodToString = method.getName()+openingParentheses;
           Class[] arguments = method.getParameterTypes();
           for (int j = 0; j < arguments.length; j++) {
               if(j!=0){
@@ -375,11 +389,7 @@ public class NewComponentPropertyWindow extends Window {
               methodToString += arguments[j].getName();
           }
           methodToString += closingParentheses;
-          String methodIdentifier = MethodFinder.getInstance().getMethodIdentifierWithoutDeclaringClass(method);
-          methodsDrop.addMenuElement(methodIdentifier,methodToString);
-        }
-
-    return methodsDrop;
+      return methodToString;
   }
 
 }
