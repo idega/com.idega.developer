@@ -101,7 +101,7 @@ public class SQLQueryer extends Block {
 
 			TextArea input = new TextArea(queryParameter);
 
-			input.setWidth("100%");
+			input.setColumns(60);
 
 			input.setRows(5);
 
