@@ -61,12 +61,13 @@ public class IWDeveloper extends com.idega.jmodule.object.app.IWApplication {
         mainTable.setAlignment(1,1,"center");
         mainTable.setVerticalAlignment(1,1,"top");
         mainTable.setVerticalAlignment(2,1,"top");
-        mainTable.setColor(IWConstants.DEFAULT_LIGHT_INTERFACE_COLOR);
+        //mainTable.setColor(IWConstants.DEFAULT_LIGHT_INTERFACE_COLOR);
+        mainTable.setColor("#B0B29D");
       add(mainTable);
 
       IFrame menuFrame = new IFrame("menu",DeveloperList.class);
         menuFrame.setWidth(200);
-        menuFrame.setHeight(150);
+        menuFrame.setHeight(170);
         menuFrame.setScrolling(IFrame.SCROLLING_YES);
       mainTable.add(menuFrame,1,1);
 
