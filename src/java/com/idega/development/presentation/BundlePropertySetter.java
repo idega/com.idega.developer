@@ -1,8 +1,8 @@
 package com.idega.development.presentation;
 
-import com.idega.jmodule.object.*;
-import com.idega.jmodule.object.interfaceobject.*;
-import com.idega.jmodule.object.textObject.*;
+import com.idega.presentation.*;
+import com.idega.presentation.ui.*;
+import com.idega.presentation.text.*;
 import com.idega.idegaweb.IWMainApplication;
 import com.idega.idegaweb.IWBundle;
 import java.util.List;
@@ -21,7 +21,7 @@ import com.idega.idegaweb.IWBundle;
 
 
 
-public class BundlePropertySetter extends JModuleObject {
+public class BundlePropertySetter extends Block {
 
   private final static String IW_BUNDLE_IDENTIFIER="com.idega.core";
   private static final String BUNDLE_PARAMETER = "iw_b_p_s";
@@ -33,11 +33,11 @@ public class BundlePropertySetter extends JModuleObject {
   public BundlePropertySetter() {
   }
 
-  public void main(ModuleInfo modinfo){
-    iwb = getBundle(modinfo);
+  public void main(IWContext iwc){
+    iwb = getBundle(iwc);
     add(IWDeveloper.getTitleTable(this.getClass()));
 
-    IWMainApplication iwma = modinfo.getApplication();
+    IWMainApplication iwma = iwc.getApplication();
     DropdownMenu bundles = getRegisteredBundlesDropdown(iwma,BUNDLE_PARAMETER);
     bundles.keepStatusOnAction();
     bundles.setToSubmit();
@@ -66,18 +66,18 @@ public class BundlePropertySetter extends JModuleObject {
     table.add(new SubmitButton("Save","save"),2,5);
     table.add(new SubmitButton("Reload","reload"),2,5);
 
-    doBusiness(modinfo);
+    doBusiness(iwc);
   }
 
-  private void doBusiness(ModuleInfo modinfo){
-      String bundleIdentifier = modinfo.getParameter(BUNDLE_PARAMETER);
-      String save = modinfo.getParameter("Save");
-      String reload = modinfo.getParameter("Reload");
-      IWMainApplication iwma = modinfo.getApplication();
+  private void doBusiness(IWContext iwc){
+      String bundleIdentifier = iwc.getParameter(BUNDLE_PARAMETER);
+      String save = iwc.getParameter("Save");
+      String reload = iwc.getParameter("Reload");
+      IWMainApplication iwma = iwc.getApplication();
 
       if((bundleIdentifier!=null)&&(save!=null)){
-        String KeyName = modinfo.getParameter(this.PROPERTY_KEY_NAME_PARAMETER);
-        String KeyValue = modinfo.getParameter(this.PROPERTY_VALUE_PARAMETER);
+        String KeyName = iwc.getParameter(this.PROPERTY_KEY_NAME_PARAMETER);
+        String KeyValue = iwc.getParameter(this.PROPERTY_VALUE_PARAMETER);
         IWBundle bundle = iwma.getBundle(bundleIdentifier);
         bundle.setProperty(KeyName,KeyValue);
         bundle.storeState();

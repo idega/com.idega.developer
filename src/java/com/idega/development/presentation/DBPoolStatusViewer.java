@@ -1,10 +1,10 @@
 package com.idega.development.presentation;
 
-import com.idega.jmodule.object.ModuleObjectContainer;
-import com.idega.jmodule.object.ModuleInfo;
+import com.idega.presentation.PresentationObjectContainer;
+import com.idega.presentation.IWContext;
 
 import com.idega.util.database.PoolManager;
-import com.idega.jmodule.object.textObject.*;
+import com.idega.presentation.text.*;
 
 /**
  * Title:        idegaclasses
@@ -15,13 +15,13 @@ import com.idega.jmodule.object.textObject.*;
  * @version 1.0
  */
 
-public class DBPoolStatusViewer extends ModuleObjectContainer {
+public class DBPoolStatusViewer extends PresentationObjectContainer {
 
   public DBPoolStatusViewer() {
   }
 
 
-  public void main(ModuleInfo modinfo){
+  public void main(IWContext iwc){
       add(IWDeveloper.getTitleTable(this.getClass()));
       add(Text.getBreak());
       add(Text.getBreak());

@@ -1,8 +1,8 @@
 package com.idega.development.presentation;
 
-import com.idega.jmodule.object.*;
-import com.idega.jmodule.object.interfaceobject.*;
-import com.idega.jmodule.object.textObject.*;
+import com.idega.presentation.*;
+import com.idega.presentation.ui.*;
+import com.idega.presentation.text.*;
 import com.idega.idegaweb.IWMainApplication;
 import com.idega.idegaweb.IWBundle;
 import java.util.List;
@@ -19,7 +19,7 @@ import java.util.Iterator;
 
 
 
-public class ApplicationPropertySetter extends JModuleObject {
+public class ApplicationPropertySetter extends Block {
 
   private static final String APPLICATION_SETTER_PARAMETER = "iw_a_p_s";
   private static final String PROPERTY_KEY_NAME_PARAMETER="iw_a_p_s_k";
@@ -30,12 +30,12 @@ public class ApplicationPropertySetter extends JModuleObject {
   public ApplicationPropertySetter() {
   }
 
-  public void main(ModuleInfo modinfo){
+  public void main(IWContext iwc){
       add(IWDeveloper.getTitleTable(this.getClass()));
 
-      doBusiness(modinfo);
+      doBusiness(iwc);
 
-      IWMainApplication iwma = modinfo.getApplication();
+      IWMainApplication iwma = iwc.getApplication();
       DropdownMenu bundles = getRegisteredBundlesDropdown(iwma,APPLICATION_SETTER_PARAMETER);
 
       Form form = new Form();
@@ -66,23 +66,23 @@ public class ApplicationPropertySetter extends JModuleObject {
       table.add(new SubmitButton("Store Application state",APPLICATION_SETTER_PARAMETER,"store"),1,5);
   }
 
-  private void doBusiness(ModuleInfo modinfo){
-      String setterState = modinfo.getParameter(APPLICATION_SETTER_PARAMETER);
+  private void doBusiness(IWContext iwc){
+      String setterState = iwc.getParameter(APPLICATION_SETTER_PARAMETER);
       if(setterState!=null){
-        String entityAutoCreate = modinfo.getParameter(ENTITY_AUTOCREATE_PARAMETER);
-        String KeyName = modinfo.getParameter(this.PROPERTY_KEY_NAME_PARAMETER);
-        String KeyValue = modinfo.getParameter(this.PROPERTY_VALUE_PARAMETER);
-        modinfo.getApplication().getSettings().setProperty(KeyName,KeyValue);
+        String entityAutoCreate = iwc.getParameter(ENTITY_AUTOCREATE_PARAMETER);
+        String KeyName = iwc.getParameter(this.PROPERTY_KEY_NAME_PARAMETER);
+        String KeyValue = iwc.getParameter(this.PROPERTY_VALUE_PARAMETER);
+        iwc.getApplication().getSettings().setProperty(KeyName,KeyValue);
         if(entityAutoCreate!=null){
           if(entityAutoCreate.equalsIgnoreCase("Y")){
-            modinfo.getApplication().getSettings().setEntityAutoCreation(true);
+            iwc.getApplication().getSettings().setEntityAutoCreation(true);
           }
           else{
-            modinfo.getApplication().getSettings().setEntityAutoCreation(true);
+            iwc.getApplication().getSettings().setEntityAutoCreation(true);
           }
         }
         if(setterState.equalsIgnoreCase("store")){
-          modinfo.getApplication().storeStatus();
+          iwc.getApplication().storeStatus();
         }
 
         add(IWDeveloper.getText("Status: "));

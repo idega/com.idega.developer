@@ -1,8 +1,8 @@
 package com.idega.development.presentation;
 
-import com.idega.jmodule.object.*;
-import com.idega.jmodule.object.interfaceobject.*;
-import com.idega.jmodule.object.textObject.*;
+import com.idega.presentation.*;
+import com.idega.presentation.ui.*;
+import com.idega.presentation.text.*;
 import com.idega.idegaweb.IWMainApplication;
 import com.idega.idegaweb.IWBundle;
 import java.io.File;
@@ -18,7 +18,7 @@ import java.io.File;
 
 
 
-public class BundleCreator extends JModuleObject {
+public class BundleCreator extends Block {
 
   private static final String NEW_BUNDLE_PARAMETER = "iw_b_i";
   private static final String NEW_BUNDLE_NAME_PARAMETER="iw_b_i_n_b_n";
@@ -27,7 +27,7 @@ public class BundleCreator extends JModuleObject {
   public BundleCreator() {
   }
 
-  public void main(ModuleInfo modinfo)throws Exception{
+  public void main(IWContext iwc)throws Exception{
       add(IWDeveloper.getTitleTable(this.getClass()));
 
       Form form = new Form();
@@ -46,16 +46,16 @@ public class BundleCreator extends JModuleObject {
       //table.add(path,2,2);
       table.add(new Parameter(NEW_BUNDLE_PARAMETER,"dummy"));
       table.add(new SubmitButton("Create",this.NEW_BUNDLE_PARAMETER,"save"),2,3);
-      doBusiness(modinfo);
+      doBusiness(iwc);
   }
 
-  private void doBusiness(ModuleInfo modinfo)throws Exception{
-      String check = modinfo.getParameter(NEW_BUNDLE_PARAMETER);
+  private void doBusiness(IWContext iwc)throws Exception{
+      String check = iwc.getParameter(NEW_BUNDLE_PARAMETER);
       if(check!=null){
-        String bundleIdentifier = modinfo.getParameter(this.NEW_BUNDLE_NAME_PARAMETER);
-        //String bundleDir = modinfo.getParameter(this.NEW_BUNDLE_PATH_PARAMETER);
+        String bundleIdentifier = iwc.getParameter(this.NEW_BUNDLE_NAME_PARAMETER);
+        //String bundleDir = iwc.getParameter(this.NEW_BUNDLE_PATH_PARAMETER);
         String bundleDir = bundleIdentifier+".bundle";
-        IWMainApplication iwma = modinfo.getApplication();
+        IWMainApplication iwma = iwc.getApplication();
         if(bundleDir.indexOf(IWMainApplication.BUNDLES_STANDARD_DIRECTORY)==-1){
           bundleDir=IWMainApplication.BUNDLES_STANDARD_DIRECTORY + File.separator + bundleDir;
         }

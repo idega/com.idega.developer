@@ -1,8 +1,8 @@
 package com.idega.development.presentation;
 
-import com.idega.jmodule.object.*;
-import com.idega.jmodule.object.interfaceobject.*;
-import com.idega.jmodule.object.textObject.*;
+import com.idega.presentation.*;
+import com.idega.presentation.ui.*;
+import com.idega.presentation.text.*;
 
 import com.idega.idegaweb.IWMainApplication;
 import com.idega.idegaweb.IWBundle;
@@ -27,7 +27,7 @@ import java.util.Iterator;
 
 
 
-public class BundleComponentManager extends JModuleObject {
+public class BundleComponentManager extends Block {
 
   private static final String BUNDLE_PARAMETER = "iw_b_p_s";
   //private static final String PROPERTY_KEY_NAME_PARAMETER="iw_b_p_s_k";
@@ -41,10 +41,10 @@ public class BundleComponentManager extends JModuleObject {
   public BundleComponentManager() {
   }
 
-  public void main(ModuleInfo modinfo){
+  public void main(IWContext iwc){
       add(IWDeveloper.getTitleTable(this.getClass()));
 
-      IWMainApplication iwma = modinfo.getApplication();
+      IWMainApplication iwma = iwc.getApplication();
       DropdownMenu bundles = BundlePropertySetter.getRegisteredBundlesDropdown(iwma,BUNDLE_PARAMETER);
       bundles.keepStatusOnAction();
       bundles.setToSubmit();
@@ -65,14 +65,14 @@ public class BundleComponentManager extends JModuleObject {
       SubmitButton button1 = new SubmitButton("Go");
       selectTable.add(button1,3,1);
 
-      String bundleIdentifier = modinfo.getParameter(BUNDLE_PARAMETER);
+      String bundleIdentifier = iwc.getParameter(BUNDLE_PARAMETER);
 
       if(bundleIdentifier!=null){
 
         IWBundle iwb = iwma.getBundle(bundleIdentifier);
 
         try{
-          doBusiness(modinfo,iwb);
+          doBusiness(iwc,iwb);
         }
         catch(Exception e){
           add("Error: "+e.getClass().getName()+" "+e.getMessage());
@@ -122,23 +122,23 @@ public class BundleComponentManager extends JModuleObject {
       }
   }
 
-  private void doBusiness(ModuleInfo modinfo,IWBundle iwb)throws Exception{
-      String save = modinfo.getParameter("Save");
-      String reload = modinfo.getParameter("Reload");
+  private void doBusiness(IWContext iwc,IWBundle iwb)throws Exception{
+      String save = iwc.getParameter("Save");
+      String reload = iwc.getParameter("Reload");
 
       if((iwb!=null)&&(save!=null)){
 
-        String newComponentClass = modinfo.getParameter(this.CLASS_INPUT_NAME);
+        String newComponentClass = iwc.getParameter(this.CLASS_INPUT_NAME);
         if(newComponentClass==null){
           newComponentClass=StringHandler.EMPTY_STRING;
         }
 
-        String newComponentType = modinfo.getParameter(this.TYPE_INPUT_NAME);
+        String newComponentType = iwc.getParameter(this.TYPE_INPUT_NAME);
         if(newComponentType==null){
           newComponentType=StringHandler.EMPTY_STRING;
         }
 
-        String[] deletes = modinfo.getParameterValues(this.DELETE_CHECKBOX_NAME);
+        String[] deletes = iwc.getParameterValues(this.DELETE_CHECKBOX_NAME);
         if(deletes!=null){
           for (int i = 0; i < deletes.length; i++) {
             iwb.removeComponent(deletes[i]);

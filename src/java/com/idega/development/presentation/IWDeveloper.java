@@ -1,10 +1,10 @@
 package com.idega.development.presentation;
 
 
-import com.idega.jmodule.object.*;
-import com.idega.jmodule.object.interfaceobject.*;
-import com.idega.jmodule.object.textObject.*;
-import com.idega.jmodule.object.app.*;
+import com.idega.presentation.*;
+import com.idega.presentation.ui.*;
+import com.idega.presentation.text.*;
+import com.idega.presentation.app.*;
 import com.idega.idegaweb.IWConstants;
 
 
@@ -17,7 +17,7 @@ import com.idega.idegaweb.IWConstants;
  * @version 1.0
  */
 
-public class IWDeveloper extends com.idega.jmodule.object.app.IWApplication {
+public class IWDeveloper extends com.idega.presentation.app.IWApplication {
 
   private static final String localizerParameter = "iw_localizer";
   private static final String localeswitcherParameter = "iw_localeswitcher";
@@ -50,7 +50,7 @@ public class IWDeveloper extends com.idega.jmodule.object.app.IWApplication {
     private IFrame rightFrame;
     private int count = 1;
 
-    public void main(ModuleInfo modinfo)throws Exception{
+    public void main(IWContext iwc)throws Exception{
       addTitle("idegaWeb Developer");
 
       mainTable = new Table(2,1);

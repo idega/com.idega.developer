@@ -1,8 +1,8 @@
 package com.idega.development.presentation;
 
-import com.idega.jmodule.object.*;
-import com.idega.jmodule.object.interfaceobject.*;
-import com.idega.jmodule.object.textObject.*;
+import com.idega.presentation.*;
+import com.idega.presentation.ui.*;
+import com.idega.presentation.text.*;
 
 import com.idega.idegaweb.IWMainApplication;
 import com.idega.idegaweb.IWBundle;
@@ -38,7 +38,7 @@ import java.util.Hashtable;
 
 
 
-public class ComponentManager extends JModuleObject {
+public class ComponentManager extends Block {
 
   private static final String BUNDLE_PARAMETER = "iw_b_p_s";
   private static final String CLASS_PARAMETER = "iw_bundle_comp_class";
@@ -51,9 +51,9 @@ public class ComponentManager extends JModuleObject {
   public ComponentManager() {
   }
 
-  public void main(ModuleInfo modinfo){
+  public void main(IWContext iwc){
       add(IWDeveloper.getTitleTable(this.getClass()));
-      IWMainApplication iwma = modinfo.getApplication();
+      IWMainApplication iwma = iwc.getApplication();
       DropdownMenu bundles = BundlePropertySetter.getRegisteredBundlesDropdown(iwma,BUNDLE_PARAMETER);
       bundles.keepStatusOnAction();
       bundles.setToSubmit();
@@ -76,7 +76,7 @@ public class ComponentManager extends JModuleObject {
       table.add(button1,3,yindex);
 
 
-      String bundleIdentifier = modinfo.getParameter(BUNDLE_PARAMETER);
+      String bundleIdentifier = iwc.getParameter(BUNDLE_PARAMETER);
 
       if(bundleIdentifier!=null){
 
@@ -102,7 +102,7 @@ public class ComponentManager extends JModuleObject {
         SubmitButton button2 = new SubmitButton("Select");
         table.add(button2,3,yindex);
 
-        String selectedComponentKey = modinfo.getParameter(CLASS_PARAMETER);
+        String selectedComponentKey = iwc.getParameter(CLASS_PARAMETER);
         if(selectedComponentKey!=null){
 
           yindex++;
@@ -111,7 +111,7 @@ public class ComponentManager extends JModuleObject {
           try{
           selectedClass = Class.forName(selectedComponentKey);
             //Method[] methods = selectedClass.getMethods();
-            info = Introspector.getBeanInfo(selectedClass,ModuleObject.class);
+            info = Introspector.getBeanInfo(selectedClass,PresentationObject.class);
           }
           catch(Exception e){
             e.printStackTrace();
@@ -150,7 +150,7 @@ public class ComponentManager extends JModuleObject {
           table.add(button3,3,yindex);
 
 
-          String selectedMethodIdentifier = modinfo.getParameter(METHOD_PARAMETER);
+          String selectedMethodIdentifier = iwc.getParameter(METHOD_PARAMETER);
           if(selectedMethodIdentifier!=null){
               yindex++;
               TextInput methodDesc = new TextInput(METHOD_DESCRIPTION_PARAMETER);
@@ -165,15 +165,15 @@ public class ComponentManager extends JModuleObject {
               table.add(new Parameter(OPTIONS_PARAMETER,IBPropertyHandler.METHOD_PROPERTY_ALLOW_MULTIVALUED));
               table.add(new Parameter(getTypeParameter(IBPropertyHandler.METHOD_PROPERTY_ALLOW_MULTIVALUED),"java.lang.Boolean"));
 
-              String selectedMethodDesc = modinfo.getParameter(METHOD_DESCRIPTION_PARAMETER);
+              String selectedMethodDesc = iwc.getParameter(METHOD_DESCRIPTION_PARAMETER);
               if(selectedMethodDesc!=null){
                 if(!selectedMethodDesc.equals("")){
                   boolean multivalued = false;
-                  if(modinfo.isParameterSet(IBPropertyHandler.METHOD_PROPERTY_ALLOW_MULTIVALUED)){
+                  if(iwc.isParameterSet(IBPropertyHandler.METHOD_PROPERTY_ALLOW_MULTIVALUED)){
                     multivalued = true;
                   }
                   String parameterString = OPTIONS_PARAMETER;
-                  Map m = parseOptions(modinfo,parameterString);
+                  Map m = parseOptions(iwc,parameterString);
                   doBusiness(iwb,selectedComponentKey,selectedMethodIdentifier,selectedMethodDesc,m);
                 }
               }
@@ -181,7 +181,7 @@ public class ComponentManager extends JModuleObject {
 
 
 
-          String[] methodsToDelete = modinfo.getParameterValues(DELETE_CHECKBOX_NAME);
+          String[] methodsToDelete = iwc.getParameterValues(DELETE_CHECKBOX_NAME);
           if(methodsToDelete!=null){
             deleteMethods(iwb,selectedComponentKey,methodsToDelete);
           }
@@ -238,15 +238,15 @@ public class ComponentManager extends JModuleObject {
     return inputParameter+"_type";
   }
 
-  public Map parseOptions(ModuleInfo modinfo,String parameterName){
-    String[] parameters = modinfo.getParameterValues(parameterName);
+  public Map parseOptions(IWContext iwc,String parameterName){
+    String[] parameters = iwc.getParameterValues(parameterName);
 
     Map theReturn = new Hashtable();
     for (int i = 0; i < parameters.length; i++) {
       String parameter = parameters[i];
-      String sValue = modinfo.getParameter(parameter);
+      String sValue = iwc.getParameter(parameter);
       Object oValue = null;
-      String parameterType = modinfo.getParameter(getTypeParameter(parameter));
+      String parameterType = iwc.getParameter(getTypeParameter(parameter));
       if(parameterType == null){
         parameterType="java.lang.String";
       }

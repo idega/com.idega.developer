@@ -1,8 +1,8 @@
 package com.idega.development.presentation;
 
-import com.idega.jmodule.object.FrameList;
-import com.idega.jmodule.object.ModuleInfo;
-import com.idega.jmodule.object.Image;
+import com.idega.presentation.FrameList;
+import com.idega.presentation.IWContext;
+import com.idega.presentation.Image;
 import com.idega.idegaweb.IWBundle;
 
 /**
@@ -22,8 +22,8 @@ private IWBundle iwb;
   public DeveloperList() {
   }
 
-  public void main(ModuleInfo modinfo) {
-    iwb = getBundle(modinfo);
+  public void main(IWContext iwc) {
+    iwb = getBundle(iwc);
     setLinkStyle("font-family: Verdana, Arial, sans-serif; font-weight: bold; font-size: 7pt; text-decoration: none;");
 
     Image image = iwb.getImage("/developer/listbutton.gif","",13,13);

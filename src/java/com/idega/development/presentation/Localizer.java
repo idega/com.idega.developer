@@ -1,12 +1,12 @@
 package com.idega.development.presentation;
 
-import com.idega.jmodule.object.interfaceobject.*;
-import com.idega.jmodule.object.*;
-import com.idega.jmodule.object.textObject.*;
+import com.idega.presentation.ui.*;
+import com.idega.presentation.*;
+import com.idega.presentation.text.*;
 import com.idega.idegaweb.IWMainApplication;
 import com.idega.idegaweb.IWBundle;
 import com.idega.idegaweb.IWResourceBundle;
-import com.idega.jmodule.object.interfaceobject.DropdownMenu;
+import com.idega.presentation.ui.DropdownMenu;
 import java.util.Locale;
 import java.util.List;
 import java.util.Iterator;
@@ -21,7 +21,7 @@ import com.idega.util.LocaleUtil;
  * @version 1.0
  */
 
-public class Localizer extends ModuleObjectContainer {
+public class Localizer extends PresentationObjectContainer {
 
   private static String bundlesParameter="iw_availablebundles";
   private static String localesParameter="iw_locales";
@@ -33,10 +33,10 @@ public class Localizer extends ModuleObjectContainer {
   public Localizer(){
   }
 
-  public void main(ModuleInfo modinfo){
+  public void main(IWContext iwc){
       add(IWDeveloper.getTitleTable(this.getClass()));
 
-      IWMainApplication iwma = modinfo.getApplication();
+      IWMainApplication iwma = iwc.getApplication();
       DropdownMenu bundlesDrop = getRegisteredDropdown(iwma,bundlesParameter);
       bundlesDrop.keepStatusOnAction();
       bundlesDrop.setToSubmit();
@@ -46,13 +46,13 @@ public class Localizer extends ModuleObjectContainer {
 
       DropdownMenu stringsDrop;
 
-      String selectedLocale = modinfo.getParameter(localesParameter);
-      String selectedBundle = modinfo.getParameter(bundlesParameter);
+      String selectedLocale = iwc.getParameter(localesParameter);
+      String selectedBundle = iwc.getParameter(bundlesParameter);
 
       Link templateLink = new Link();
-      templateLink.maintainParameter(IWDeveloper.actionParameter,modinfo);
-      templateLink.maintainParameter(localesParameter,modinfo);
-      templateLink.maintainParameter(bundlesParameter,modinfo);
+      templateLink.maintainParameter(IWDeveloper.actionParameter,iwc);
+      templateLink.maintainParameter(localesParameter,iwc);
+      templateLink.maintainParameter(bundlesParameter,iwc);
 
       Form form = new Form();
       form.maintainParameter(IWDeveloper.actionParameter);
@@ -77,10 +77,10 @@ public class Localizer extends ModuleObjectContainer {
       else{
 
         IWBundle iwb = iwma.getBundle(selectedBundle);
-        IWResourceBundle iwrb = iwb.getResourceBundle(LocaleUtil.getLocale(modinfo.getParameter(localesParameter)));
-        String stringsKey = modinfo.getParameter(stringsParameter);
-        String areaText = modinfo.getParameter(areaParameter);
-        String newStringsKey = modinfo.getParameter(this.newStringKeyParameter);
+        IWResourceBundle iwrb = iwb.getResourceBundle(LocaleUtil.getLocale(iwc.getParameter(localesParameter)));
+        String stringsKey = iwc.getParameter(stringsParameter);
+        String areaText = iwc.getParameter(areaParameter);
+        String newStringsKey = iwc.getParameter(this.newStringKeyParameter);
         if(stringsKey==null && newStringsKey!=null){
           stringsKey=newStringsKey;
         }
@@ -88,12 +88,12 @@ public class Localizer extends ModuleObjectContainer {
         if(stringsKey!=null){
           String oldStringValue = iwrb.getLocalizedString(stringsKey);
           if(areaText==null){
-            ModuleObject area = getTextArea(areaParameter,oldStringValue);
+            PresentationObject area = getTextArea(areaParameter,oldStringValue);
             table.add(area,2,5);
           }
           else{
             if(areaText.equals("")){
-              ModuleObject area;
+              PresentationObject area;
               if(oldStringValue!=null){
                 area = getTextArea(areaParameter,oldStringValue);
               }
@@ -102,18 +102,18 @@ public class Localizer extends ModuleObjectContainer {
               }
               table.add(area,2,5);
             }
-           else if(this.isDeleteable(modinfo)){
+           else if(this.isDeleteable(iwc)){
               iwb.removeLocalizableString(stringsKey);
               //boolean b = iwrb.removeString(stringsKey);
               iwrb.storeState();
             }
             else{
-              ModuleObject area;
+              PresentationObject area;
               /**
                * Saving possible
                */
-              if(this.isSaveable(modinfo)){
-                String newKey = modinfo.getParameter(newStringKeyParameter);
+              if(this.isSaveable(iwc)){
+                String newKey = iwc.getParameter(newStringKeyParameter);
 
                 if(newKey !=null){
                   if(newKey.equals("")){
@@ -131,7 +131,7 @@ public class Localizer extends ModuleObjectContainer {
               else{
 
                 //String areaValue = iwrb.getStringChecked(stringsKey);
-                String areaValue = modinfo.getParameter(this.areaParameter);
+                String areaValue = iwc.getParameter(this.areaParameter);
                 if(areaValue==null){
                   area = getTextArea(areaParameter,"");
                 }
@@ -190,8 +190,8 @@ public class Localizer extends ModuleObjectContainer {
     return down;
   }
 
-  public static Form getAvailableLocalesForm(ModuleInfo modinfo) {
-    IWMainApplication iwma = modinfo.getApplication();
+  public static Form getAvailableLocalesForm(IWContext iwc) {
+    IWMainApplication iwma = iwc.getApplication();
 
     Form myForm = new Form();
       myForm.setEventListener(com.idega.core.localisation.business.LocaleSwitcher.class.getName());
@@ -203,8 +203,8 @@ public class Localizer extends ModuleObjectContainer {
     return myForm;
   }
 
-  public static DropdownMenu getAvailableLocalesDropdown(ModuleInfo modinfo) {
-    IWMainApplication iwma = modinfo.getApplication();
+  public static DropdownMenu getAvailableLocalesDropdown(IWContext iwc) {
+    IWMainApplication iwma = iwc.getApplication();
 
     DropdownMenu down = getAvailableLocalesDropdown(iwma,com.idega.core.localisation.business.LocaleSwitcher.languageParameterString);
       down.keepStatusOnAction();
@@ -252,8 +252,8 @@ public class Localizer extends ModuleObjectContainer {
     return down;
   }
 
-  private boolean isSaveable(ModuleInfo modinfo){
-      String subActioner = modinfo.getParameter(subAction);
+  private boolean isSaveable(IWContext iwc){
+      String subActioner = iwc.getParameter(subAction);
       if(subActioner==null){
         return false;
       }
@@ -265,8 +265,8 @@ public class Localizer extends ModuleObjectContainer {
       }
   }
 
-  private boolean isDeleteable(ModuleInfo modinfo){
-      String subActioner = modinfo.getParameter(subAction);
+  private boolean isDeleteable(IWContext iwc){
+      String subActioner = iwc.getParameter(subAction);
       if(subActioner==null){
         return false;
       }
@@ -278,7 +278,7 @@ public class Localizer extends ModuleObjectContainer {
       }
   }
 
-  private ModuleObject getTextArea(String name,String startValue){
+  private PresentationObject getTextArea(String name,String startValue){
       TextArea area = new TextArea(name,startValue);
       area.setWidth(30);
       return area;
