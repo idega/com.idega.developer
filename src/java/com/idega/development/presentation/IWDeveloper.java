@@ -65,7 +65,10 @@ public class IWDeveloper extends com.idega.presentation.app.IWApplication
 			rightFrame = new IFrame(frameName, Localizer.class);
 			//rightFrame.setWidth(588);
 			//rightFrame.setHeight(569);
-			rightFrame.setStyleAttribute("width:100%;height:100%");
+			if (iwc.isSafari())
+				rightFrame.setStyleAttribute("width:100%;height:570px");
+			else
+				rightFrame.setStyleAttribute("width:100%;height:100%");
 			rightFrame.setScrolling(IFrame.SCROLLING_YES);
 			mainTable.add(rightFrame, 2, 1);
 		}
