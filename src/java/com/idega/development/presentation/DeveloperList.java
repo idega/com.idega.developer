@@ -23,7 +23,6 @@ private IWBundle iwb;
   }
 
   public void main(ModuleInfo modinfo) {
-    super.main(modinfo);
     iwb = getBundle(modinfo);
     setLinkStyle("font-family: Verdana, Arial, sans-serif; font-weight: bold; font-size: 7pt; text-decoration: none;");
 
