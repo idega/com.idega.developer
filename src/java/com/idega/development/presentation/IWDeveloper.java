@@ -35,6 +35,7 @@ public class IWDeveloper extends JModuleObject {
     add(mainTable);
     menuTable = new Table();
     mainTable.add(menuTable,1,1);
+    mainTable.setVerticalAlignment(1,1,"top");
 
     addToMenu("Localizer",localizerParameter);
     addToMenu("Localeswitcher",localeswitcherParameter);

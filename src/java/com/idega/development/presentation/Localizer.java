@@ -50,12 +50,14 @@ public class Localizer extends ModuleObjectContainer {
       Form form = new Form();
       form.maintainParameter(IWDeveloper.actionParameter);
       add(form);
-      Table table = new Table(4,3);
-      form.add(table);
+      Table Frame = new Table();
+      Table table = new Table(3,5);
+      Frame.add(table,1,1);
+      form.add(Frame);
       table.add("Bundle",1,1);
-      table.add(bundlesDrop,1,1);
-      table.add("Locale",2,1);
-      table.add(localesDrop,2,1);
+      table.add(bundlesDrop,2,1);
+      table.add("Locale",1,2);
+      table.add(localesDrop,2,2);
 
       if(selectedBundle ==null){
         //stringsDrop = new DropdownMenu(stringsParameter);
@@ -76,7 +78,7 @@ public class Localizer extends ModuleObjectContainer {
           String oldStringValue = iwrb.getLocalizedString(stringsKey);
           if(areaText==null){
             ModuleObject area = getTextArea(areaParameter,oldStringValue);
-            table.add(area,3,2);
+            table.add(area,2,5);
           }
           else{
             if(areaText.equals("")){
@@ -87,7 +89,7 @@ public class Localizer extends ModuleObjectContainer {
               else{
                 area = getTextArea(areaParameter,"");
               }
-              table.add(area,3,2);
+              table.add(area,2,5);
             }
             else{
               ModuleObject area;
@@ -124,37 +126,37 @@ public class Localizer extends ModuleObjectContainer {
                   else{
                       area = getTextArea(areaParameter,oldStringValue);
                   }
-
                 }
-
               }
-
-               table.add(area,3,2);
+               table.add(area,2,5);
             }
 
           }
-          table.add(new SubmitButton("Save",subAction,"save"),3,2);
-          table.add("New String key",1,2);
+          table.add(new SubmitButton("Save",subAction,"save"),2,5);
+          table.add("New String key",1,4);
+          table.add("New String value",1,5);
           TextInput newInput = new TextInput(newStringKeyParameter);
-          table.add(newInput,1,2);
+          table.add(newInput,2,4);
         }
         else{
-          table.add(getTextArea(areaParameter,""),2,2);
-          table.add(new SubmitButton("Save",subAction,"save"),3,2);
-          table.add("New String key",1,2);
+          table.add(getTextArea(areaParameter,""),2,5);
+          table.add(new SubmitButton("Save",subAction,"save"),2,5);
+          table.add("New String key",1,4);
+          table.add("New String value",1,5);
           TextInput newInput = new TextInput(newStringKeyParameter);
-          table.add(newInput,1,2);
+          table.add(newInput,2,4);
         }
 
         //table.add(new SubmitButton("Select Locale",subAction,"select"),2,1);
-        table.add("String",3,1);
+        table.add("String",1,3);
+        table.add("New String key",1,4);
         stringsDrop = this.getLocalizeableStringsMenu(iwma,selectedBundle,stringsParameter);
         stringsDrop.keepStatusOnAction();
         stringsDrop.setToSubmit();
-        table.add(stringsDrop,3,1);
+        table.add(stringsDrop,2,3);
         //table.add(new SubmitButton("Choose String",subAction,"choose"),3,1);
 
-        table.add(this.getLocalizeableStringsTable(iwma,selectedBundle,iwrb),2,3);
+        Frame.add(this.getLocalizeableStringsTable(iwma,selectedBundle,iwrb),1,2);
 
       }
 
