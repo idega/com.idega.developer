@@ -11,8 +11,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import com.idega.core.component.data.*;
-import com.idega.core.data.*;
+import com.idega.core.component.data.BundleComponent;
+import com.idega.core.component.data.ICObject;
+import com.idega.core.component.data.ICObjectType;
+import com.idega.core.component.data.ICObjectTypeHome;
 import com.idega.data.IDOLookup;
 
 /**
