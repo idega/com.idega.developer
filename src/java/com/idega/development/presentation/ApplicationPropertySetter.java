@@ -24,6 +24,8 @@ public class ApplicationPropertySetter extends JModuleObject {
   private static final String APPLICATION_SETTER_PARAMETER = "iw_a_p_s";
   private static final String PROPERTY_KEY_NAME_PARAMETER="iw_a_p_s_k";
   private static final String PROPERTY_VALUE_PARAMETER="iw_a_p_s_v";
+  private static final String ENTITY_AUTOCREATE_PARAMETER="iw_e_a_c_p";
+
 
   public ApplicationPropertySetter() {
   }
@@ -37,7 +39,7 @@ public class ApplicationPropertySetter extends JModuleObject {
       Form form = new Form();
       form.maintainParameter(IWDeveloper.actionParameter);
       add(form);
-      Table table = new Table(3,2);
+      Table table = new Table(3,4);
       form.add(table);
       TextInput name = new TextInput(this.PROPERTY_KEY_NAME_PARAMETER);
       TextInput value = new TextInput(this.PROPERTY_VALUE_PARAMETER);
@@ -48,7 +50,13 @@ public class ApplicationPropertySetter extends JModuleObject {
       table.add(name,1,2);
       table.add("Property Key Value",2,2);
       table.add(value,2,2);
-      table.add(new SubmitButton("Save",APPLICATION_SETTER_PARAMETER,"save"),3,2);
+      CheckBox box = new CheckBox(ENTITY_AUTOCREATE_PARAMETER);
+      if(iwma.getSettings().getIfEntityAutoCreate()){
+       box.setChecked(true);
+      }
+      table.add("Autocreate Data Entities",1,3);
+      table.add(box,2,3);
+      table.add(new SubmitButton("Save",APPLICATION_SETTER_PARAMETER,"save"),3,4);
 
       doBusiness(modinfo);
   }
@@ -56,9 +64,18 @@ public class ApplicationPropertySetter extends JModuleObject {
   private void doBusiness(ModuleInfo modinfo){
       String bundleIdentifier = modinfo.getParameter(APPLICATION_SETTER_PARAMETER);
       if(bundleIdentifier!=null){
+        String entityAutoCreate = modinfo.getParameter(ENTITY_AUTOCREATE_PARAMETER);
         String KeyName = modinfo.getParameter(this.PROPERTY_KEY_NAME_PARAMETER);
         String KeyValue = modinfo.getParameter(this.PROPERTY_VALUE_PARAMETER);
         modinfo.getApplication().getSettings().setProperty(KeyName,KeyValue);
+        if(entityAutoCreate!=null){
+          if(entityAutoCreate.equalsIgnoreCase("Y")){
+            modinfo.getApplication().getSettings().setEntityAutoCreation(true);
+          }
+          else{
+            modinfo.getApplication().getSettings().setEntityAutoCreation(true);
+          }
+        }
         add("Property set successfully");
       }
   }
@@ -73,4 +90,6 @@ public class ApplicationPropertySetter extends JModuleObject {
     }
     return down;
   }
+
+
 }
