@@ -10,6 +10,7 @@ import com.idega.presentation.ui.DropdownMenu;
 import java.util.Locale;
 import java.util.List;
 import java.util.Iterator;
+import java.util.Enumeration;
 import com.idega.util.LocaleUtil;
 
 /**
@@ -40,12 +41,18 @@ public class LocaleSwitcher extends PresentationObjectContainer {
       DropdownMenu localesDrop = Localizer.getAvailableLocalesDropdown(iwma,localesParameter);
       localesDrop.keepStatusOnAction();
       localesDrop.setToSubmit();
+      localesDrop.setSelectedElement(iwc.getCurrentLocale().toString());
 
       Form form = new Form();
       form.maintainParameter(IWDeveloper.actionParameter);
       add(form);
       form.add(IWDeveloper.getText("Select language:&nbsp;&nbsp;"));
       form.add(localesDrop);
+
+      Enumeration enum = iwc.getParameterNames();
+      while (enum.hasMoreElements()) {
+        form.maintainParameter((String)enum.nextElement());
+      }
 
       doBusiness(iwc);
 
