@@ -312,6 +312,7 @@ public class NewComponentPropertyWindow extends Window {
       String name = method.getName();
       if(name.startsWith("set")){
         m.put(name,method);
+        System.out.println("Putting method for "+name);
       }
     }
   }
@@ -331,7 +332,7 @@ public class NewComponentPropertyWindow extends Window {
         while (!introspectionClass.equals(stopClass)) {
           Method[] newMethods = introspectionClass.getMethods();
           //System.out.println("newMethods.length="+newMethods.length);
-          if(methods==null){
+          /*if(methods==null){
             methods = newMethods;
             //System.out.println("NewComponentPropertyWindow 1 for: "+introspectionClass.getName());
           }
@@ -341,10 +342,9 @@ public class NewComponentPropertyWindow extends Window {
             Method[] newArray = new Method[oldLength+newMethods.length];
             System.arraycopy(methods,0,newArray,0,oldLength);
             System.arraycopy(newMethods,0,newArray,oldLength,newMethods.length);
-            //methods = newArray;
-          }
+            methods = newArray;
+          }*/
           putMethodsInMap(methodsMap,newMethods);
-
           introspectionClass = introspectionClass.getSuperclass();
         }
 
@@ -352,7 +352,7 @@ public class NewComponentPropertyWindow extends Window {
       catch(Exception e){
         e.printStackTrace();
       }
-      methods = (Method[])methodsMap.entrySet().toArray(new Method[0]);
+      methods = (Method[])methodsMap.values().toArray(new Method[0]);
       java.util.Arrays.sort(methods,com.idega.util.Comparators.getMethodComparator());
       //MethodDescriptor[] descriptors = info.getMethodDescriptors();
       //java.util.Arrays.sort(descriptors,com.idega.util.Comparators.getMethodDescriptorComparator());
