@@ -55,7 +55,6 @@ public class Localizer extends PresentationObjectContainer {
 
 		DropdownMenu stringsDrop;
 
-		String selectedLocale = iwc.getParameter(localesParameter);
 		String selectedBundle = iwc.getParameter(bundlesParameter);
 
 		Link templateLink = new Link();

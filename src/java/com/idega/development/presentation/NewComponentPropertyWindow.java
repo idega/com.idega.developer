@@ -1,6 +1,5 @@
 package com.idega.development.presentation;
 
-import java.beans.BeanInfo;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -64,7 +63,6 @@ public class NewComponentPropertyWindow extends Window {
       add(form);
       Table t = new Table();
       form.add(t);
-      IWBundle iwb = getSelectedBundle(iwc);
       String component = getSelectedComponent(iwc);
       String method = getSelectedMethod(iwc);
       boolean methodSelected = false;
@@ -324,7 +322,6 @@ public class NewComponentPropertyWindow extends Window {
 
   public DropdownMenu getMethodsDropdown(String selectedComponentKey,String name){
       Class selectedClass=null;
-      BeanInfo info = null;
       Method[] methods = null;
       Map methodsMap = new HashMap();
       try{

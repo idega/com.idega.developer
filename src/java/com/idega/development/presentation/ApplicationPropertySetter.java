@@ -47,7 +47,7 @@ public class ApplicationPropertySetter extends Block {
 		doBusiness(iwc);
 
 		IWMainApplication iwma = iwc.getApplication();
-		DropdownMenu bundles = getRegisteredBundlesDropdown(iwma, APPLICATION_SETTER_PARAMETER);
+		//DropdownMenu bundles = getRegisteredBundlesDropdown(iwma, APPLICATION_SETTER_PARAMETER);
 
 		Form form = new Form();
 		form.maintainParameter(IWDeveloper.actionParameter);
@@ -186,8 +186,6 @@ public class ApplicationPropertySetter extends Block {
 		Form form = new Form();
 		Table table = new Table();
 
-		String localizedString;
-		String name;
 		String value;
 		IWProperty property;
 		int row = 1;

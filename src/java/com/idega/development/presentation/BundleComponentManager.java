@@ -125,10 +125,8 @@ public class BundleComponentManager extends Block {
 
 	private void doBusiness(IWContext iwc, IWBundle iwb) throws Exception {
 		String save = iwc.getParameter("Save");
-		String reload = iwc.getParameter("Reload");
 
 		if ((iwb != null) && (save != null)) {
-
 			String newComponentClass = iwc.getParameter(this.CLASS_INPUT_NAME);
 			if (newComponentClass == null) {
 				newComponentClass = StringHandler.EMPTY_STRING;

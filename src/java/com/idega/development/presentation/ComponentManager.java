@@ -133,10 +133,10 @@ public class ComponentManager extends Block {
 					String selectedMethodDesc = iwc.getParameter(METHOD_DESCRIPTION_PARAMETER);
 					if (selectedMethodDesc != null) {
 						if (!selectedMethodDesc.equals("")) {
-							boolean multivalued = false;
+							/*boolean multivalued = false;
 							if (iwc.isParameterSet(IBPropertyHandler.METHOD_PROPERTY_ALLOW_MULTIVALUED)) {
 								multivalued = true;
-							}
+							}*/
 							String parameterString = OPTIONS_PARAMETER;
 							Map m = parseOptions(iwc, parameterString);
 							doBusiness(iwb, selectedComponentKey, selectedMethodIdentifier, selectedMethodDesc, m);
