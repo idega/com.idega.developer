@@ -28,19 +28,19 @@ private IWBundle iwb;
 
     Image image = iwb.getImage("/developer/listbutton.gif","",13,13);
 
-    addToList(Localizer.class,image,getClassName(Localizer.class),IWDeveloper.frameName);
-    addToList(LocaleSwitcher.class,image,getClassName(LocaleSwitcher.class),IWDeveloper.frameName);
-    addToList(LocaleSetter.class,image,getClassName(LocaleSetter.class),IWDeveloper.frameName);
-    addToList(BundleCreator.class,image,getClassName(BundleCreator.class),IWDeveloper.frameName);
-    addToList(BundlePropertySetter.class,image,getClassName(BundlePropertySetter.class),IWDeveloper.frameName);
-    addToList(BundleComponentManager.class,image,"BundleComponents",IWDeveloper.frameName);
-    addToList(ComponentManager.class,image,getClassName(ComponentManager.class),IWDeveloper.frameName);
-    addToList(ApplicationPropertySetter.class,image,getClassName(ApplicationPropertySetter.class),IWDeveloper.frameName);
-    addToList(DBPoolStatusViewer.class,image,getClassName(DBPoolStatusViewer.class),IWDeveloper.frameName);
-    addToList(SQLQueryer.class,image,getClassName(SQLQueryer.class),IWDeveloper.frameName);
-    addToList(ApplicationStatus.class,image,getClassName(ApplicationStatus.class),IWDeveloper.frameName);
+    addToList(Localizer.class,image,"Localizer",IWDeveloper.frameName);
+    addToList(LocaleSwitcher.class,image,"Locale Switcher",IWDeveloper.frameName);
+    addToList(LocaleSetter.class,image,"Locale Setter",IWDeveloper.frameName);
+    addToList(BundleCreator.class,image,"Bundle Creator",IWDeveloper.frameName);
+    addToList(BundlePropertySetter.class,image,"Bundle Property Setter",IWDeveloper.frameName);
+    addToList(BundleComponentManager.class,image,"Bundle Components",IWDeveloper.frameName);
+    addToList(ComponentManager.class,image,"Component Manager",IWDeveloper.frameName);
+    addToList(ApplicationPropertySetter.class,image,"Application Property Setter",IWDeveloper.frameName);
+    addToList(DBPoolStatusViewer.class,image,"DBPool Status Viewer",IWDeveloper.frameName);
+    addToList(SQLQueryer.class,image,"SQL Queryer",IWDeveloper.frameName);
+    addToList(ApplicationStatus.class,image,"Application Status",IWDeveloper.frameName);
 
-    setZebraColors("#FFFFFF","#ECECEC");
+    setZebraColors("#B0B29D","#B0B29D");
   }
 
   private String getClassName(Class listClass) {

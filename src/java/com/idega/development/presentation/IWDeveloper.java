@@ -33,7 +33,7 @@ public class IWDeveloper extends com.idega.presentation.app.IWApplication {
   public IWDeveloper() {
     super("idegaWeb Developer");
     add(IWDeveloper.IWDevPage.class);
-    super.setResizable(false);
+    super.setResizable(true);
     super.setScrollbar(false);
     super.setScrolling(1,false);
     super.setWidth(800);
@@ -58,8 +58,8 @@ public class IWDeveloper extends com.idega.presentation.app.IWApplication {
       mainTable = new Table(2,1);
 	mainTable.setHeight("100%");
 	mainTable.setWidth("100%");
-	mainTable.setWidth(1,"200");
-	mainTable.setWidth(2,"100%");
+	mainTable.setWidth(1,"170");
+	//mainTable.setWidth(2,"100%");
 	mainTable.setCellpadding(3);
 	mainTable.setCellspacing(0);
 	mainTable.setAlignment(1,1,"center");
@@ -69,15 +69,13 @@ public class IWDeveloper extends com.idega.presentation.app.IWApplication {
 	mainTable.setColor("#B0B29D");
       add(mainTable);
 
-      IFrame menuFrame = new IFrame("menu",DeveloperList.class);
-	menuFrame.setWidth(200);
-	menuFrame.setHeight(215);
-	menuFrame.setScrolling(IFrame.SCROLLING_YES);
-      mainTable.add(menuFrame,1,1);
+      DeveloperList list = new DeveloperList();
+      mainTable.add(list,1,1);
 
-      rightFrame = new IFrame(frameName);
-      rightFrame.setWidth(588);
-      rightFrame.setHeight(569);
+      rightFrame = new IFrame(frameName,Localizer.class);
+      //rightFrame.setWidth(588);
+      //rightFrame.setHeight(569);
+      rightFrame.setStyleAttribute("width:100%;height:100%");
       rightFrame.setScrolling(IFrame.SCROLLING_YES);
       mainTable.add(rightFrame,2,1);
     }
