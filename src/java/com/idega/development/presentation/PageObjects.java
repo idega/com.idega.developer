@@ -51,7 +51,7 @@ public class PageObjects extends Block {
 		if (!iwc.isIE())
 			getParentPage().setBackgroundColor("#FFFFFF");
 		
-		String bundleIdentifier = iwc.getParameter(BUNDLE_PARAMETER);
+		//String bundleIdentifier = iwc.getParameter(BUNDLE_PARAMETER);
 		IWMainApplication iwma = iwc.getIWMainApplication();
 		DropdownMenu bundles = BundlePropertySetter.getRegisteredBundlesDropdown(iwma, BUNDLE_PARAMETER);
 		bundles.addMenuElementFirst("none", "none");
@@ -90,7 +90,7 @@ public class PageObjects extends Block {
 		add(Text.getBreak());
 		
 		IBPageObjectViewHome instanceHome = (IBPageObjectViewHome)IDOLookup.getHome(IBPageObjectView.class);
-		boolean showInstanceCount = false;
+		//boolean showInstanceCount = false;
 		boolean isObjectTypeSet = iwc.isParameterSet(PRM_TYPE);
 		String objectType = null;
 		if(isObjectTypeSet)
@@ -136,7 +136,7 @@ public class PageObjects extends Block {
 			Table T = new Table();
 			T.setColumns(6);
 			
-			int i = 0;
+			//int i = 0;
 			int row = 1;
 			int lastPageId = -1;
 			T.add(getHeader("Instance id"),1,row);
