@@ -89,6 +89,7 @@ public class LocaleSetter extends PresentationObjectContainer {
 				chk.setChecked(icLocale.getInUse());
 				if (javaLocale.equals(_coreLocale)) {
 					chk.setDisabled(true);
+					T.add(new HiddenInput("loc_chk" + count, String.valueOf(icLocale.getID())), 1, count);
 				}
 				T.add(chk, 1, count);
 				T.add(IWDeveloper.getText(javaLocale.getDisplayCountry()), 2, count);
