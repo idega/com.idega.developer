@@ -1,8 +1,8 @@
 package com.idega.development.presentation;
-import com.idega.block.beanshell.presentation.BeanShellScript;
 import com.idega.idegaweb.IWResourceBundle;
 import com.idega.presentation.Block;
 import com.idega.presentation.IWContext;
+import com.idega.util.reflect.MethodInvoker;
 /**
  * This block manages a list of available Beanshell scripts (end with .bsh) within bundles and includes a simple script editor and the possibility to run the scripts.
 *@author <a href="mailto:eiki@idega.is">Eirikur S. Hrafnsson</a>
@@ -20,11 +20,19 @@ public class ScriptManager extends Block {
 		IWResourceBundle iwrb = getResourceBundle(iwc);
 		if (iwc.isLoggedOn()) {
 		
-			BeanShellScript scriptEditor = new BeanShellScript();
-			scriptEditor.setToShowScriptEditor(true);
-			scriptEditor.addParameterToMaintain(IWDeveloper.PARAMETER_CLASS_NAME);
+		try{
+			Block scriptEditor = (Block)Class.forName("com.idega.block.beanshell.presentation.BeanShellScript").newInstance();
+			MethodInvoker invoker = MethodInvoker.getInstance();
 			
+			invoker.invokeMethodWithBooleanParameter(scriptEditor,"setToShowScriptEditor",true);
+			//scriptEditor.setToShowScriptEditor(true);
+			invoker.invokeMethodWithStringParameter(scriptEditor,"addParameterToMaintain",IWDeveloper.PARAMETER_CLASS_NAME);
+			//scriptEditor.addParameterToMaintain(IWDeveloper.PARAMETER_CLASS_NAME);
 			add(scriptEditor);
+		}
+		catch(ClassNotFoundException e){
+			this.add((iwrb.getLocalizedString("feature.beanshell.not.installed","You can not use this feature because you do not have the BeanShell module installed")));
+		}
 			
 		}
 		else {
