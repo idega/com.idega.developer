@@ -1,7 +1,5 @@
 package com.idega.development.presentation;
 
-import java.rmi.RemoteException;
-
 import com.idega.builder.presentation.IBAddModuleWindow;
 import com.idega.business.IBOLookup;
 import com.idega.core.localisation.presentation.LocalePresentationUtil;
