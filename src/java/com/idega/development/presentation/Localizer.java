@@ -180,6 +180,7 @@ public class Localizer extends PresentationObjectContainer {
       }
   }
 
+/*
   public static DropdownMenu getAvailableLocalesDropdown(IWMainApplication iwma,String name){
     List locales = ICLocaleBusiness.listOfLocalesJAVA();
     DropdownMenu down = new DropdownMenu(name);
@@ -189,6 +190,11 @@ public class Localizer extends PresentationObjectContainer {
       down.addMenuElement(item.toString(),item.getDisplayLanguage());
     }
     return down;
+  }
+*/
+
+  public static DropdownMenu getAvailableLocalesDropdown(IWMainApplication iwma,String name){
+    return ICLocaleBusiness.getAvailableLocalesDropdownStringKeyed(iwma,name);
   }
 
   public static Form getAvailableLocalesForm(IWContext iwc) {
