@@ -7,7 +7,7 @@
   <projects>
     <project>com.idega.core</project>
     <project>com.idega.builder</project>
-    <project>com.idega.block.beanshell</project>
+    <project>com.idega.user</project>
   </projects>
   <buildSpec>
     <buildCommand>
