@@ -102,6 +102,8 @@ public class BundleComponentFactory {
 		lookup.put(comp.type(),comp);
 		comp = new IWHandlerComponent();
 		lookup.put(comp.type(),comp);
+		comp = new IWSearchableComponent();
+		lookup.put(comp.type(),comp);
 	}
 	
 }
