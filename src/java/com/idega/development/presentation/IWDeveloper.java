@@ -66,7 +66,7 @@ public class IWDeveloper extends com.idega.presentation.app.IWApplication {
 			topLayer.setPositionType("fixed");
 			topLayer.setTopPosition(0);
 			topLayer.setLeftPosition(0);
-			topLayer.setAttribute("background-color", "#0E2456");
+			topLayer.setMarkupAttribute("background-color", "#0E2456");
 			topLayer.setWidth(Table.HUNDRED_PERCENT);
 			topLayer.setHeight(25);
 			add(topLayer);
@@ -91,8 +91,8 @@ public class IWDeveloper extends com.idega.presentation.app.IWApplication {
 			leftLayer.setPositionType("fixed");
 			leftLayer.setTopPosition(25);
 			leftLayer.setLeftPosition(0);
-			leftLayer.setAttribute("padding", "5px");
-			leftLayer.setAttribute("background-color", "#B0B29D");
+			leftLayer.setMarkupAttribute("padding", "5px");
+			leftLayer.setMarkupAttribute("background-color", "#B0B29D");
 			leftLayer.setWidth("180");
 			leftLayer.setHeight(Table.HUNDRED_PERCENT);
 			add(leftLayer);
@@ -104,7 +104,7 @@ public class IWDeveloper extends com.idega.presentation.app.IWApplication {
 			rightLayer.setZIndex(1);
 			rightLayer.setPositionType(Layer.ABSOLUTE);
 			rightLayer.setTopPosition(25);
-			rightLayer.setAttribute("padding", "5px");
+			rightLayer.setMarkupAttribute("padding", "5px");
 			if (iwc.isIE()) {
 				rightLayer.setBackgroundColor("#FFFFFF");
 				rightLayer.setWidth(Table.HUNDRED_PERCENT);
