@@ -35,13 +35,13 @@ public class BundleCreator extends JModuleObject {
       Table table = new Table(3,2);
       form.add(table);
       TextInput name = new TextInput(this.NEW_BUNDLE_NAME_PARAMETER);
-      TextInput path = new TextInput(this.NEW_BUNDLE_PATH_PARAMETER);
+      //TextInput path = new TextInput(this.NEW_BUNDLE_PATH_PARAMETER);
 
       table.add("Create New Bundle",1,1);
       table.add("Bundle Identifier",1,2);
       table.add(name,1,2);
-      table.add("Bundle Directory Name",2,2);
-      table.add(path,2,2);
+      //table.add("Bundle Directory Name",2,2);
+      //table.add(path,2,2);
       table.add(new Parameter(NEW_BUNDLE_PARAMETER,"dummy"));
       table.add(new SubmitButton("Create",this.NEW_BUNDLE_PARAMETER,"save"),3,2);
       doBusiness(modinfo);
@@ -51,7 +51,8 @@ public class BundleCreator extends JModuleObject {
       String check = modinfo.getParameter(NEW_BUNDLE_PARAMETER);
       if(check!=null){
         String bundleIdentifier = modinfo.getParameter(this.NEW_BUNDLE_NAME_PARAMETER);
-        String bundleDir = modinfo.getParameter(this.NEW_BUNDLE_PATH_PARAMETER);
+        //String bundleDir = modinfo.getParameter(this.NEW_BUNDLE_PATH_PARAMETER);
+        String bundleDir = bundleIdentifier+".bundle";
         IWMainApplication iwma = modinfo.getApplication();
         if(bundleDir.indexOf(IWMainApplication.BUNDLES_STANDARD_DIRECTORY)==-1){
           bundleDir=IWMainApplication.BUNDLES_STANDARD_DIRECTORY + File.separator + bundleDir;
