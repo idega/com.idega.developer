@@ -38,6 +38,7 @@ private IWBundle iwb;
     addToList(ApplicationPropertySetter.class,image,getClassName(ApplicationPropertySetter.class),IWDeveloper.frameName);
     addToList(DBPoolStatusViewer.class,image,getClassName(DBPoolStatusViewer.class),IWDeveloper.frameName);
     addToList(SQLQueryer.class,image,getClassName(SQLQueryer.class),IWDeveloper.frameName);
+    addToList(ApplicationStatus.class,image,getClassName(ApplicationStatus.class),IWDeveloper.frameName);
 
     setZebraColors("#FFFFFF","#ECECEC");
   }
