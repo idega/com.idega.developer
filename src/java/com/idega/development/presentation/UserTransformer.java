@@ -11,6 +11,7 @@ package com.idega.development.presentation;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.util.Date;
+import com.idega.core.accesscontrol.business.AccessController;
 import com.idega.data.DatastoreInterface;
 import com.idega.data.IDOLookup;
 import com.idega.data.SapDBDatastoreInterface;
@@ -154,6 +155,8 @@ public class UserTransformer extends Block{
 		String updateGroupAddressSQL = "update ic_group_address set ic_group_id = ? where ic_group_id = ?";
 		String updateGroupEmailSQL = "update ic_group_email set ic_group_id = ? where ic_group_id = ?";
 		String updateGroupPhoneSQL = "update ic_group_phone set ic_group_id = ? where ic_group_id = ?";
+		String updateGroupPermissionSQL = "update ic_permission set ic_group_id = ? where ic_group_id = ?";
+		String updateGroupPermissionSQL2 = "update ic_permission set PERMISSION_CONTEXT_VALUE = ? where PERMISSION_CONTEXT_VALUE = ? and PERMISSION_CONTEXT_TYPE = '"+AccessController.CATEGORY_STRING_GROUP_ID+"'";
 
 		String groupRelationNextValSQL = "select ic_group_relation_seq.NEXTVAL AS NEXTID FROM DUAL";
 
@@ -185,6 +188,8 @@ public class UserTransformer extends Block{
 			java.sql.PreparedStatement updateGroupAddress = conn.prepareStatement(updateGroupAddressSQL);
 			java.sql.PreparedStatement updateGroupEmail = conn.prepareStatement(updateGroupEmailSQL);
 			java.sql.PreparedStatement updateGroupPhone = conn.prepareStatement(updateGroupPhoneSQL);
+			java.sql.PreparedStatement updateGroupPermission = conn.prepareStatement(updateGroupPermissionSQL);
+			java.sql.PreparedStatement updateGroupPermission2 = conn.prepareStatement(updateGroupPermissionSQL2);
 			
 			java.sql.ResultSet rs = stmt.executeQuery(userSQL);
 			java.sql.ResultSet groupRS;
@@ -311,6 +316,14 @@ public class UserTransformer extends Block{
 						updateGroupPhone.setString(2, oldGroupPK);
 						updateGroupPhone.execute();
 	
+						updateGroupPermission.setString(1, newGroupPK);
+						updateGroupPermission.setString(2, oldGroupPK);
+						updateGroupPermission.execute();
+
+						updateGroupPermission2.setString(1, newGroupPK);
+						updateGroupPermission2.setString(2, oldGroupPK);
+						updateGroupPermission2.execute();
+						
 						group.setGroupType("ic_user_representative");
 						group.setName(firstName+" "+lastName);
 						group.setExtraInfo("UserTransformer, old group is now id = "+newGroupPK+", "+df.format(new Date()));
