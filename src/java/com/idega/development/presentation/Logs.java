@@ -54,25 +54,25 @@ public class Logs extends Block{
 
   }
   private void processBusiness(IWContext iwc,Table table) throws Exception{
-    String tomcatLogDir = System.getProperty("user.dir")+".."+FileUtil.getFileSeparator()+"logs"+FileUtil.getFileSeparator();
+    String tomcatLogDir = System.getProperty("user.dir")+FileUtil.getFileSeparator()+".."+FileUtil.getFileSeparator()+"logs"+FileUtil.getFileSeparator();
 
     if(iwc.isParameterSet(PARAM_VIEW_OUT_LOG)){
-      tomcatLogDir = tomcatLogDir+"logs.out";
+      tomcatLogDir = tomcatLogDir+"out.log";
       table.add("<pre>"+FileUtil.getStringFromFile(tomcatLogDir)+"</pre>",1,2);
     }
     else if( iwc.isParameterSet(PARAM_VIEW_ERR_LOG) ){
-      tomcatLogDir = tomcatLogDir+"logs.err";
+      tomcatLogDir = tomcatLogDir+"err.log";
       table.add("<pre>"+FileUtil.getStringFromFile(tomcatLogDir)+"</pre>",1,2);
     }
     else if( iwc.isParameterSet(PARAM_CLEAR_OUT_LOG) ){
-      tomcatLogDir = tomcatLogDir+"logs.out";
+      tomcatLogDir = tomcatLogDir+"out.log";
       FileUtil.delete(tomcatLogDir);
       FileUtil.createFile(tomcatLogDir);
       table.add("<b>Out log cleared!</b><br>",1,2);
       table.add("<pre>"+FileUtil.getStringFromFile(tomcatLogDir)+"</pre>",1,2);
     }
     else if( iwc.isParameterSet(PARAM_CLEAR_ERR_LOG) ){
-      tomcatLogDir = tomcatLogDir+"logs.err";
+      tomcatLogDir = tomcatLogDir+"err.log";
       FileUtil.delete(tomcatLogDir);
       FileUtil.createFile(tomcatLogDir);
       table.add("<b>Error log cleared!</b><br>",1,2);
