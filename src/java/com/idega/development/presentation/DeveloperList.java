@@ -4,6 +4,7 @@ import com.idega.presentation.FrameList;
 import com.idega.presentation.IWContext;
 import com.idega.presentation.Image;
 import com.idega.presentation.text.Link;
+import com.idega.core.localisation.presentation.*;
 import com.idega.idegaweb.IWBundle;
 
 /**

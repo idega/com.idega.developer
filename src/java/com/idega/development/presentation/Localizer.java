@@ -4,6 +4,8 @@ import java.util.Locale;
 
 import com.idega.builder.presentation.IBAddModuleWindow;
 import com.idega.core.localisation.business.ICLocaleBusiness;
+import com.idega.core.localisation.presentation.LocalePresentationUtil;
+import com.idega.core.localisation.presentation.LocaleSwitcher;
 import com.idega.idegaweb.IWBundle;
 import com.idega.idegaweb.IWMainApplication;
 import com.idega.idegaweb.IWResourceBundle;
@@ -50,7 +52,7 @@ public class Localizer extends PresentationObjectContainer {
 		DropdownMenu bundlesDrop = getRegisteredDropdown(iwma, bundlesParameter);
 		bundlesDrop.keepStatusOnAction();
 		bundlesDrop.setToSubmit();
-		DropdownMenu localesDrop = getAvailableLocalesDropdown(iwma, localesParameter);
+		DropdownMenu localesDrop = LocalePresentationUtil.getAvailableLocalesDropdown(iwma, localesParameter);
 		localesDrop.keepStatusOnAction();
 		localesDrop.setToSubmit();
 
@@ -193,49 +195,17 @@ public class Localizer extends PresentationObjectContainer {
 		}
 	}
 
-	/*
-	  public static DropdownMenu getAvailableLocalesDropdown(IWMainApplication iwma,String name){
-	    List locales = ICLocaleBusiness.listOfLocalesJAVA();
-	    DropdownMenu down = new DropdownMenu(name);
-	    Iterator iter = locales.iterator();
-	    while (iter.hasNext()) {
-	      Locale item = (Locale)iter.next();
-	      down.addMenuElement(item.toString(),item.getDisplayLanguage());
-	    }
-	    return down;
-	  }
-	*/
-
-	public static DropdownMenu getAvailableLocalesDropdown(IWMainApplication iwma, String name) {
-		return ICLocaleBusiness.getAvailableLocalesDropdownStringKeyed(iwma, name);
-	}
-
 	public static Form getAvailableLocalesForm(IWContext iwc) {
 		IWMainApplication iwma = iwc.getApplication();
 
 		Form myForm = new Form();
 		myForm.setEventListener(com.idega.core.localisation.business.LocaleSwitcher.class.getName());
-		DropdownMenu down = getAvailableLocalesDropdown(iwma, LocaleSwitcher.localesParameter);
+		DropdownMenu down = LocalePresentationUtil.getAvailableLocalesDropdown(iwma, LocaleSwitcher.localesParameter);
 		down.keepStatusOnAction();
 		down.setToSubmit();
 		myForm.add(down);
 
 		return myForm;
-	}
-
-	public static DropdownMenu getAvailableLocalesDropdown(IWContext iwc) {
-		IWMainApplication iwma = iwc.getApplication();
-
-		DropdownMenu down = getAvailableLocalesDropdown(iwma, com.idega.core.localisation.business.LocaleSwitcher.languageParameterString);
-		Locale l = iwc.getCurrentLocale();
-		if (l != null) {
-			down.setSelectedElement(l.toString());
-		}
-
-		down.keepStatusOnAction();
-		down.setToSubmit();
-
-		return down;
 	}
 
 	public static Table getLocalizeableStringsTable(IWContext iwc, IWMainApplication iwma, String bundleIdentifier, IWResourceBundle iwrb, String parameterName, Link templateLink) {
