@@ -182,6 +182,18 @@ public class Localizer extends ModuleObjectContainer {
     return down;
   }
 
+  public static Form getAvailableLocalesDropdown(ModuleInfo modinfo) {
+    IWMainApplication iwma = modinfo.getApplication();
+
+    Form myForm = new Form();
+    DropdownMenu down = getAvailableLocalesDropdown(iwma,LocaleSwitcher.localesParameter);
+      down.keepStatusOnAction();
+      down.setToSubmit();
+      myForm.add(down);
+
+    return myForm;
+  }
+
    public static Table getLocalizeableStringsTable(IWMainApplication iwma,String bundleIdentifier, IWResourceBundle iwrb,String parameterName,Link templateLink){
     IWBundle bundle = iwma.getBundle(bundleIdentifier);
     String[] strings = bundle.getLocalizableStrings();

@@ -24,7 +24,7 @@ import com.idega.util.LocaleUtil;
 public class LocaleSwitcher extends ModuleObjectContainer {
 
 
-  private static String localesParameter="iw_localeswitcher_locale";
+  public static String localesParameter="iw_localeswitcher_locale";
 
   private static String action = "iw_localeswitcher_sub_action";
 
