@@ -92,6 +92,7 @@ public class BundleComponentManager extends Block {
 	}
 
 	TextInput classesInput = new TextInput(CLASS_INPUT_NAME);
+	classesInput.setLength(40);
 
 	int index = 2;
 
@@ -118,7 +119,7 @@ public class BundleComponentManager extends Block {
 	table.add(classesInput,1,index);
 	table.add(typesDrop,2,index);
 
-	table.setAlignment(3,index+1,"right");
+	table.setColumnAlignment(3,"center");
 	table.add(new SubmitButton("Save","save"),3,index+1);
       }
   }
