@@ -91,7 +91,8 @@ public class BundlePropertySetter extends Block {
       if((bundleIdentifier!=null)&&(save!=null)){
 	String KeyName = iwc.getParameter(this.PROPERTY_KEY_NAME_PARAMETER);
 	String KeyValue = iwc.getParameter(this.PROPERTY_VALUE_PARAMETER);
-	bundle.setProperty(KeyName,KeyValue);
+	if ( KeyName != null && KeyName.length() > 0 )
+	  bundle.setProperty(KeyName,KeyValue);
 	bundle.storeState();
 	add(IWDeveloper.getText("Status: "));
 	add("Property set successfully and saved to files");
