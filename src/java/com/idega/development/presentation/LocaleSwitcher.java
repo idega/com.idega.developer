@@ -41,6 +41,7 @@ public class LocaleSwitcher extends com.idega.idegaweb.presentation.LocaleChange
 
   private void doDeveloperView(IWContext iwc){
     add(IWDeveloper.getTitleTable(this.getClass()));
+      getParentPage().setBackgroundColor("#FFFFFF");
     IWMainApplication iwma = iwc.getApplication();
 
     DropdownMenu localesDrop = Localizer.getAvailableLocalesDropdown(iwma,localesParameter);

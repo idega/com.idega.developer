@@ -39,6 +39,7 @@ public class ApplicationPropertySetter extends Block {
 
   public void main(IWContext iwc){
       add(IWDeveloper.getTitleTable(this.getClass()));
+      getParentPage().setBackgroundColor("#FFFFFF");
 
       doBusiness(iwc);
 

@@ -44,6 +44,7 @@ public class BundleComponentManager extends Block {
 
   public void main(IWContext iwc){
       add(IWDeveloper.getTitleTable(this.getClass()));
+      getParentPage().setBackgroundColor("#FFFFFF");
 
       IWMainApplication iwma = iwc.getApplication();
       DropdownMenu bundles = BundlePropertySetter.getRegisteredBundlesDropdown(iwma,BUNDLE_PARAMETER);

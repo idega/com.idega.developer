@@ -29,6 +29,7 @@ public class BundleCreator extends Block {
 
   public void main(IWContext iwc)throws Exception{
       add(IWDeveloper.getTitleTable(this.getClass()));
+      getParentPage().setBackgroundColor("#FFFFFF");
 
       Form form = new Form();
       form.maintainParameter(IWDeveloper.actionParameter);

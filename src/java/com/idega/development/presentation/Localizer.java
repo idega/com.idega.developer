@@ -37,6 +37,7 @@ public class Localizer extends PresentationObjectContainer {
 
   public void main(IWContext iwc){
       add(IWDeveloper.getTitleTable(this.getClass()));
+      getParentPage().setBackgroundColor("#FFFFFF");
 
       IWMainApplication iwma = iwc.getApplication();
       DropdownMenu bundlesDrop = getRegisteredDropdown(iwma,bundlesParameter);
