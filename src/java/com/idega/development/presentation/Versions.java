@@ -86,11 +86,11 @@ public class Versions extends Block {
     
     add(table);
     
-    Package packages[] = Package.getPackages();
-    for (int i = 0; i < packages.length; i++) {
-    	Package p = packages[i];
-    	System.out.println("Name : " + p.getName());	
-    }
+//    Package packages[] = Package.getPackages();
+//    for (int i = 0; i < packages.length; i++) {
+//    	Package p = packages[i];
+//    	System.out.println("Name : " + p.getName());	
+//    }
   }
 
 	/**
