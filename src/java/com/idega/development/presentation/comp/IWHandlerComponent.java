@@ -6,7 +6,7 @@
  */
 package com.idega.development.presentation.comp;
 
-import com.idega.core.builder.data.ICPropertyHandler;
+import com.idega.core.builder.presentation.ICPropertyHandler;
 import com.idega.core.component.data.BundleComponent;
 import com.idega.core.component.data.ICObjectBMPBean;
 
