@@ -33,6 +33,8 @@ public class LocaleSwitcher extends ModuleObjectContainer {
   }
 
   public void main(ModuleInfo modinfo){
+      add(IWDeveloper.getTitleTable(this.getClass()));
+
       IWMainApplication iwma = modinfo.getApplication();
 
       DropdownMenu localesDrop = Localizer.getAvailableLocalesDropdown(iwma,localesParameter);
@@ -42,11 +44,13 @@ public class LocaleSwitcher extends ModuleObjectContainer {
       Form form = new Form();
       form.maintainParameter(IWDeveloper.actionParameter);
       add(form);
+      form.add(IWDeveloper.getText("Select language:&nbsp;&nbsp;"));
       form.add(localesDrop);
 
       doBusiness(modinfo);
 
-      add("Current Locale: "+modinfo.getCurrentLocale().getDisplayName()+" ("+modinfo.getCurrentLocale().toString()+")");
+      add(IWDeveloper.getText("Current Locale:&nbsp;&nbsp;"));
+      add(modinfo.getCurrentLocale().getDisplayName()+" ("+modinfo.getCurrentLocale().toString()+")");
   }
 
   private void doBusiness(ModuleInfo modinfo){
@@ -58,5 +62,4 @@ public class LocaleSwitcher extends ModuleObjectContainer {
         }
       }
   }
-
 }

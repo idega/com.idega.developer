@@ -42,8 +42,7 @@ public class ComponentManager extends JModuleObject {
   }
 
   public void main(ModuleInfo modinfo){
-
-
+      add(IWDeveloper.getTitleTable(this.getClass()));
 
       IWMainApplication iwma = modinfo.getApplication();
       DropdownMenu bundles = BundlePropertySetter.getRegisteredBundlesDropdown(iwma,BUNDLE_PARAMETER);
@@ -54,13 +53,17 @@ public class ComponentManager extends JModuleObject {
       form.maintainParameter(IWDeveloper.actionParameter);
       add(form);
       Table table = new Table();
+        table.setCellpadding(5);
+      Table selectTable = new Table(3,1);
+      form.add(selectTable);
+      form.add(Text.getBreak());
+      form.add(Text.getBreak());
       form.add(table);
 
-
-      table.add("Bundle:",1,1);
-      table.add(bundles,1,1);
+      selectTable.add(IWDeveloper.getText("Bundle:"),1,1);
+      selectTable.add(bundles,2,1);
       SubmitButton button1 = new SubmitButton("Go");
-      table.add(button1,1,1);
+      selectTable.add(button1,3,1);
 
       String bundleIdentifier = modinfo.getParameter(BUNDLE_PARAMETER);
 
@@ -76,7 +79,6 @@ public class ComponentManager extends JModuleObject {
           e.printStackTrace();
         }
 
-
         DropdownMenu typesDrop = new DropdownMenu(this.TYPE_INPUT_NAME);
         List componentTypes = ICObject.getAvailableComponentTypes();
         Iterator iter = componentTypes.iterator();
@@ -90,14 +92,11 @@ public class ComponentManager extends JModuleObject {
 
         TextInput classesInput = new TextInput(CLASS_INPUT_NAME);
 
+        int index = 2;
 
-
-        int index = 3;
-
-        table.add("ClassName: ",1,2);
-        table.add("Type: ",2,2);
-        table.add("Remove ?",3,2);
-
+        table.add(IWDeveloper.getText("ClassName: "),1,1);
+        table.add(IWDeveloper.getText("Type: "),2,1);
+        table.add(IWDeveloper.getText("Remove?"),3,1);
 
         List compList = iwb.getComponentKeys();
         Iterator compIter = compList.iterator();
@@ -105,8 +104,8 @@ public class ComponentManager extends JModuleObject {
           String className = (String)compIter.next();
           String type = iwb.getComponentType(className);
 
-          table.add(className,1,index);
-          table.add(type,2,index);
+          table.add(getSmallText(className),1,index);
+          table.add(getSmallText(type),2,index);
 
           CheckBox rowBox = (CheckBox)deleteBox.clone();
           rowBox.setContent(className);
@@ -115,26 +114,17 @@ public class ComponentManager extends JModuleObject {
           index++;
         }
 
-
         table.add(classesInput,1,index);
         table.add(typesDrop,2,index);
 
-
+        table.setAlignment(3,index+1,"right");
         table.add(new SubmitButton("Save","save"),3,index+1);
-
       }
-
-  }
-
-  private void getClassEditView(ModuleInfo modinfo){
-
   }
 
   private void doBusiness(ModuleInfo modinfo,IWBundle iwb)throws Exception{
-
       String save = modinfo.getParameter("Save");
       String reload = modinfo.getParameter("Reload");
-      //IWMainApplication iwma = modinfo.getApplication();
 
       if((iwb!=null)&&(save!=null)){
 
@@ -167,26 +157,10 @@ public class ComponentManager extends JModuleObject {
       }
   }
 
-  /*
-   public static Table getParametersTable(IWMainApplication iwma,String bundleIdentifier){
-    IWBundle bundle = iwma.getBundle(bundleIdentifier);
-    String[] strings = bundle.getAvailableProperties();
-
-    Table table = new Table(2,strings.length);
-    String localizedString;
-    Text name;
-    for (int i = 0; i < strings.length; i++) {
-      name = new Text(strings[i],true,false,false);
-      table.add(name,1,i+1);
-      localizedString = bundle.getProperty( strings[i] );
-      if (localizedString==null) localizedString = "";
-      table.add(localizedString ,2,i+1);
-    }
-
-    table.setWidth(300);
-    table.setColor("#9FA9B3");
-
-    return table;
+  private Text getSmallText(String text) {
+    Text T = new Text(text);
+      T.setFontFace(Text.FONT_FACE_VERDANA);
+      T.setFontSize(Text.FONT_SIZE_7_HTML_1);
+    return T;
   }
-  */
 }

@@ -31,37 +31,39 @@ public class ApplicationPropertySetter extends JModuleObject {
   }
 
   public void main(ModuleInfo modinfo){
+      add(IWDeveloper.getTitleTable(this.getClass()));
 
       doBusiness(modinfo);
 
       IWMainApplication iwma = modinfo.getApplication();
       DropdownMenu bundles = getRegisteredBundlesDropdown(iwma,APPLICATION_SETTER_PARAMETER);
 
-
       Form form = new Form();
       form.maintainParameter(IWDeveloper.actionParameter);
       add(form);
-      Table table = new Table(3,5);
+      Table table = new Table(2,5);
+        table.setCellpadding(5);
+        table.mergeCells(1,1,2,1);
+        table.mergeCells(1,5,2,5);
+        table.setAlignment(1,5,"right");
       form.add(table);
       TextInput name = new TextInput(this.PROPERTY_KEY_NAME_PARAMETER);
       TextInput value = new TextInput(this.PROPERTY_VALUE_PARAMETER);
 
-      table.add("Set ApplicationProperty",1,1);
+      table.add(IWDeveloper.getText("Set ApplicationProperty"),1,1);
 
-      table.add("Property Key Name",1,2);
-      table.add(name,1,2);
-      table.add("Property Key Value",2,2);
-      table.add(value,2,2);
+      table.add(IWDeveloper.getText("Property Key Name:"),1,2);
+      table.add(name,2,2);
+      table.add(IWDeveloper.getText("Property Key Value:"),1,3);
+      table.add(value,2,3);
       CheckBox box = new CheckBox(ENTITY_AUTOCREATE_PARAMETER);
       if(iwma.getSettings().getIfEntityAutoCreate()){
        box.setChecked(true);
       }
-      table.add("Autocreate Data Entities",1,3);
-      table.add(box,2,3);
-      table.add(new SubmitButton("Save",APPLICATION_SETTER_PARAMETER,"save"),3,4);
-      table.add(new SubmitButton("Store Application state",APPLICATION_SETTER_PARAMETER,"store"),3,5);
-
-
+      table.add(IWDeveloper.getText("Autocreate Data Entities:"),1,4);
+      table.add(box,2,4);
+      table.add(new SubmitButton("Save",APPLICATION_SETTER_PARAMETER,"save"),1,5);
+      table.add(new SubmitButton("Store Application state",APPLICATION_SETTER_PARAMETER,"store"),1,5);
   }
 
   private void doBusiness(ModuleInfo modinfo){
@@ -83,6 +85,7 @@ public class ApplicationPropertySetter extends JModuleObject {
           modinfo.getApplication().storeStatus();
         }
 
+        add(IWDeveloper.getText("Status: "));
         add("Property set successfully");
       }
   }
@@ -97,6 +100,4 @@ public class ApplicationPropertySetter extends JModuleObject {
     }
     return down;
   }
-
-
 }

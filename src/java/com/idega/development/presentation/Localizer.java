@@ -34,7 +34,7 @@ public class Localizer extends ModuleObjectContainer {
   }
 
   public void main(ModuleInfo modinfo){
-      add(new Text(this.getName()));
+      add(IWDeveloper.getTitleTable(this.getClass()));
 
       IWMainApplication iwma = modinfo.getApplication();
       DropdownMenu bundlesDrop = getRegisteredDropdown(iwma,bundlesParameter);
@@ -58,17 +58,21 @@ public class Localizer extends ModuleObjectContainer {
       form.maintainParameter(IWDeveloper.actionParameter);
       add(form);
       Table Frame = new Table();
-      Table table = new Table(3,5);
+      Table table = new Table(2,6);
+        table.setAlignment(2,6,"right");
+        table.setColumnVerticalAlignment(1,"top");
+        table.setWidth(1,"150");
       Frame.add(table,1,1);
       form.add(Frame);
-      table.add("Bundle",1,1);
+      table.add(IWDeveloper.getText("Bundle:"),1,1);
       table.add(bundlesDrop,2,1);
-      table.add("Locale",1,2);
+      table.add(IWDeveloper.getText("Locale:"),1,2);
       table.add(localesDrop,2,2);
 
       if(selectedBundle ==null){
         //stringsDrop = new DropdownMenu(stringsParameter);
-        table.add(new SubmitButton("Get Available Keys",subAction,"choose"),2,1);
+        table.setAlignment(2,3,"right");
+        table.add(new SubmitButton("Get Available Keys",subAction,"choose"),2,3);
       }
       else{
 
@@ -144,31 +148,33 @@ public class Localizer extends ModuleObjectContainer {
             }
 
           }
-          table.add(new SubmitButton("Save",subAction,"save"),2,5);
-          table.add(new SubmitButton("Delete",subAction,"delete"),2,5);
-          table.add("New String key",1,4);
-          table.add("New String value",1,5);
+          table.add(new SubmitButton("Save",subAction,"save"),2,6);
+          table.add(new SubmitButton("Delete",subAction,"delete"),2,6);
+          table.add(IWDeveloper.getText("New String key:"),1,4);
+          table.add(IWDeveloper.getText("New String value:"),1,5);
           TextInput newInput = new TextInput(newStringKeyParameter);
           table.add(newInput,2,4);
         }
         else{
           table.add(getTextArea(areaParameter,""),2,5);
-          table.add(new SubmitButton("Save",subAction,"save"),2,5);
-          table.add("New String key",1,4);
-          table.add("New String value",1,5);
+          table.add(new SubmitButton("Save",subAction,"save"),2,6);
+          table.add(IWDeveloper.getText("New String key:"),1,4);
+          table.add(IWDeveloper.getText("New String value:"),1,5);
           TextInput newInput = new TextInput(newStringKeyParameter);
           table.add(newInput,2,4);
         }
 
         //table.add(new SubmitButton("Select Locale",subAction,"select"),2,1);
-        table.add("String",1,3);
+        table.add(IWDeveloper.getText("String:"),1,3);
         stringsDrop = this.getLocalizeableStringsMenu(iwma,selectedBundle,stringsParameter);
         stringsDrop.keepStatusOnAction();
         stringsDrop.setToSubmit();
         table.add(stringsDrop,2,3);
         //table.add(new SubmitButton("Choose String",subAction,"choose"),3,1);
 
-        Frame.add(this.getLocalizeableStringsTable(iwma,selectedBundle,iwrb,stringsParameter,templateLink),1,2);
+        Frame.add(IWDeveloper.getText("Available Strings:"),1,3);
+        Frame.add(Text.getBreak(),1,3);
+        Frame.add(this.getLocalizeableStringsTable(iwma,selectedBundle,iwrb,stringsParameter,templateLink),1,3);
 
       }
   }
@@ -211,6 +217,8 @@ public class Localizer extends ModuleObjectContainer {
     IWBundle bundle = iwma.getBundle(bundleIdentifier);
     String[] strings = bundle.getLocalizableStrings();
     Table table = new Table(2,strings.length);
+      table.setColumnVerticalAlignment(1,"top");
+      table.setCellpadding(5);
     String localizedString;
     Link name;
     for (int i = 0; i < strings.length; i++) {
@@ -225,7 +233,7 @@ public class Localizer extends ModuleObjectContainer {
       if (localizedString==null) localizedString = "";
       table.add(localizedString ,2,i+1);
     }
-    table.setWidth(300);
+    table.setWidth(400);
     table.setColor("#9FA9B3");
     return table;
   }
@@ -275,5 +283,4 @@ public class Localizer extends ModuleObjectContainer {
       area.setWidth(30);
       return area;
   }
-
 }

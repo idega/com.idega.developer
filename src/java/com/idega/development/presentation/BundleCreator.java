@@ -28,22 +28,24 @@ public class BundleCreator extends JModuleObject {
   }
 
   public void main(ModuleInfo modinfo)throws Exception{
+      add(IWDeveloper.getTitleTable(this.getClass()));
 
       Form form = new Form();
       form.maintainParameter(IWDeveloper.actionParameter);
       add(form);
-      Table table = new Table(3,2);
+      Table table = new Table(2,3);
+        table.setAlignment(2,3,"right");
       form.add(table);
       TextInput name = new TextInput(this.NEW_BUNDLE_NAME_PARAMETER);
       //TextInput path = new TextInput(this.NEW_BUNDLE_PATH_PARAMETER);
 
-      table.add("Create New Bundle",1,1);
-      table.add("Bundle Identifier",1,2);
-      table.add(name,1,2);
+      table.add(IWDeveloper.getText("Create New Bundle"),1,1);
+      table.add(IWDeveloper.getText("Bundle Identifier"),1,2);
+      table.add(name,2,2);
       //table.add("Bundle Directory Name",2,2);
       //table.add(path,2,2);
       table.add(new Parameter(NEW_BUNDLE_PARAMETER,"dummy"));
-      table.add(new SubmitButton("Create",this.NEW_BUNDLE_PARAMETER,"save"),3,2);
+      table.add(new SubmitButton("Create",this.NEW_BUNDLE_PARAMETER,"save"),2,3);
       doBusiness(modinfo);
   }
 
@@ -58,9 +60,7 @@ public class BundleCreator extends JModuleObject {
           bundleDir=IWMainApplication.BUNDLES_STANDARD_DIRECTORY + File.separator + bundleDir;
         }
         iwma.registerBundle(bundleIdentifier,bundleDir);
-        add("Creation Successful");
+        add(IWDeveloper.getText("Creation Successful"));
       }
   }
-
-
 }

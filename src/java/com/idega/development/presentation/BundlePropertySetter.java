@@ -7,6 +7,7 @@ import com.idega.idegaweb.IWMainApplication;
 import com.idega.idegaweb.IWBundle;
 import java.util.List;
 import java.util.Iterator;
+import com.idega.idegaweb.IWBundle;
 
 /**
  * Title:        idega Framework
@@ -21,46 +22,50 @@ import java.util.Iterator;
 
 public class BundlePropertySetter extends JModuleObject {
 
+  private final static String IW_BUNDLE_IDENTIFIER="com.idega.core";
   private static final String BUNDLE_PARAMETER = "iw_b_p_s";
   private static final String PROPERTY_KEY_NAME_PARAMETER="iw_b_p_s_k";
   private static final String PROPERTY_VALUE_PARAMETER="iw_b_p_s_v";
+  private Table table;
+  private IWBundle iwb;
 
   public BundlePropertySetter() {
   }
 
   public void main(ModuleInfo modinfo){
+    iwb = getBundle(modinfo);
+    add(IWDeveloper.getTitleTable(this.getClass()));
 
-      IWMainApplication iwma = modinfo.getApplication();
-      DropdownMenu bundles = getRegisteredBundlesDropdown(iwma,BUNDLE_PARAMETER);
-      bundles.keepStatusOnAction();
-      bundles.setToSubmit();
+    IWMainApplication iwma = modinfo.getApplication();
+    DropdownMenu bundles = getRegisteredBundlesDropdown(iwma,BUNDLE_PARAMETER);
+    bundles.keepStatusOnAction();
+    bundles.setToSubmit();
 
-      Form form = new Form();
-      form.maintainParameter(IWDeveloper.actionParameter);
-      add(form);
-      Table table = new Table(3,3);
-      form.add(table);
-      form.setMethod("GET");
-      TextInput name = new TextInput(this.PROPERTY_KEY_NAME_PARAMETER);
-      TextInput value = new TextInput(this.PROPERTY_VALUE_PARAMETER);
+    Form form = new Form();
+    form.maintainParameter(IWDeveloper.actionParameter);
+    add(form);
+    table = new Table(2,5);
+      table.setWidth(1,"160");
+      table.mergeCells(1,1,2,1);
+      table.setAlignment(2,5,"right");
+    form.add(table);
+    //form.setMethod("GET");
+    TextInput name = new TextInput(this.PROPERTY_KEY_NAME_PARAMETER);
+    TextInput value = new TextInput(this.PROPERTY_VALUE_PARAMETER);
 
-      table.add("Set BundleProperty",1,1);
-      table.add("Bundle:",2,1);
-      table.add(bundles,2,1);
+    table.add(IWDeveloper.getText("Set BundleProperty"),1,1);
+    table.add(IWDeveloper.getText("Bundle:"),1,2);
+    table.add(bundles,2,2);
 
-      table.add("Property Key Name",1,2);
-      table.add(name,1,2);
-      table.add("Property Key Value",2,2);
-      table.add(value,2,2);
-      table.add(new SubmitButton("Save","save"),3,2);
+    table.add(IWDeveloper.getText("Property Key Name:"),1,3);
+    table.add(name,2,3);
+    table.add(IWDeveloper.getText("Property Key Value:"),1,4);
+    table.add(value,2,4);
 
-      table.add(new SubmitButton("Reload","reload"),3,3);
+    table.add(new SubmitButton("Save","save"),2,5);
+    table.add(new SubmitButton("Reload","reload"),2,5);
 
-      doBusiness(modinfo);
-
-
-
-
+    doBusiness(modinfo);
   }
 
   private void doBusiness(ModuleInfo modinfo){
@@ -75,14 +80,22 @@ public class BundlePropertySetter extends JModuleObject {
         IWBundle bundle = iwma.getBundle(bundleIdentifier);
         bundle.setProperty(KeyName,KeyValue);
         bundle.storeState();
+        add(IWDeveloper.getText("Status: "));
         add("Property set successfully and saved to files");
+        add(Text.getBreak());
+        add(Text.getBreak());
+        add(IWDeveloper.getText("Available Keys:"));
         add(getParametersTable(iwma,bundleIdentifier));
       }
       else if( (bundleIdentifier!= null) && (save==null) ){
           if(reload!=null){
             iwma.getBundle(bundleIdentifier).reloadBundle();
+            add(IWDeveloper.getText("Status: "));
             add("Bundle reloaded from files");
+            add(Text.getBreak());
+            add(Text.getBreak());
           }
+          add(IWDeveloper.getText("Available BundleProperties:"));
          add(getParametersTable(iwma,bundleIdentifier));
       }
   }
@@ -103,6 +116,8 @@ public class BundlePropertySetter extends JModuleObject {
     String[] strings = bundle.getAvailableProperties();
 
     Table table = new Table(2,strings.length);
+      table.setColumnVerticalAlignment(1,"top");
+      table.setCellpadding(5);
     String localizedString;
     Text name;
     for (int i = 0; i < strings.length; i++) {
@@ -113,9 +128,14 @@ public class BundlePropertySetter extends JModuleObject {
       table.add(localizedString ,2,i+1);
     }
 
-    table.setWidth(300);
+    table.setWidth(400);
     table.setColor("#9FA9B3");
 
     return table;
   }
+
+  public String getBundleIdentifier(){
+    return IW_BUNDLE_IDENTIFIER;
+  }
+
 }

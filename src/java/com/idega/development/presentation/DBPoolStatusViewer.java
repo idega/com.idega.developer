@@ -4,6 +4,7 @@ import com.idega.jmodule.object.ModuleObjectContainer;
 import com.idega.jmodule.object.ModuleInfo;
 
 import com.idega.util.database.PoolManager;
+import com.idega.jmodule.object.textObject.*;
 
 /**
  * Title:        idegaclasses
@@ -21,22 +22,20 @@ public class DBPoolStatusViewer extends ModuleObjectContainer {
 
 
   public void main(ModuleInfo modinfo){
-      /*IWMainApplication iwma = modinfo.getApplication();
+      add(IWDeveloper.getTitleTable(this.getClass()));
+      add(Text.getBreak());
+      add(Text.getBreak());
 
-      DropdownMenu localesDrop = Localizer.getAvailableLocalesDropdown(iwma,localesParameter);
-      localesDrop.keepStatusOnAction();
-      localesDrop.setToSubmit();
-
-      Form form = new Form();
-      form.maintainParameter(IWDeveloper.actionParameter);
-      add(form);
-      form.add(localesDrop);
-
-      doBusiness(modinfo);*/
       PoolManager poolMgr = PoolManager.getInstance();
       add(poolMgr.getStats());
-
   }
 
+  private Text getText(String text) {
+    Text T = new Text(text);
+      T.setBold();
+      T.setFontFace(Text.FONT_FACE_VERDANA);
+      T.setFontSize(Text.FONT_SIZE_10_HTML_2);
+    return T;
+  }
 
 }

@@ -82,4 +82,45 @@ public class IWDeveloper extends com.idega.jmodule.object.app.IWApplication {
 
     }
   }
+
+  public static Table getTitleTable(String displayString, Image image) {
+    Table titleTable = new Table(1,2);
+      titleTable.setCellpadding(0);
+      titleTable.setCellspacing(0);
+      titleTable.setWidth("100%");
+
+    Text headline = getText(displayString);
+      headline.setFontSize(Text.FONT_SIZE_14_HTML_4);
+      headline.setFontColor("#0E2456");
+
+    if ( image != null ) {
+      image.setHorizontalSpacing(5);
+      titleTable.add(image,1,1);
+    }
+
+    titleTable.add(headline,1,1);
+    titleTable.add(new HorizontalRule("100%",2,"color: #FF9310",true),1,2);
+
+    return titleTable;
+  }
+
+  public static Table getTitleTable(String displayString) {
+    return getTitleTable(displayString,null);
+  }
+
+  public static Table getTitleTable(Class classToUse, Image image) {
+    return getTitleTable(classToUse.getName().substring(classToUse.getName().lastIndexOf(".")+1),image);
+  }
+
+  public static Table getTitleTable(Class classToUse) {
+    return getTitleTable(classToUse,null);
+  }
+
+  public static Text getText(String text) {
+    Text T = new Text(text);
+      T.setBold();
+      T.setFontFace(Text.FONT_FACE_VERDANA);
+      T.setFontSize(Text.FONT_SIZE_10_HTML_2);
+    return T;
+  }
 }
