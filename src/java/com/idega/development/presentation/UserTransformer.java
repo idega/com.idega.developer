@@ -8,11 +8,16 @@
  */
 package com.idega.development.presentation;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
+import com.idega.business.IBOLookup;
 import com.idega.core.accesscontrol.business.AccessController;
 import com.idega.core.user.business.UserBusiness;
 import com.idega.data.DatastoreInterface;
@@ -27,8 +32,11 @@ import com.idega.presentation.ui.CheckBox;
 import com.idega.presentation.ui.Form;
 import com.idega.presentation.ui.SubmitButton;
 import com.idega.presentation.ui.TextArea;
+import com.idega.user.business.GroupBusiness;
 import com.idega.user.data.Group;
 import com.idega.user.data.GroupHome;
+import com.idega.user.data.User;
+import com.idega.user.data.UserHome;
 import com.idega.util.IWTimestamp;
 
 /**
@@ -42,10 +50,12 @@ public class UserTransformer extends Block{
 	private static final String PARAM_NAME_CREATE_OLD = "create_old";
 	
 	DateFormat df;
+	GroupBusiness gBus;
 	String currentDate = null;
 	
 	public void main(IWContext iwc)throws Exception{
 		df = DateFormat.getDateTimeInstance(DateFormat.SHORT,DateFormat.SHORT,iwc.getCurrentLocale());
+		gBus = (GroupBusiness) IBOLookup.getServiceInstance(iwc, GroupBusiness.class);
 		String sql = iwc.getParameter("user_select_sql");
 		
 		
@@ -69,6 +79,7 @@ public class UserTransformer extends Block{
 		table.add(requireGroupCreation,1,row);
 		table.add("User group creation required (else user id without group created shown in log) ",1,row++);
 		CheckBox moveGroups = new CheckBox("reg_mv_grp", "true");
+		moveGroups.setChecked(true);
 		table.add(moveGroups, 1, row);
 		table.add("Move group that are in the way of ic_user_representative groups (relations will not be lost)", 1, row++);
 		
@@ -165,7 +176,6 @@ public class UserTransformer extends Block{
 		add(table);
 	}
 
-	
 	public void runFix(String userSelectSql,boolean requireGroups, boolean moveGroups){
 		// get users connected to given group id
 		// delete from ic_group_tree ids related to given group id
@@ -186,12 +196,16 @@ public class UserTransformer extends Block{
 		if (sap) {
 			insertGroupRelationSQL = "insert into ic_group_relation(IC_GROUP_ID,RELATIONSHIP_TYPE,INITIATION_DATE ,RELATED_IC_GROUP_ID ,GROUP_RELATION_STATUS ,INIT_MODIFICATION_DATE,IC_GROUP_RELATION_ID) values (?,'GROUP_PARENT', '"+com.idega.util.IWTimestamp.RightNow().toSQLString()+"',?,'ST_ACTIVE','"+com.idega.util.IWTimestamp.RightNow().toSQLString()+"', ?)";
 		}
+		String selectGroupTreeTopNodes = "select distinct ic_group_id from ic_group_tree where ic_group_id not in (select child_ic_group_id from ic_group_tree)";		
+		
 		String updateGroupMetadataSQL = "update ic_group_ic_metadata set ic_group_id = ? where ic_group_id = ?";
 		String updateGroupProtocolSQL = "update ic_group_protocol set ic_group_id = ? where ic_group_id = ?";
 		String updateGroupNewworkSQL = "update ic_group_network set ic_group_id = ? where ic_group_id = ?";
 		String updateGroupAddressSQL = "update ic_group_address set ic_group_id = ? where ic_group_id = ?";
 		String updateGroupEmailSQL = "update ic_group_email set ic_group_id = ? where ic_group_id = ?";
 		String updateGroupPhoneSQL = "update ic_group_phone set ic_group_id = ? where ic_group_id = ?";
+		String updateICUserPrimaryGroupByPrimaryGroupSQL = "update ic_user set primary_group = ? where primary_group = ?";
+		String updateICUserPrimaryGroupByUserID = "update ic_user set primary_group = ? where ic_user_id = ?";
 		String updateGroupPermissionSQL = "update ic_permission set group_id = ? where group_id = ?";
 		String updateGroupPermissionSQL2 = "update ic_permission set PERMISSION_CONTEXT_VALUE = ? where PERMISSION_CONTEXT_VALUE = ? and PERMISSION_CONTEXT_TYPE = '"+AccessController.CATEGORY_STRING_GROUP_ID+"'";
 
@@ -227,7 +241,20 @@ public class UserTransformer extends Block{
 			java.sql.PreparedStatement updateGroupPhone = conn.prepareStatement(updateGroupPhoneSQL);
 			java.sql.PreparedStatement updateGroupPermission = conn.prepareStatement(updateGroupPermissionSQL);
 			java.sql.PreparedStatement updateGroupPermission2 = conn.prepareStatement(updateGroupPermissionSQL2);
+			java.sql.PreparedStatement updateICUserPrimaryGroupPG = conn.prepareStatement(updateICUserPrimaryGroupByPrimaryGroupSQL);
+			java.sql.PreparedStatement updateICUserPrimaryGroupUs = conn.prepareStatement(updateICUserPrimaryGroupByUserID);
 			
+			// Group Tree Domain fixer
+			ResultSet rs2 = stmt.executeQuery(selectGroupTreeTopNodes);
+			GroupHome gHome = (GroupHome) IDOLookup.getHome(Group.class);
+			while (rs2.next()) {
+				Group g = gHome.findByPrimaryKey(new Integer(rs2.getString("ic_group_id")));
+				System.out.println("adding groupID = "+g.getPrimaryKey()+" to domain = "+this.getIWApplicationContext().getDomain().getDomainName());
+				gBus.addGroupUnderDomainRoot(this.getIWApplicationContext().getDomain(),g);
+				fixGroupRelatiosRecursive(g, insertGroupRelationStatement, groupRelationNextVal, sap);
+			}
+			rs2.close();
+
 			java.sql.ResultSet rs = stmt.executeQuery(userSQL);
 			java.sql.ResultSet groupRS;
 			java.util.ArrayList groupIds;
@@ -235,7 +262,7 @@ public class UserTransformer extends Block{
 			GroupHome groupHome = (GroupHome) IDOLookup.getHome(Group.class);
 			Group group;
 			Group newGroup;
-
+			
 			java.util.HashMap groupMap = new java.util.HashMap();
 			//int i = 0;
 			System.out.println("Starting olduser->newuser transformation");
@@ -282,9 +309,10 @@ public class UserTransformer extends Block{
 				
 				
 			}
-			
+
 			// Create user_representative groups and recreate relations
-			
+			UserHome uHome = (UserHome) IDOLookup.getHome(User.class); 
+
 			for (java.util.Iterator iter = users.iterator(); iter.hasNext();) {
 				String[] userinfo = (String[]) iter.next();
 				
@@ -361,6 +389,10 @@ public class UserTransformer extends Block{
 						updateGroupPermission2.setString(2, oldGroupPK);
 						updateGroupPermission2.execute();
 						
+						updateICUserPrimaryGroupPG.setString(1, newGroupPK);
+						updateICUserPrimaryGroupPG.setString(2, oldGroupPK);
+						updateICUserPrimaryGroupPG.execute();
+						
 						group.setGroupType("ic_user_representative");
 						group.setName(firstName+" "+lastName);
 						group.setExtraInfo("UserTransformer, old group is now id = "+newGroupPK+", "+df.format(new Date()));
@@ -382,8 +414,13 @@ public class UserTransformer extends Block{
 						}
 						
 						groupMap.put(userID, newList);
+
+						User user = uHome.findByPrimaryKey(new Integer(userID));
+						List parents = user.getParentGroups();
 						
-						userRelations(sap, insertGroupRelationStatement, groupRelationNextVal, groupMap, userID);
+						userRelations(sap, insertGroupRelationStatement, groupRelationNextVal, groupMap, userID, ( parents == null || parents.isEmpty() ),updateICUserPrimaryGroupUs);
+						
+						
 					} else {
 						System.out.println("User "+userID+" has a wrong kind of group");
 					}
@@ -394,10 +431,11 @@ public class UserTransformer extends Block{
 					insertGroupStatement.setString(2,"'"+firstName + " "+ lastName+"'");
 					insertGroupStatement.execute();
 				
-					userRelations(sap, insertGroupRelationStatement, groupRelationNextVal, groupMap, userID);
+					userRelations(sap, insertGroupRelationStatement, groupRelationNextVal, groupMap, userID, false, updateICUserPrimaryGroupUs);
 				}
 			
 			}
+			
 			rs.close();
 		t.commit();
 		}
@@ -430,6 +468,31 @@ public class UserTransformer extends Block{
 		
 	}
 
+	private void fixGroupRelatiosRecursive(Group parentGroup, PreparedStatement insertGroupRelationStatement, PreparedStatement groupRelationNextVal, boolean sap) throws SQLException {
+		Collection coll = parentGroup.getChildren();
+		if (coll != null && !coll.isEmpty()) {
+			Iterator iter = coll.iterator();
+			Group child;
+			while (iter.hasNext()) {
+				child = (Group) iter.next();
+				if (sap) {
+					java.sql.ResultSet groupIDrs = groupRelationNextVal.executeQuery();
+					if (groupIDrs != null && groupIDrs.next()) {
+						int nextGroupRelationID = groupIDrs.getInt("NEXTID");
+						insertGroupRelationStatement.setString(3, Integer.toString( nextGroupRelationID));
+					}
+					groupIDrs.close();
+				}
+				insertGroupRelationStatement.setString(1, parentGroup.getPrimaryKey().toString());
+				insertGroupRelationStatement.setString(2, child.getPrimaryKey().toString());
+				insertGroupRelationStatement.execute();
+				
+				System.out.println("Setting "+parentGroup.getName()+" as PARENT of "+child.getName());
+				fixGroupRelatiosRecursive(child, insertGroupRelationStatement, groupRelationNextVal, sap);
+			}
+		}
+ 	}
+	
 	/**
 	 * @param sap
 	 * @param insertGroupRelationStatement
@@ -439,7 +502,7 @@ public class UserTransformer extends Block{
 	 * @param userID
 	 * @throws SQLException
 	 */
-	private void userRelations(boolean sap, java.sql.PreparedStatement insertGroupRelationStatement, java.sql.PreparedStatement groupRelationNextVal, java.util.HashMap groupMap, String userID) throws SQLException {
+	private void userRelations(boolean sap, java.sql.PreparedStatement insertGroupRelationStatement, java.sql.PreparedStatement groupRelationNextVal, java.util.HashMap groupMap, String userID, boolean setFirstGroupAsPrimaryGroup, PreparedStatement updateICUserPrimaryGroupUs) throws SQLException {
 		int nextGroupRelationID;
 		if(groupMap.containsKey(userID)){
 			System.out.println("Insert into ic_group_relation for child group "+userID);
@@ -456,6 +519,12 @@ public class UserTransformer extends Block{
 				insertGroupRelationStatement.setString(1,(String)groupIDs.get(j));
 				insertGroupRelationStatement.setString(2,userID);
 				insertGroupRelationStatement.execute();
+				
+				if (setFirstGroupAsPrimaryGroup && j == 0) {
+					updateICUserPrimaryGroupUs.setString(1, (String)groupIDs.get(j));
+					updateICUserPrimaryGroupUs.setString(2, userID);
+					updateICUserPrimaryGroupUs.execute();
+				}
 			}
 			
 			
