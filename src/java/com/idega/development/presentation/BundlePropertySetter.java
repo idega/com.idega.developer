@@ -38,7 +38,7 @@ public class BundlePropertySetter extends JModuleObject {
       Form form = new Form();
       form.maintainParameter(IWDeveloper.actionParameter);
       add(form);
-      Table table = new Table(3,2);
+      Table table = new Table(3,3);
       form.add(table);
       form.setMethod("GET");
       TextInput name = new TextInput(this.PROPERTY_KEY_NAME_PARAMETER);
@@ -54,6 +54,8 @@ public class BundlePropertySetter extends JModuleObject {
       table.add(value,2,2);
       table.add(new SubmitButton("Save","save"),3,2);
 
+      table.add(new SubmitButton("Reload","reload"),3,3);
+
       doBusiness(modinfo);
 
 
@@ -64,16 +66,23 @@ public class BundlePropertySetter extends JModuleObject {
   private void doBusiness(ModuleInfo modinfo){
       String bundleIdentifier = modinfo.getParameter(BUNDLE_PARAMETER);
       String save = modinfo.getParameter("Save");
+      String reload = modinfo.getParameter("Reload");
       IWMainApplication iwma = modinfo.getApplication();
 
       if((bundleIdentifier!=null)&&(save!=null)){
         String KeyName = modinfo.getParameter(this.PROPERTY_KEY_NAME_PARAMETER);
         String KeyValue = modinfo.getParameter(this.PROPERTY_VALUE_PARAMETER);
-        iwma.getBundle(bundleIdentifier).setProperty(KeyName,KeyValue);
-        add("Property set successfully");
+        IWBundle bundle = iwma.getBundle(bundleIdentifier);
+        bundle.setProperty(KeyName,KeyValue);
+        bundle.storeState();
+        add("Property set successfully and saved to files");
         add(getParametersTable(iwma,bundleIdentifier));
       }
       else if( (bundleIdentifier!= null) && (save==null) ){
+          if(reload!=null){
+            iwma.getBundle(bundleIdentifier).reloadBundle();
+            add("Bundle reloaded from files");
+          }
          add(getParametersTable(iwma,bundleIdentifier));
       }
   }
