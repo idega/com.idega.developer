@@ -1,5 +1,5 @@
 /*
- * $Id: UpdateManager.java,v 1.4 2004/07/21 12:32:46 thomas Exp $
+ * $Id: UpdateManager.java,v 1.5 2004/11/11 13:53:44 birna Exp $
  *
  * Copyright (C) 2002 Idega hf. All Rights Reserved.
  *
@@ -9,6 +9,10 @@
  */
 package com.idega.development.presentation;
 
+import java.rmi.RemoteException;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 import com.idega.business.IBOLookup;
 import com.idega.idegaweb.IWApplicationContext;
 import com.idega.idegaweb.IWBundle;
@@ -19,14 +23,12 @@ import com.idega.presentation.IWContext;
 import com.idega.presentation.Table;
 import com.idega.presentation.text.Text;
 import com.idega.presentation.ui.CheckBox;
+import com.idega.presentation.ui.DeselectAllButton;
 import com.idega.presentation.ui.Form;
+import com.idega.presentation.ui.RadioButton;
+import com.idega.presentation.ui.SelectAllButton;
 import com.idega.presentation.ui.SubmitButton;
 import com.idega.versioncontrol.business.UpdateService;
-
-import java.rmi.RemoteException;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * A class to get versions for all the bundles installed on the system.
@@ -100,10 +102,10 @@ private String PARAM_EXECUTE_UPDATE="iw_updateman_execupdate";
       bundleCheck.setChecked(true);
       table.add(bundleCheck,2,row++);
     }
-    
     form.add(table);
     form.add(new SubmitButton(PARAM_EXECUTE_UPDATE,iwrb.getLocalizedString(PARAM_EXECUTE_UPDATE,"Update")));
-    
+    form.add(new DeselectAllButton(iwrb.getLocalizedString("clear_all","Clear all")));
+    form.add(new SelectAllButton(iwrb.getLocalizedString("select_all", "Select all")));
   }
 
 	/**
