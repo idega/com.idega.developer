@@ -2,15 +2,9 @@ package com.idega.development.presentation;
 import com.idega.presentation.*;
 import com.idega.presentation.ui.*;
 import com.idega.presentation.text.*;
-import com.idega.builder.business.BuilderLogic;
-import com.idega.builder.business.PageCacher;
-import com.idega.business.IBOLookup;
-import com.idega.data.IDOContainer;
-import com.idega.idegaweb.IWMainApplication;
 import com.idega.idegaweb.IWBundle;
-import com.idega.util.IWTimestamp;
 import com.idega.util.FileUtil;
-import java.io.File;
+import com.idega.util.text.TextSoap;
 /**
  * Title:        idega Framework
  * Description:
@@ -43,7 +37,7 @@ public class Logs extends Block{
           SubmitButton viewOut = new SubmitButton(PARAM_VIEW_OUT_LOG,"View Out Log");
           SubmitButton clearOut = new SubmitButton(PARAM_CLEAR_OUT_LOG,"Clear Out Log");
           SubmitButton viewErr = new SubmitButton(PARAM_VIEW_ERR_LOG,"View Error Log");
-          SubmitButton clearErr = new SubmitButton(PARAM_VIEW_ERR_LOG,"Clear Error Log");
+          SubmitButton clearErr = new SubmitButton(PARAM_CLEAR_ERR_LOG,"Clear Error Log");
           table.add(viewOut, 1, 1);
           table.add(viewErr, 1, 1);
           table.add(clearOut, 1, 1);
