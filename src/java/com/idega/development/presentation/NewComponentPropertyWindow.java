@@ -1,6 +1,7 @@
 package com.idega.development.presentation;
 
 import java.lang.reflect.Method;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -196,6 +197,7 @@ public class NewComponentPropertyWindow extends Window {
     DropdownMenu menu = new DropdownMenu(name);
     menu.addMenuElement("","Default");
     List list = IBPropertyHandler.getInstance().getAvailablePropertyHandlers();
+    Collections.sort(list);
     Iterator iter = list.iterator();
     while (iter.hasNext()) {
       ICObject item = (ICObject)iter.next();
