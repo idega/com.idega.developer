@@ -50,7 +50,10 @@ public class LDAPManager extends Block implements LDAPReplicationConstants,Embed
 	private static final String PARAM_UUID_PROCESS = "uuid_proc";
 	private static final String PARAM_VALUE_CREATE_ALL_UNIQUE_IDs = "uuid_proc_cr_all";
 	private static final String PARAM_VALUE_REMOVE_ALL_UNIQUE_IDs = "uuid_proc_re_all";
-
+	private static final String PARAM_VALUE_CREATE_ALL_GROUP_UNIQUE_IDs = "uuid_proc_cr_gr";
+	private static final String PARAM_VALUE_CREATE_ALL_USER_UNIQUE_IDs = "uuid_proc_cr_usr";
+	private static final String PARAM_VALUE_REMOVE_ALL_GROUP_UNIQUE_IDs = "uuid_proc_re_gr";
+	private static final String PARAM_VALUE_REMOVE_ALL_USER_UNIQUE_IDs = "uuid_proc_re_usr";
 	
 	private EmbeddedLDAPServerBusiness embeddedLDAPServerBiz;
 	private LDAPReplicationBusiness ldapReplicationBiz;
@@ -138,11 +141,27 @@ public class LDAPManager extends Block implements LDAPReplicationConstants,Embed
 				
 				if(param!=null){
 					if(param.equals(PARAM_VALUE_CREATE_ALL_UNIQUE_IDs)){
-						getUUIDBusiness(iwc).createUniqueIDsForUsersAndGroups();
+						getUUIDBusiness(iwc).generateUUIDsForAllUsersAndGroups();
 						justCreatedUUIDs = true;
 					}
 					else if(param.equals(PARAM_VALUE_REMOVE_ALL_UNIQUE_IDs)){
 						getUUIDBusiness(iwc).removeUniqueIDsForUsersAndGroups();
+						justRemovedUUIDs = true;
+					}
+					else if(param.equals(PARAM_VALUE_CREATE_ALL_GROUP_UNIQUE_IDs)){
+						getUUIDBusiness(iwc).generateUUIDsForAllGroups();
+						justRemovedUUIDs = true;
+					}
+					else if(param.equals(PARAM_VALUE_CREATE_ALL_USER_UNIQUE_IDs)){
+						getUUIDBusiness(iwc).generateUUIDsForAllUsers();
+						justRemovedUUIDs = true;
+					}
+					else if(param.equals(PARAM_VALUE_REMOVE_ALL_GROUP_UNIQUE_IDs)){
+						getUUIDBusiness(iwc).removeUUIDsFromAllGroups();
+						justRemovedUUIDs = true;
+					}
+					else if(param.equals(PARAM_VALUE_REMOVE_ALL_USER_UNIQUE_IDs)){
+						getUUIDBusiness(iwc).removeUUIDsFromAllUsers();
 						justRemovedUUIDs = true;
 					}
 				}
@@ -403,7 +422,7 @@ public class LDAPManager extends Block implements LDAPReplicationConstants,Embed
 		Form uuidForm = new Form();
 		uuidForm.maintainParameter(IWDeveloper.PARAMETER_CLASS_NAME);
 		
-		Table settingsTable = new Table(2,3);
+		Table settingsTable = new Table(2,7);
 		settingsTable.setCellspacing(0);
 		
 		Text headerText = new Text(iwrb.getLocalizedString("LDAPMANAGER.UUID.util.header","Universally Unique Identifier Utility"));
@@ -414,15 +433,32 @@ public class LDAPManager extends Block implements LDAPReplicationConstants,Embed
 	
 		RadioButton create = new RadioButton(PARAM_UUID_PROCESS,PARAM_VALUE_CREATE_ALL_UNIQUE_IDs);
 		RadioButton remove = new RadioButton(PARAM_UUID_PROCESS,PARAM_VALUE_REMOVE_ALL_UNIQUE_IDs);
+		
+		RadioButton createGroup = new RadioButton(PARAM_UUID_PROCESS,PARAM_VALUE_CREATE_ALL_GROUP_UNIQUE_IDs);
+		RadioButton removeGroup = new RadioButton(PARAM_UUID_PROCESS,PARAM_VALUE_REMOVE_ALL_GROUP_UNIQUE_IDs);
+		
+		RadioButton createUser = new RadioButton(PARAM_UUID_PROCESS,PARAM_VALUE_CREATE_ALL_USER_UNIQUE_IDs);
+		RadioButton removeUser = new RadioButton(PARAM_UUID_PROCESS,PARAM_VALUE_REMOVE_ALL_USER_UNIQUE_IDs);
+		
 		SubmitButton save = new SubmitButton(PARAM_RUN_UUID_PROCESS,iwrb.getLocalizedString("LDAPMANAGER.run.process","run process"));
-		save.setSubmitConfirm(iwrb.getLocalizedString("LDAPMANAGER.run.process.confirm","Are you sure you want to run the process? It will affect all users and groups in the database."));
+		save.setSubmitConfirm(iwrb.getLocalizedString("LDAPMANAGER.run.process.confirm","Are you sure you want to run the process? It could affect all users and groups in the database."));
 		
 
 		settingsTable.add(iwrb.getLocalizedString("LDAPMANAGER.run.process.create","Create UUID for all users and groups"),1,1);
 		settingsTable.add(create,2,1);
 		settingsTable.add(iwrb.getLocalizedString("LDAPMANAGER.run.process.remove","Remove all UUID from all users and groups"),1,2);
 		settingsTable.add(remove,2,2);
-		settingsTable.add(save,2,3);
+		
+		settingsTable.add(iwrb.getLocalizedString("LDAPMANAGER.run.process.createGroup","Create UUID for all groups"),1,3);
+		settingsTable.add(createGroup,2,3);
+		settingsTable.add(iwrb.getLocalizedString("LDAPMANAGER.run.process.removeGroup","Remove all UUID from all groups"),1,4);
+		settingsTable.add(removeGroup,2,4);
+		
+		settingsTable.add(iwrb.getLocalizedString("LDAPMANAGER.run.process.createUser","Create UUID for all users"),1,5);
+		settingsTable.add(createUser,2,5);
+		settingsTable.add(iwrb.getLocalizedString("LDAPMANAGER.run.process.removeUser","Remove all UUID from all users"),1,6);
+		settingsTable.add(removeUser,2,6);
+		settingsTable.add(save,2,7);
 		uuidForm.add(settingsTable);
 		add(uuidForm);
 		
