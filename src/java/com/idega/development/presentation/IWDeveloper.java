@@ -33,7 +33,7 @@ public class IWDeveloper extends com.idega.presentation.app.IWApplication {
   public IWDeveloper() {
     super("idegaWeb Developer");
     add(IWDeveloper.IWDevPage.class);
-    super.setResizable(true);
+    super.setResizable(false);
     super.setScrollbar(false);
     super.setScrolling(1,false);
     super.setWidth(800);
@@ -69,13 +69,13 @@ public class IWDeveloper extends com.idega.presentation.app.IWApplication {
 
       IFrame menuFrame = new IFrame("menu",DeveloperList.class);
         menuFrame.setWidth(200);
-        menuFrame.setHeight(550);
+        menuFrame.setHeight(175);
         menuFrame.setScrolling(IFrame.SCROLLING_YES);
       mainTable.add(menuFrame,1,1);
 
       rightFrame = new IFrame(frameName);
-      rightFrame.setWidth("100%");
-      rightFrame.setHeight(550);
+      rightFrame.setWidth(588);
+      rightFrame.setHeight(569);
       rightFrame.setScrolling(IFrame.SCROLLING_YES);
       mainTable.add(rightFrame,2,1);
     }
