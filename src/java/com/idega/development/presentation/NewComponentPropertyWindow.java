@@ -8,6 +8,8 @@ import java.util.Map;
 
 import com.idega.builder.business.IBPropertyHandler;
 import com.idega.core.data.ICObject;
+import com.idega.development.presentation.comp.BundleComponent;
+import com.idega.development.presentation.comp.BundleComponentFactory;
 import com.idega.idegaweb.IWBundle;
 import com.idega.presentation.IWContext;
 import com.idega.presentation.PresentationObject;
@@ -48,6 +50,8 @@ public class NewComponentPropertyWindow extends Window {
    private final static String openingParentheses = "(";
    private final static String closingParentheses = ")";
    private final static String comma = ",";
+   
+   private IWBundle selectedBundle = null;
 
 
   public NewComponentPropertyWindow(){
@@ -60,6 +64,7 @@ public class NewComponentPropertyWindow extends Window {
       Form form = new Form();
       form.maintainParameter(PARAMETER_BUNDLE);
       form.maintainParameter(PARAMETER_COMPONENT);
+	  selectedBundle = getSelectedBundle(iwc);
       add(form);
       Table t = new Table();
       form.add(t);
@@ -67,7 +72,12 @@ public class NewComponentPropertyWindow extends Window {
       String method = getSelectedMethod(iwc);
       boolean methodSelected = false;
       boolean propertySave = false;
-      if(method==null){methodSelected=false;}else{methodSelected=true;}
+      if(method==null){
+      	methodSelected=false;
+      }
+      else{
+		methodSelected=true;
+	  }
       propertySave = iwc.isParameterSet(PARAMETER_SAVE);
 
       t.add(getMethodsDropdown(component),1,1);
@@ -308,16 +318,21 @@ public class NewComponentPropertyWindow extends Window {
   public DropdownMenu getMethodsDropdown(String selectedComponentKey){
     return getMethodsDropdown(selectedComponentKey,PARAMETER_METHOD);
   }
-
+  
   private void putMethodsInMap(Map m,Method[] methods){
-    for (int i = 0; i < methods.length; i++) {
-      Method method = methods[i];
-      String name = getMethodNameWidthParameters(method);
-      if(name.startsWith("set")){
-        m.put(name,method);
-        System.out.println("Putting method for "+name);
-      }
-    }
+  	 putMethodsInMap(m,methods,"get");
+  }
+
+  private void putMethodsInMap(Map m,Method[] methods,String methodStartFilter){
+    	for (int i = 0; i < methods.length; i++) {
+     		Method method = methods[i];
+      		String name = MethodFinder.getInstance().getMethodNameWidthParameters(method);
+      		//if(name.startsWith("set")){
+      		if(name.startsWith(methodStartFilter)){
+       	 		m.put(name,method);
+        		System.out.println("Putting method for "+name);
+      		}
+     	}
   }
 
   public DropdownMenu getMethodsDropdown(String selectedComponentKey,String name){
@@ -325,31 +340,58 @@ public class NewComponentPropertyWindow extends Window {
       Method[] methods = null;
       Map methodsMap = new HashMap();
       try{
-      selectedClass = Class.forName(selectedComponentKey);
+      	selectedClass = Class.forName(selectedComponentKey);
+		Class introspectionClass = selectedClass;
+		
+		//		added by aron 21.june 2003
+      	if(selectedBundle!=null){
+	  	
+	  		String selectedCompType = selectedBundle.getComponentType(selectedComponentKey);
+        	BundleComponent comp = BundleComponentFactory.getInstance().getBundleComponent(selectedCompType);
+        	Class stopClass = comp.getFinalReflectionClass();
+        	
+        	Map map = MethodFinder.getInstance().getMapOfClassMethodsRecursive(selectedClass,stopClass,comp.getMethodStartFilters());
+        	methodsMap.putAll(map);
+        	/*
+       		boolean noStopClass = stopClass ==null;
+        	while(!introspectionClass.equals(stopClass)){
+				Method[] newMethods = introspectionClass.getMethods();
+				String[] filters = comp.getMethodStartFilters();
+				for (int i = 0; i < filters.length; i++) {
+					putMethodsInMap(methodsMap,newMethods,filters[i]);
+				}
+				if(noStopClass)
+					break;
+				introspectionClass = introspectionClass.getSuperclass();
+				
+        	}
+        	*/
+      	}
+        else{
+        	Class stopClass = PresentationObject.class;
+        	
+        	//info = Introspector.getBeanInfo(selectedClass,stopClass);
 
-        Class stopClass = PresentationObject.class;
-        Class introspectionClass = selectedClass;
-        //info = Introspector.getBeanInfo(selectedClass,stopClass);
-
-        while (!introspectionClass.equals(stopClass)) {
-          Method[] newMethods = introspectionClass.getMethods();
-          //System.out.println("newMethods.length="+newMethods.length);
-          /*if(methods==null){
-            methods = newMethods;
-            //System.out.println("NewComponentPropertyWindow 1 for: "+introspectionClass.getName());
-          }
-          else{
-            //System.out.println("NewComponentPropertyWindow 2 for: "+introspectionClass.getName());
-            int oldLength = methods.length;
-            Method[] newArray = new Method[oldLength+newMethods.length];
-            System.arraycopy(methods,0,newArray,0,oldLength);
-            System.arraycopy(newMethods,0,newArray,oldLength,newMethods.length);
-            methods = newArray;
-          }*/
-          putMethodsInMap(methodsMap,newMethods);
-          introspectionClass = introspectionClass.getSuperclass();
+        	while (!introspectionClass.equals(stopClass)) {
+          		Method[] newMethods = introspectionClass.getMethods();
+          		//System.out.println("newMethods.length="+newMethods.length);
+          		/*if(methods==null){
+           		methods = newMethods;
+            	//System.out.println("NewComponentPropertyWindow 1 for: "+introspectionClass.getName());
+          		}
+	          else{
+	            //System.out.println("NewComponentPropertyWindow 2 for: "+introspectionClass.getName());
+	            int oldLength = methods.length;
+	            Method[] newArray = new Method[oldLength+newMethods.length];
+	            System.arraycopy(methods,0,newArray,0,oldLength);
+	            System.arraycopy(newMethods,0,newArray,oldLength,newMethods.length);
+	            methods = newArray;
+	          }*/
+          
+          		putMethodsInMap(methodsMap,newMethods);
+          		introspectionClass = introspectionClass.getSuperclass();
+        	}
         }
-
       }
       catch(Exception e){
         e.printStackTrace();
@@ -366,26 +408,13 @@ public class NewComponentPropertyWindow extends Window {
       //for (int i = 0; i < descriptors.length; i++) {
         Method method = methods[i];
         //Method method = descriptors[i].getMethod();
-          String methodToString =getMethodNameWidthParameters(method);
+          String methodToString =MethodFinder.getInstance().getMethodNameWidthParameters(method);
 
           String methodIdentifier = MethodFinder.getInstance().getMethodIdentifierWithoutDeclaringClass(method);
           methodsDrop.addMenuElement(methodIdentifier,methodToString);
         }
 
     return methodsDrop;
-  }
-
-  public String getMethodNameWidthParameters(Method method){
-      String methodToString = method.getName()+openingParentheses;
-          Class[] arguments = method.getParameterTypes();
-          for (int j = 0; j < arguments.length; j++) {
-              if(j!=0){
-                methodToString += comma;
-              }
-              methodToString += arguments[j].getName();
-          }
-          methodToString += closingParentheses;
-      return methodToString;
   }
 
 }

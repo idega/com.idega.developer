@@ -4,6 +4,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.idega.builder.presentation.IBAddModuleWindow;
+import com.idega.development.presentation.comp.BundleComponent;
+import com.idega.development.presentation.comp.BundleComponentFactory;
 import com.idega.idegaweb.IWBundle;
 import com.idega.idegaweb.IWMainApplication;
 import com.idega.presentation.Block;
@@ -149,7 +151,14 @@ public class BundleComponentManager extends Block {
 			String emptyString = StringHandler.EMPTY_STRING;
 
 			if (!(emptyString.equals(newComponentClass) || emptyString.equals(newComponentType))) {
-				Class.forName(newComponentClass);
+				Class cls = Class.forName(newComponentClass);
+				// Added by aron 21.june 2003 
+					BundleComponent comp = BundleComponentFactory.getInstance().getBundleComponent(newComponentType);
+					boolean valid = comp.validateInterfaces(cls);
+					valid &= comp.validateSuperClasses(cls);
+					if(!valid)
+						throw new Exception("Component needs to implement required interfaces ");
+				// 
 				iwb.addComponent(newComponentClass, newComponentType);
 			}
 		}
