@@ -48,6 +48,7 @@ private static String styleName = "iwdClass";
     addToList(getClassLink(iwc, Caches.class,"Caches"),image);
     addToList(getClassLink(iwc, Logs.class,"Logs"),image);
     addToList(getClassLink(iwc, Versions.class,"Versions"),image);
+	addToList(getClassLink(iwc, UpdateManager.class,"UpdateManager"),image);
     setZebraColors("#B0B29D","#B0B29D");
   }
 

@@ -28,6 +28,7 @@ public class IWDeveloper extends com.idega.presentation.app.IWApplication {
 	private static final String bundlesPropertiesParameter = "iw_bundle_properties_setter";
 	public static final String actionParameter = "iw_developer_action";
 	public static final String dbPoolStatusViewerParameter = "iw_poolstatus_viewer";
+	public static final String updateManagerParameter = "iw_update_manager";
 	public static final String frameName = "iwdv_rightFrame";
 	
 	public static final String PARAMETER_CLASS_NAME = "iwdv_class_name";
