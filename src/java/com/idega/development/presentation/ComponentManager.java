@@ -24,6 +24,8 @@ import java.lang.reflect.Method;
 import java.beans.*;
 import java.beans.beancontext.*;
 
+import java.util.Map;
+import java.util.Hashtable;
 
 /**
  * Title:        idega Framework
@@ -43,6 +45,8 @@ public class ComponentManager extends JModuleObject {
   private static final String DELETE_CHECKBOX_NAME = "iw_bundle_comp_meth_delete";
   private static final String METHOD_PARAMETER = "iw_method_par";
   private static final String METHOD_DESCRIPTION_PARAMETER = "iw_method_desc_par";
+  private static final String OPTIONS_PARAMETER = "iw_method_options";
+
 
   public ComponentManager() {
   }
@@ -113,6 +117,7 @@ public class ComponentManager extends JModuleObject {
             e.printStackTrace();
           }
           MethodDescriptor[] descriptors = info.getMethodDescriptors();
+          java.util.Arrays.sort(descriptors,com.idega.util.Comparators.getMethodDescriptorComparator());
           DropdownMenu methodsDrop = new DropdownMenu(METHOD_PARAMETER);
           methodsDrop.keepStatusOnAction();
           methodsDrop.setToSubmit();
@@ -127,11 +132,13 @@ public class ComponentManager extends JModuleObject {
               String methodToString = method.getName()+openingParentheses;
               Class[] arguments = method.getParameterTypes();
               for (int j = 0; j < arguments.length; j++) {
+                  if(j!=0){
+                    methodToString += comma;
+                  }
                   methodToString += arguments[j].getName();
-                  methodToString += comma;
               }
               methodToString += closingParentheses;
-              String methodIdentifier = MethodFinder.getInstance().getMethodIdentifier(method);
+              String methodIdentifier = MethodFinder.getInstance().getMethodIdentifierWithoutDeclaringClass(method);
               methodsDrop.addMenuElement(methodIdentifier,methodToString);
             }
           }
@@ -151,11 +158,23 @@ public class ComponentManager extends JModuleObject {
               table.add(methodDesc,2,yindex);
               SubmitButton button4 = new SubmitButton("Register Method");
               table.add(button4,3,yindex);
+              yindex++;
+              CheckBox allowManyValues = new CheckBox(IBPropertyHandler.METHOD_PROPERTY_ALLOW_MULTIVALUED);
+              table.add(IWDeveloper.getText("Allow multivalued:"),1,yindex);
+              table.add(allowManyValues,2,yindex);
+              table.add(new Parameter(OPTIONS_PARAMETER,IBPropertyHandler.METHOD_PROPERTY_ALLOW_MULTIVALUED));
+              table.add(new Parameter(getTypeParameter(IBPropertyHandler.METHOD_PROPERTY_ALLOW_MULTIVALUED),"java.lang.Boolean"));
 
               String selectedMethodDesc = modinfo.getParameter(METHOD_DESCRIPTION_PARAMETER);
               if(selectedMethodDesc!=null){
                 if(!selectedMethodDesc.equals("")){
-                  doBusiness(iwb,selectedComponentKey,selectedMethodIdentifier,selectedMethodDesc);
+                  boolean multivalued = false;
+                  if(modinfo.isParameterSet(IBPropertyHandler.METHOD_PROPERTY_ALLOW_MULTIVALUED)){
+                    multivalued = true;
+                  }
+                  String parameterString = OPTIONS_PARAMETER;
+                  Map m = parseOptions(modinfo,parameterString);
+                  doBusiness(iwb,selectedComponentKey,selectedMethodIdentifier,selectedMethodDesc,m);
                 }
               }
           }
@@ -178,20 +197,20 @@ public class ComponentManager extends JModuleObject {
               yindex++;
               IWProperty prop = methodsIter.nextProperty();
 
-              String identifier = prop.getKey();
-              String description = prop.getValue();
+              String identifier = IBPropertyHandler.getInstance().getMethodIdentifier(prop);
+              String description = IBPropertyHandler.getInstance().getMethodDescription(prop);
               Method method = null;
               try{
-                method = MethodFinder.getInstance().getMethod(identifier);
+                method = MethodFinder.getInstance().getMethod(identifier,selectedClass);
               }
               catch(Exception e){
                 e.printStackTrace();
               }
 
               table.add(getSmallText(description),2,yindex);
-              table.add(getSmallText(identifier),3,yindex);
+              //table.add(getSmallText(identifier),3,yindex);
               if(method!=null){
-                table.add(getSmallText(method.toString()),4,yindex);
+                table.add(getSmallText(method.toString()),3,yindex);
               }
               CheckBox rowBox = (CheckBox)deleteBox.clone();
               rowBox.setContent(identifier);
@@ -210,11 +229,82 @@ public class ComponentManager extends JModuleObject {
 
   }
 
-  private void doBusiness(IWBundle iwb,String selectedComponentKey,String selectedMethodIdentifier,String selectedMethodDesc){
+  private void doBusiness(IWBundle iwb,String selectedComponentKey,String selectedMethodIdentifier,String selectedMethodDesc,Map options){
       IBPropertyHandler handler = IBPropertyHandler.getInstance();
-      handler.setMethod(iwb,selectedComponentKey,selectedMethodIdentifier,selectedMethodDesc);
+      handler.setMethod(iwb,selectedComponentKey,selectedMethodIdentifier,selectedMethodDesc,options);
   }
 
+  public String getTypeParameter(String inputParameter){
+    return inputParameter+"_type";
+  }
+
+  public Map parseOptions(ModuleInfo modinfo,String parameterName){
+    String[] parameters = modinfo.getParameterValues(parameterName);
+
+    Map theReturn = new Hashtable();
+    for (int i = 0; i < parameters.length; i++) {
+      String parameter = parameters[i];
+      String sValue = modinfo.getParameter(parameter);
+      Object oValue = null;
+      String parameterType = modinfo.getParameter(getTypeParameter(parameter));
+      if(parameterType == null){
+        parameterType="java.lang.String";
+      }
+      if(parameterType.equals("java.lang.Boolean")){
+        if(sValue!=null){
+          if(sValue.equals("Y")){
+            oValue=Boolean.TRUE;
+          }
+          else if(sValue.equals("N")){
+             oValue=Boolean.FALSE;
+          }
+          else{
+            oValue = Boolean.valueOf(sValue);
+          }
+        }
+        else{
+          oValue = Boolean.FALSE;
+        }
+      }
+      if(parameterType.equals("java.lang.Integer")){
+        if(sValue!=null){
+          oValue = Integer.valueOf(sValue);
+        }
+        else{
+          //oValue = new Integer(0);
+        }
+      }
+      if(parameterType.equals("java.lang.Float")){
+        if(sValue!=null){
+          oValue = Float.valueOf(sValue);
+        }
+        else{
+          //oValue = new Float(0);
+        }
+      }
+      if(parameterType.equals("java.lang.Double")){
+        if(sValue!=null){
+          oValue = Double.valueOf(sValue);
+        }
+        else{
+          //oValue = new Double(0);
+        }
+      }
+      if(parameterType.equals("java.lang.Character")){
+        if(sValue!=null){
+          oValue = new Character(sValue.charAt(0));
+        }
+      }
+      else{
+        oValue = sValue;
+      }
+      if(oValue!=null){
+        theReturn.put(parameter,oValue);
+      }
+
+    }
+    return theReturn;
+  }
 
   public void deleteMethods(IWBundle iwb,String selectedComponentKey,String[] methodIdentifiers){
     for (int i = 0; i < methodIdentifiers.length; i++) {

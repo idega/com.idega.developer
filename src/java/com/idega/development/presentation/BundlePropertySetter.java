@@ -7,6 +7,7 @@ import com.idega.idegaweb.IWMainApplication;
 import com.idega.idegaweb.IWBundle;
 import java.util.List;
 import java.util.Iterator;
+import java.util.Collections;
 import com.idega.idegaweb.IWBundle;
 
 /**
@@ -101,9 +102,10 @@ public class BundlePropertySetter extends JModuleObject {
   }
 
   public static DropdownMenu getRegisteredBundlesDropdown(IWMainApplication iwma,String name){
-    List locales = iwma.getRegisteredBundles();
+    List bundles = iwma.getRegisteredBundles();
+    Collections.sort(bundles);
     DropdownMenu down = new DropdownMenu(name);
-    Iterator iter = locales.iterator();
+    Iterator iter = bundles.iterator();
     while (iter.hasNext()) {
       IWBundle item = (IWBundle)iter.next();
       down.addMenuElement(item.getBundleIdentifier());
