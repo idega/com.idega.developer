@@ -10,6 +10,7 @@ import com.idega.presentation.Table;
 import com.idega.presentation.text.HorizontalRule;
 import com.idega.presentation.text.Text;
 import com.idega.presentation.ui.IFrame;
+import com.idega.repository.data.RefactorClassRegistry;
 /**
  * Title:        idega Framework
  * Description:
@@ -117,7 +118,7 @@ public class IWDeveloper extends com.idega.presentation.app.IWApplication {
 			
 			if (iwc.isParameterSet(PARAMETER_CLASS_NAME)) {
 				String className = IWMainApplication.decryptClassName(iwc.getParameter(PARAMETER_CLASS_NAME));
-				PresentationObject obj = (PresentationObject) Class.forName(className).newInstance();
+				PresentationObject obj = (PresentationObject) RefactorClassRegistry.getInstance().newInstance(className, this.getClass());
 				rightLayer.add(obj);
 			}
 			else {
