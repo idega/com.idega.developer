@@ -6,8 +6,7 @@
  */
 package com.idega.development.presentation.comp;
 
-import com.idega.core.component.data.*;
-import com.idega.core.data.*;
+import com.idega.core.component.data.BundleComponent;
 import com.idega.presentation.PresentationObject;
 
 /**
