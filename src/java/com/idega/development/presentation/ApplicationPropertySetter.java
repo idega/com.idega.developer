@@ -41,7 +41,7 @@ public class ApplicationPropertySetter extends JModuleObject {
       Form form = new Form();
       form.maintainParameter(IWDeveloper.actionParameter);
       add(form);
-      Table table = new Table(3,4);
+      Table table = new Table(3,5);
       form.add(table);
       TextInput name = new TextInput(this.PROPERTY_KEY_NAME_PARAMETER);
       TextInput value = new TextInput(this.PROPERTY_VALUE_PARAMETER);
@@ -59,13 +59,14 @@ public class ApplicationPropertySetter extends JModuleObject {
       table.add("Autocreate Data Entities",1,3);
       table.add(box,2,3);
       table.add(new SubmitButton("Save",APPLICATION_SETTER_PARAMETER,"save"),3,4);
+      table.add(new SubmitButton("Store Application state",APPLICATION_SETTER_PARAMETER,"store"),3,5);
 
 
   }
 
   private void doBusiness(ModuleInfo modinfo){
-      String bundleIdentifier = modinfo.getParameter(APPLICATION_SETTER_PARAMETER);
-      if(bundleIdentifier!=null){
+      String setterState = modinfo.getParameter(APPLICATION_SETTER_PARAMETER);
+      if(setterState!=null){
         String entityAutoCreate = modinfo.getParameter(ENTITY_AUTOCREATE_PARAMETER);
         String KeyName = modinfo.getParameter(this.PROPERTY_KEY_NAME_PARAMETER);
         String KeyValue = modinfo.getParameter(this.PROPERTY_VALUE_PARAMETER);
@@ -78,6 +79,10 @@ public class ApplicationPropertySetter extends JModuleObject {
             modinfo.getApplication().getSettings().setEntityAutoCreation(true);
           }
         }
+        if(setterState.equalsIgnoreCase("store")){
+          modinfo.getApplication().storeStatus();
+        }
+
         add("Property set successfully");
       }
   }
