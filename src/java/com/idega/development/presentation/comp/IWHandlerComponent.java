@@ -6,7 +6,7 @@
  */
 package com.idega.development.presentation.comp;
 
-import com.idega.builder.handler.PropertyHandler;
+import com.idega.core.builder.data.ICPropertyHandler;
 import com.idega.core.component.data.BundleComponent;
 import com.idega.core.component.data.ICObjectBMPBean;
 
@@ -25,7 +25,7 @@ public class IWHandlerComponent extends IWBaseComponent implements BundleCompone
 	 */
 	public Class[] getRequiredInterfaces() {
 		Class[] array = new Class[1];
-		array[0] = PropertyHandler.class;
+		array[0] = ICPropertyHandler.class;
 		return array;
 	}
 
