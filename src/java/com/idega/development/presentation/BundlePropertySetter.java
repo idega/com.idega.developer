@@ -39,6 +39,7 @@ public class BundlePropertySetter extends Block {
 	}
 
 	public void main(IWContext iwc) {
+		
 		iwb = getBundle(iwc);
 		add(IWDeveloper.getTitleTable(this.getClass()));
 		if (!iwc.isIE())
@@ -82,13 +83,13 @@ public class BundlePropertySetter extends Block {
 		String bundleIdentifier = iwc.getParameter(BUNDLE_PARAMETER);
 		String save = iwc.getParameter("Save");
 		String reload = iwc.getParameter("Reload");
-		String mode = iwc.getParameter("mode");
+		String delete = iwc.getParameter("Delete");
 		IWMainApplication iwma = iwc.getApplication();
 		IWBundle bundle = null;
 		if (bundleIdentifier != null)
 			bundle = iwma.getBundle(bundleIdentifier);
 
-		if (mode != null) {
+		if (delete != null) {
 			String[] values = iwc.getParameterValues("property");
 			if (values != null && bundle != null) {
 				for (int a = 0; a < values.length; a++) {
@@ -141,7 +142,8 @@ public class BundlePropertySetter extends Block {
 		Form form = new Form();
 		form.setMethod("get");
 		form.add(new HiddenInput(BUNDLE_PARAMETER, bundleIdentifier));
-
+		form.maintainParameter(IWDeveloper.actionParameter);
+		form.maintainParameter(IWDeveloper.PARAMETER_CLASS_NAME);
 		Table table = new Table(3, strings.length + 1);
 		table.setColumnVerticalAlignment(1, "top");
 		table.setCellpadding(5);
@@ -162,7 +164,7 @@ public class BundlePropertySetter extends Block {
 		table.setWidth(400);
 		table.setColor("#9FA9B3");
 		table.setRowColor(strings.length + 1, "#FFFFFF");
-		table.add(new SubmitButton("Delete", "mode", "delete"), 3, strings.length + 1);
+		table.add(new SubmitButton("Delete", "delete"), 3, strings.length + 1);
 		form.add(table);
 
 		return form;
