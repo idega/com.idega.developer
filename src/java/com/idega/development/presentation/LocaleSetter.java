@@ -42,7 +42,7 @@ public class LocaleSetter extends PresentationObjectContainer {
 			getParentPage().setBackgroundColor("#FFFFFF");
 
 		iwrb = getResourceBundle(iwc);
-		_coreLocale = iwc.getApplication().getCoreLocale();
+		_coreLocale = iwc.getIWMainApplication().getCoreLocale();
 
 		if (iwc.getParameter("save") != null)
 			save(iwc);

@@ -56,7 +56,7 @@ private static String styleName = "iwdClass";
   private Link getClassLink(IWContext iwc, Class linkClass, String linkName) {
   	Link link = new Link(linkName);
   	link.setStyleClass(styleName);
-  	link.addParameter(IWDeveloper.PARAMETER_CLASS_NAME, iwc.getApplication().getEncryptedClassName(linkClass));
+  	link.addParameter(IWDeveloper.PARAMETER_CLASS_NAME, iwc.getIWMainApplication().getEncryptedClassName(linkClass));
   	return link;
   }
   

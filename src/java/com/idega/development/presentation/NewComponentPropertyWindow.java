@@ -113,7 +113,7 @@ public class NewComponentPropertyWindow extends Window {
 
   public IWBundle getSelectedBundle(IWContext iwc){
     String sIwb = getStringSelectedBundle(iwc);
-    IWBundle iwb = iwc.getApplication().getBundle(sIwb);
+    IWBundle iwb = iwc.getIWMainApplication().getBundle(sIwb);
     return iwb;
   }
 

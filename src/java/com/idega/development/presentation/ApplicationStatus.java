@@ -108,7 +108,7 @@ public class ApplicationStatus extends Block {
 		if (check != null) {
 			add(IWDeveloper.getText("Done Restarting!"));
 			iwc.getApplicationSettings().setProperty("last_restart", com.idega.util.IWTimestamp.RightNow().toString());
-			iwc.getApplication().restartApplication();
+			iwc.getIWMainApplication().restartApplication();
 		}
 	}
 }

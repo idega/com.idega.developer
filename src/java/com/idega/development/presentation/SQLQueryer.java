@@ -197,8 +197,8 @@ public class SQLQueryer extends Block {
 					dumper.setQuery(queryString);
 					dumper.setDumpFile(dumpFileName);
 					dumper.setType(dumpFileType.intValue());
-					String virtualFolderPath = iwc.getApplication().getCacheDirectoryURI();
-					dumper.setDumpFolder(iwc.getApplication().getRealPath(virtualFolderPath));
+					String virtualFolderPath = iwc.getIWMainApplication().getCacheDirectoryURI();
+					dumper.setDumpFolder(iwc.getIWMainApplication().getRealPath(virtualFolderPath));
 					java.io.File file = dumper.dump();
 					//innerTable.add(file.getAbsolutePath(),1,4);
 					String fileURI = virtualFolderPath+"/"+file.getName();

@@ -48,7 +48,7 @@ public class BundleResourceManager extends Block {
 		if (iwc.isParameterSet(LOCALE_PARAMETER))
 			locale = LocaleUtil.getLocale(iwc.getParameter(LOCALE_PARAMETER));
 		String bundleIdentifier = iwc.getParameter(BUNDLE_PARAMETER);
-		IWMainApplication iwma = iwc.getApplication();
+		IWMainApplication iwma = iwc.getIWMainApplication();
 		DropdownMenu bundles = BundlePropertySetter.getRegisteredBundlesDropdown(iwma, BUNDLE_PARAMETER);
 		bundles.addMenuElementFirst("none", "none");
 		bundles.keepStatusOnAction();

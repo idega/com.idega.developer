@@ -48,7 +48,7 @@ public class ApplicationPropertySetter extends Block {
 
 		doBusiness(iwc);
 
-		IWMainApplication iwma = iwc.getApplication();
+		IWMainApplication iwma = iwc.getIWMainApplication();
 		//DropdownMenu bundles = getRegisteredBundlesDropdown(iwma, APPLICATION_SETTER_PARAMETER);
 
 		Form form = new Form();
@@ -132,7 +132,7 @@ public class ApplicationPropertySetter extends Block {
 		String[] values = iwc.getParameterValues("property");
 		if (values != null) {
 			for (int a = 0; a < values.length; a++) {
-				iwc.getApplication().getSettings().removeProperty(values[a]);
+				iwc.getIWMainApplication().getSettings().removeProperty(values[a]);
 			}
 		}
 		String setterState = iwc.getParameter(APPLICATION_SETTER_PARAMETER);
@@ -147,44 +147,44 @@ public class ApplicationPropertySetter extends Block {
 			String KeyValue = iwc.getParameter(this.PROPERTY_VALUE_PARAMETER);
 			String markup = iwc.getParameter(Page.MARKUP_LANGUAGE);
 			if (KeyName != null && KeyName.length() > 0)
-				iwc.getApplication().getSettings().setProperty(KeyName, KeyValue);
+				iwc.getIWMainApplication().getSettings().setProperty(KeyName, KeyValue);
 
 			if (entityAutoCreate != null)
-				iwc.getApplication().getSettings().setEntityAutoCreation(true);
+				iwc.getIWMainApplication().getSettings().setEntityAutoCreation(true);
 			else
-				iwc.getApplication().getSettings().setEntityAutoCreation(false);
+				iwc.getIWMainApplication().getSettings().setEntityAutoCreation(false);
 
 			if (entityBeanCache != null)
-				iwc.getApplication().getSettings().setEntityBeanCaching(true);
+				iwc.getIWMainApplication().getSettings().setEntityBeanCaching(true);
 			else
-				iwc.getApplication().getSettings().setEntityBeanCaching(false);
+				iwc.getIWMainApplication().getSettings().setEntityBeanCaching(false);
 
 			if (entityQueryCache != null)
-				iwc.getApplication().getSettings().setEntityQueryCaching(true);
+				iwc.getIWMainApplication().getSettings().setEntityQueryCaching(true);
 			else
-				iwc.getApplication().getSettings().setEntityQueryCaching(false);
+				iwc.getIWMainApplication().getSettings().setEntityQueryCaching(false);
 
 			if (autoCreateStrings != null) {
-				iwc.getApplication().getSettings().setAutoCreateStrings(true);
+				iwc.getIWMainApplication().getSettings().setAutoCreateStrings(true);
 			}
 			else
-				iwc.getApplication().getSettings().setAutoCreateStrings(false);
+				iwc.getIWMainApplication().getSettings().setAutoCreateStrings(false);
 
 			if (autoCreateProperties != null) {
-				iwc.getApplication().getSettings().setAutoCreateProperties(true);
+				iwc.getIWMainApplication().getSettings().setAutoCreateProperties(true);
 			}
 			else
-				iwc.getApplication().getSettings().setAutoCreateProperties(false);
+				iwc.getIWMainApplication().getSettings().setAutoCreateProperties(false);
 
 			if (debug != null) {
-				iwc.getApplication().getSettings().setDebug(true);
+				iwc.getIWMainApplication().getSettings().setDebug(true);
 			}
 			else {
-				iwc.getApplication().getSettings().setDebug(false);
+				iwc.getIWMainApplication().getSettings().setDebug(false);
 			}
 
 			if (setterState.equalsIgnoreCase("store")) {
-				iwc.getApplication().storeStatus();
+				iwc.getIWMainApplication().storeStatus();
 			}
 			iwc.getApplicationSettings().setProperty(Page.MARKUP_LANGUAGE, markup);
 

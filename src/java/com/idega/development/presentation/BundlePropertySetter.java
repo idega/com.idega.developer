@@ -46,7 +46,7 @@ public class BundlePropertySetter extends Block {
 		if (!iwc.isIE())
 			getParentPage().setBackgroundColor("#FFFFFF");
 
-		IWMainApplication iwma = iwc.getApplication();
+		IWMainApplication iwma = iwc.getIWMainApplication();
 		DropdownMenu bundles = getRegisteredBundlesDropdown(iwma, BUNDLE_PARAMETER);
 		bundles.keepStatusOnAction();
 		bundles.setToSubmit();
@@ -85,7 +85,7 @@ public class BundlePropertySetter extends Block {
 		String save = iwc.getParameter("Save");
 		String reload = iwc.getParameter("Reload");
 		String delete = iwc.getParameter("Delete");
-		IWMainApplication iwma = iwc.getApplication();
+		IWMainApplication iwma = iwc.getIWMainApplication();
 		IWBundle bundle = null;
 		if (bundleIdentifier != null)
 			bundle = iwma.getBundle(bundleIdentifier);

@@ -40,7 +40,7 @@ public class Versions extends Block {
 		if (!iwc.isIE())
 			getParentPage().setBackgroundColor("#FFFFFF");
 
-    IWMainApplication iwma = iwc.getApplication();
+    IWMainApplication iwma = iwc.getIWMainApplication();
     List bundles = getRegisteredBundles(iwma);
 
 		Text blockHeader = IWDeveloper.getText("Block");

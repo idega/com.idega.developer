@@ -67,7 +67,7 @@ public class BundleCreator extends Block {
 		Table T = new Table();
 		int row = 1;
 		T.add(IWDeveloper.getText("Registered bundles:"), 1, row++);
-		List bundles = iwc.getApplication().getRegisteredBundles();
+		List bundles = iwc.getIWMainApplication().getRegisteredBundles();
 		Collections.sort(bundles);
 
 		Iterator iter = bundles.iterator();
@@ -84,7 +84,7 @@ public class BundleCreator extends Block {
 			String bundleIdentifier = iwc.getParameter(this.NEW_BUNDLE_NAME_PARAMETER);
 			//String bundleDir = iwc.getParameter(this.NEW_BUNDLE_PATH_PARAMETER);
 			String bundleDir = bundleIdentifier + ".bundle";
-			IWMainApplication iwma = iwc.getApplication();
+			IWMainApplication iwma = iwc.getIWMainApplication();
 			if (bundleDir.indexOf(IWMainApplication.BUNDLES_STANDARD_DIRECTORY) == -1) {
 				bundleDir = IWMainApplication.BUNDLES_STANDARD_DIRECTORY + File.separator + bundleDir;
 			}

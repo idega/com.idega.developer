@@ -51,7 +51,7 @@ public class Localizer extends PresentationObjectContainer {
 		if (!iwc.isIE())
 			getParentPage().setBackgroundColor("#FFFFFF");
 
-		IWMainApplication iwma = iwc.getApplication();
+		IWMainApplication iwma = iwc.getIWMainApplication();
 		DropdownMenu bundlesDrop = getRegisteredDropdown(iwma, bundlesParameter);
 		bundlesDrop.keepStatusOnAction();
 		bundlesDrop.setToSubmit();
@@ -207,7 +207,7 @@ public class Localizer extends PresentationObjectContainer {
 	}
 
 	public static Form getAvailableLocalesForm(IWContext iwc) {
-		IWMainApplication iwma = iwc.getApplication();
+		IWMainApplication iwma = iwc.getIWMainApplication();
 
 		Form myForm = new Form();
 		myForm.setEventListener(com.idega.core.localisation.business.LocaleSwitcher.class.getName());

@@ -1,5 +1,5 @@
 /*
- * $Id: UpdateManager.java,v 1.1 2003/10/28 23:21:21 tryggvil Exp $
+ * $Id: UpdateManager.java,v 1.2 2004/02/20 16:37:42 tryggvil Exp $
  *
  * Copyright (C) 2002 Idega hf. All Rights Reserved.
  *
@@ -52,7 +52,7 @@ private String PARAM_EXECUTE_UPDATE="iw_updateman_execupdate";
 		if (!iwc.isIE())
 			getParentPage().setBackgroundColor("#FFFFFF");
 
-    IWMainApplication iwma = iwc.getApplication();
+    IWMainApplication iwma = iwc.getIWMainApplication();
     List bundles = getRegisteredBundles(iwma);
 
 		Text blockHeader = IWDeveloper.getText("Block");
