@@ -14,9 +14,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import com.idega.idegaweb.IWCacheManager;
 import com.idega.presentation.Block;
 import com.idega.presentation.IWContext;
 import com.idega.presentation.Table;
+import com.idega.presentation.text.Link;
 import com.idega.presentation.text.Text;
 import com.idega.presentation.ui.CheckBox;
 import com.idega.presentation.ui.DropdownMenu;
@@ -25,6 +27,7 @@ import com.idega.presentation.ui.FramePane;
 import com.idega.presentation.ui.SubmitButton;
 import com.idega.presentation.ui.TextArea;
 import com.idega.presentation.ui.TextInput;
+import com.idega.util.SQLDataDumper;
 /**
 
 *@author <a href="mailto:tryggvi@idega.is">Tryggvi Larusson</a>
@@ -40,6 +43,8 @@ public class SQLQueryer extends Block {
 	private static String HISTORY_QUERIES = "sql_hist_queries";
 	private static String AREA_COLS = "area_cols";
 	private static String AREA_ROWS = "area_rows";
+	private static String DUMP_FILE = "dump_file";
+	private static String DUMP_TYPE = "dump_type";
 	
 	private FramePane queryPane;
 	private FramePane resultsPane;
@@ -49,6 +54,8 @@ public class SQLQueryer extends Block {
 	private int numberOfViewedResults = 100;
 	private Map historyQueries = null;
 	private String historyQueryName = null;
+	private String dumpFileName = null;
+	private Integer dumpFileType = null;
 	
 	private int aCols = 70,aRows = 6;
 	
@@ -99,11 +106,25 @@ public class SQLQueryer extends Block {
 				queryString = null;
 			}
 			
+			if(iwc.isParameterSet(DUMP_FILE))
+				dumpFileName = iwc.getParameter(DUMP_FILE);
+			if(iwc.isParameterSet(DUMP_TYPE)){
+				try {
+					dumpFileType = Integer.valueOf(iwc.getParameter(DUMP_TYPE));
+				}
+				catch (NumberFormatException e) {
+					e.printStackTrace();
+				}
+			}
+			
 			try{
 				numberOfViewedResults=Integer.parseInt(iwc.getParameter(PARAM_NUM_RECORDS));
 			}
 			catch(NumberFormatException nfe){
 			}
+			if (queryString == null && query!=null)
+					queryString = query;
+					
 			if (displayForm) {
 				queryPane = new FramePane("Query");
 				super.add(queryPane);
@@ -127,7 +148,7 @@ public class SQLQueryer extends Block {
 				areaCols.keepStatusOnAction();
 				areaRows.setOnChange("this.form."+PARAM_QUERY+".rows = this.value");
 				areaCols.setOnChange("this.form."+PARAM_QUERY+".cols = this.value");
-				Table innerTable = new Table(3, 3);
+				Table innerTable = new Table(3, 4);
 				form.add(innerTable);
 				
 				innerTable.add(new Text("Size:"),3,1);
@@ -161,10 +182,36 @@ public class SQLQueryer extends Block {
 				innerTable.add(new CheckBox("to_history","true"),1,3);
 				innerTable.add(new SubmitButton("Execute"), 3, 3);
 				innerTable.mergeCells(1,3,2,3);
+				
+				innerTable.add("Dump file",1,4);
+				TextInput dumpFileNameInput = new TextInput(DUMP_FILE);
+				DropdownMenu dumpTypes = new DropdownMenu(DUMP_TYPE);
+				dumpTypes.addMenuElement(SQLDataDumper.TYPE_CSV,"CSV");
+				dumpTypes.addMenuElement(SQLDataDumper.TYPE_SQL_INSERT,"SQL inserts");
+				dumpTypes.keepStatusOnAction(true);
+				innerTable.add(dumpFileNameInput,1,4);
+				innerTable.add(dumpTypes,1,4);
+				
+				if(dumpFileName!=null && dumpFileType!=null && queryString!=null){
+					SQLDataDumper dumper = new SQLDataDumper();
+					dumper.setQuery(queryString);
+					dumper.setDumpFile(dumpFileName);
+					dumper.setType(dumpFileType.intValue());
+					String virtualFolderPath = iwc.getApplication().getCacheDirectoryURI();
+					dumper.setDumpFolder(iwc.getApplication().getRealPath(virtualFolderPath));
+					java.io.File file = dumper.dump();
+					//innerTable.add(file.getAbsolutePath(),1,4);
+					String fileURI = virtualFolderPath+"/"+file.getName();
+					Link fileLink =new Link(file.getName(),fileURI);
+					fileLink.setTarget(Link.TARGET_NEW_WINDOW);
+					innerTable.add(Text.getNonBrakingSpace(),1,4);
+					innerTable.add(fileLink,1,4);
+					
+					
+				}
 			}
 			Connection conn = getConnection(iwc);
-			if (queryString == null && query!=null)
-				queryString = query;
+			
 			try {
 				if (queryString != null) {
 					super.add(resultsPane);
@@ -244,6 +291,7 @@ public class SQLQueryer extends Block {
 			finally {
 				this.freeConnection(iwc,conn);
 			}
+			
 		}
 		else {
 			add("Not logged on");
