@@ -39,7 +39,7 @@ public class IWDeveloper extends com.idega.presentation.app.IWApplication {
 		super.setScrolling(1, true);
 		super.setWidth(800);
 		super.setHeight(600);
-		super.setOnLoad("moveTo(0,0);");
+		//super.setOnLoad("moveTo(0,0);");
 	}
 
 	public static class IWDevPage extends com.idega.presentation.ui.Window {
