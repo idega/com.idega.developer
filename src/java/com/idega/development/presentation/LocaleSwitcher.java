@@ -1,20 +1,13 @@
 package com.idega.development.presentation;
 
-import com.idega.presentation.ui.*;
-import com.idega.presentation.*;
-import com.idega.presentation.text.*;
-import com.idega.idegaweb.IWMainApplication;
-import com.idega.idegaweb.IWBundle;
-import com.idega.idegaweb.IWResourceBundle;
-import com.idega.presentation.ui.DropdownMenu;
-import java.util.Locale;
-import java.util.List;
-import java.util.Iterator;
 import java.util.Enumeration;
-import java.util.Map;
-import java.util.HashMap;
+import java.util.Locale;
+
+import com.idega.idegaweb.IWMainApplication;
+import com.idega.presentation.IWContext;
+import com.idega.presentation.ui.DropdownMenu;
+import com.idega.presentation.ui.Form;
 import com.idega.util.LocaleUtil;
-import com.idega.core.localisation.business.ICLocaleBusiness;
 
 /**
  * Title:        idega Framework
@@ -27,57 +20,56 @@ import com.idega.core.localisation.business.ICLocaleBusiness;
 
 public class LocaleSwitcher extends com.idega.idegaweb.presentation.LocaleChanger {
 
-  public final static String IW_BUNDLE_IDENTIFIER="com.idega.developer";
+	public final static String IW_BUNDLE_IDENTIFIER = "com.idega.developer";
 
+	public void make(IWContext iwc) {
+		if (showLinks)
+			doLinkView(iwc);
+		else
+			doDeveloperView(iwc);
 
+	}
 
-  public void make(IWContext iwc){
-    if(showLinks)
-      doLinkView(iwc);
-    else
-      doDeveloperView(iwc);
+	private void doDeveloperView(IWContext iwc) {
+		add(IWDeveloper.getTitleTable(this.getClass()));
+		getParentPage().setBackgroundColor("#FFFFFF");
+		IWMainApplication iwma = iwc.getApplication();
 
-  }
+		DropdownMenu localesDrop = Localizer.getAvailableLocalesDropdown(iwma, localesParameter);
+		localesDrop.keepStatusOnAction();
+		localesDrop.setToSubmit();
+		localesDrop.setSelectedElement(iwc.getCurrentLocale().toString());
 
-  private void doDeveloperView(IWContext iwc){
-    add(IWDeveloper.getTitleTable(this.getClass()));
-      getParentPage().setBackgroundColor("#FFFFFF");
-    IWMainApplication iwma = iwc.getApplication();
+		Form form = new Form();
+		form.maintainParameter(IWDeveloper.actionParameter);
+		form.setTarget(IWDeveloper.frameName);
+		add(form);
+		form.add(IWDeveloper.getText("Select language:&nbsp;&nbsp;"));
+		form.add(localesDrop);
 
-    DropdownMenu localesDrop = Localizer.getAvailableLocalesDropdown(iwma,localesParameter);
-    localesDrop.keepStatusOnAction();
-    localesDrop.setToSubmit();
-    localesDrop.setSelectedElement(iwc.getCurrentLocale().toString());
+		Enumeration enum = iwc.getParameterNames();
+		while (enum.hasMoreElements()) {
+			form.maintainParameter((String) enum.nextElement());
+		}
 
-    Form form = new Form();
-    form.maintainParameter(IWDeveloper.actionParameter);
-    add(form);
-    form.add(IWDeveloper.getText("Select language:&nbsp;&nbsp;"));
-    form.add(localesDrop);
+		doBusiness(iwc);
 
-    Enumeration enum = iwc.getParameterNames();
-    while (enum.hasMoreElements()) {
-      form.maintainParameter((String)enum.nextElement());
-    }
+		add(IWDeveloper.getText("Current Locale:&nbsp;&nbsp;"));
+		add(iwc.getCurrentLocale().getDisplayName() + " (" + iwc.getCurrentLocale().toString() + ")");
+	}
 
-    doBusiness(iwc);
+	private void doBusiness(IWContext iwc) {
+		String localeValue = iwc.getParameter(localesParameter);
+		if (localeValue != null) {
+			Locale locale = LocaleUtil.getLocale(localeValue);
+			if (locale != null) {
+				iwc.setCurrentLocale(locale);
+			}
+		}
+	}
 
-    add(IWDeveloper.getText("Current Locale:&nbsp;&nbsp;"));
-    add(iwc.getCurrentLocale().getDisplayName()+" ("+iwc.getCurrentLocale().toString()+")");
-  }
-
-  private void doBusiness(IWContext iwc){
-    String localeValue = iwc.getParameter(localesParameter);
-    if(localeValue!=null){
-      Locale locale = LocaleUtil.getLocale(localeValue);
-      if(locale!=null){
-	iwc.setCurrentLocale(locale);
-      }
-    }
-  }
-
-  public String getBundleIdentifier(){
-    return IW_BUNDLE_IDENTIFIER;
-  }
+	public String getBundleIdentifier() {
+		return IW_BUNDLE_IDENTIFIER;
+	}
 
 }

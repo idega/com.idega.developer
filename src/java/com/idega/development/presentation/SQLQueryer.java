@@ -8,27 +8,21 @@
 
 package com.idega.development.presentation;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
 
-
-import java.sql.*;
-
-import java.util.*;
-
-import java.io.*;
-
-import com.idega.util.*;
-
-import com.idega.presentation.text.*;
-
-import	com.idega.presentation.*;
-
-import	com.idega.presentation.ui.*;
-
-import	com.idega.data.*;
-
-import com.idega.util.text.*;
-
-
+import com.idega.presentation.Block;
+import com.idega.presentation.IWContext;
+import com.idega.presentation.PresentationObject;
+import com.idega.presentation.Table;
+import com.idega.presentation.text.Text;
+import com.idega.presentation.ui.Form;
+import com.idega.presentation.ui.FramePane;
+import com.idega.presentation.ui.SubmitButton;
+import com.idega.presentation.ui.TextArea;
 
 /**
 
@@ -38,357 +32,310 @@ import com.idega.util.text.*;
 
 */
 
-public class SQLQueryer extends Block{
+public class SQLQueryer extends Block {
 
+	public final static String IW_BUNDLE_IDENTIFIER = "com.idega.developer";
 
+	private static String queryParameter = "SQLQUERYSTRING";
 
-  public final static String IW_BUNDLE_IDENTIFIER="com.idega.developer";
+	private FramePane queryPane;
 
-    private static String queryParameter="SQLQUERYSTRING";
+	private FramePane resultsPane;
 
-    private FramePane queryPane;
+	private String query;
 
-    private FramePane resultsPane;
+	private boolean displayForm = true;
 
-    private String query;
+	private String resultName = "Result";
 
-    private boolean displayForm = true;
-
-    private String resultName = "Result";
-
-
-
-
-
-    public SQLQueryer(){
-
-    }
-
-
-
-    public void add(PresentationObject obj){
-
-      resultsPane.add(obj);
-
-    }
-
-
-
-
-
-    public void setWidth(int width){
-
-      if(queryPane!=null) queryPane.setWidth(width);
-
-      if(resultsPane!=null) resultsPane.setWidth(width);
-
-    }
-
-
-
-    public void setSQLQuery(String query){
-
-      this.query = query;
-
-      this.displayForm = false;
-
-    }
-
-
-
-    public void setResultName(String resultName){
-
-      this.resultName = resultName;
-
-    }
-
-
-
-    public void main(IWContext iwc)throws Exception{
-
-      resultsPane = new FramePane(resultName);
-
-      String  queryString = iwc.getParameter (queryParameter);
-
-
-
-
-
-      if(displayForm){
-
-	queryPane = new FramePane("Query");
-
-	super.add(queryPane);
-
-	Form form = new Form();
-
-	queryPane.add(form);
-
-	TextArea input = new TextArea(queryParameter);
-
-	input.setWidth(50);
-
-	input.setHeight(4);
-
-	if(queryString!=null){
-
-	  input.setContent(queryString);
+	public SQLQueryer() {
 
 	}
 
-	Table innertTable =new Table(1,2);
+	public void add(PresentationObject obj) {
 
-	form.add(innertTable);
+		resultsPane.add(obj);
 
-	innertTable.add(input,1,1);
+	}
 
-	innertTable.add(new SubmitButton("Execute"),1,2);
+	public void setWidth(int width) {
 
-      }
+		if (queryPane != null)
+			queryPane.setWidth(width);
 
+		if (resultsPane != null)
+			resultsPane.setWidth(width);
 
+	}
 
+	public void setSQLQuery(String query) {
 
+		this.query = query;
 
-      Connection conn=getConnection();
+		this.displayForm = false;
 
-      if(queryString == null) queryString = query;
+	}
 
+	public void setResultName(String resultName) {
 
+		this.resultName = resultName;
 
-      try {
+	}
 
-	if (queryString != null){
+	public void main(IWContext iwc) throws Exception {
 
-	  super.add(resultsPane);
+		resultsPane = new FramePane(resultName);
 
-	  if( displayForm ){
+		String queryString = iwc.getParameter(queryParameter);
 
-	    add("Your query was:");
+		if (displayForm) {
 
-	    add(Text.getBreak());
+			queryPane = new FramePane("Query");
 
-	    Text text = new Text(queryString);
+			super.add(queryPane);
 
-	    text.setBold();
+			Form form = new Form();
+			form.setTarget(IWDeveloper.frameName);
 
-	    add(text);
+			queryPane.add(form);
 
-	    addBreak();
+			TextArea input = new TextArea(queryParameter);
 
-	  }
+			input.setWidth("100%");
 
-	  Table table = new Table();
+			input.setRows(5);
 
-	  table.setColor("white");
+			if (queryString != null) {
 
-	  add(table);
+				input.setContent(queryString);
 
-	  Statement stmt = conn.createStatement();
+			}
 
-	    if(queryString.toLowerCase().indexOf("select")==-1){
+			Table innertTable = new Table(1, 2);
 
-		int i = stmt.executeUpdate(queryString);
+			form.add(innertTable);
 
-		//if (i>0){
+			innertTable.add(input, 1, 1);
 
-			add(i+" rows altered");
-
-		//}
-
-		//else{
-
-
-
-		//}
-
-	    }
-
-	    else{
-
-		ResultSet rs = stmt.executeQuery(queryString);
-
-		ResultSetMetaData rsMeta = rs.getMetaData();
-
-		// Get the N of Cols in the ResultSet
-
-		int noCols = rsMeta.getColumnCount();
-
-		//out.println("<tr>");
-
-		int y=1;
-
-		int x=1;
-
-		for (int c=1; c<=noCols; c++) {
-
-		    String el = rsMeta.getColumnLabel(c);
-
-		    //out.println("<th> " + el + " </th>");
-
-		    table.add(el,x,y);
-
-		    x++;
+			innertTable.add(new SubmitButton("Execute"), 1, 2);
 
 		}
 
-		//out.println("</tr>");
+		Connection conn = getConnection();
 
-		y++;
+		if (queryString == null)
+			queryString = query;
 
+		try {
 
+			if (queryString != null) {
 
-		table.setRowColor(1,"#D0D0D0");
+				super.add(resultsPane);
 
-		while (rs.next()) {
+				if (displayForm) {
 
-		    //out.println("<tr>");
+					add("Your query was:");
 
-		    x=1;
+					add(Text.getBreak());
 
-		    for (int c=1; c<=noCols; c++) {
+					Text text = new Text(queryString);
 
-			String el = rs.getString(c);
+					text.setBold();
 
-			table.add(el,x,y);
+					add(text);
 
-			x++;
+					addBreak();
 
-			//out.println("<td> " + el + " </td>");
+				}
 
+				Table table = new Table();
 
+				table.setColor("white");
 
-		    }
+				add(table);
 
-		    y++;
+				Statement stmt = conn.createStatement();
 
-		    //out.println("</tr>");
+				if (queryString.toLowerCase().indexOf("select") == -1) {
+
+					int i = stmt.executeUpdate(queryString);
+
+					//if (i>0){
+
+					add(i + " rows altered");
+
+					//}
+
+					//else{
+
+					//}
+
+				}
+
+				else {
+
+					ResultSet rs = stmt.executeQuery(queryString);
+
+					ResultSetMetaData rsMeta = rs.getMetaData();
+
+					// Get the N of Cols in the ResultSet
+
+					int noCols = rsMeta.getColumnCount();
+
+					//out.println("<tr>");
+
+					int y = 1;
+
+					int x = 1;
+
+					for (int c = 1; c <= noCols; c++) {
+
+						String el = rsMeta.getColumnLabel(c);
+
+						//out.println("<th> " + el + " </th>");
+
+						table.add(el, x, y);
+
+						x++;
+
+					}
+
+					//out.println("</tr>");
+
+					y++;
+
+					table.setRowColor(1, "#D0D0D0");
+
+					while (rs.next()) {
+
+						//out.println("<tr>");
+
+						x = 1;
+
+						for (int c = 1; c <= noCols; c++) {
+
+							String el = rs.getString(c);
+
+							table.add(el, x, y);
+
+							x++;
+
+							//out.println("<td> " + el + " </td>");
+
+						}
+
+						y++;
+
+						//out.println("</tr>");
+
+					}
+
+				}
+
+				//out.println("</table>");
+
+			} //end if querystring
+
+		} //end of try
+
+		catch (SQLException ex) {
+
+			//out.println ( "<P><PRE>" );
+
+			while (ex != null) {
+
+				add("Message:   " + ex.getMessage());
+
+				this.addBreak();
+
+				add("SQLState:  " + ex.getSQLState());
+
+				this.addBreak();
+
+				add("ErrorCode: " + ex.getErrorCode());
+
+				this.addBreak();
+
+				ex = ex.getNextException();
+
+				//out.println("");
+
+			}
+
+			//out.println ( "</PRE><P>" );
 
 		}
 
-	    }
+		finally {
 
-		//out.println("</table>");
+			this.freeConnection(conn);
 
-	  }//end if querystring
+		}
 
+		//out.println ("<hr>You can now try to retrieve something.");
 
+		//out.println("<FORM METHOD=POST ACTION=\"/servlet/CoffeeBreakServlet\">");
 
-	}//end of try
+		//out.println("<FORM METHOD=POST ACTION=\""+req.getRequestURI()+"\">");
 
-	catch (SQLException ex ) {
+		//out.println("Query: <INPUT TYPE=TEXT SIZE=50 NAME=\"QUERYSTRING\"> ");
 
-	    //out.println ( "<P><PRE>" );
+		//out.println("<INPUT TYPE=SUBMIT VALUE=\"GO!\">");
 
-	      while (ex != null) {
+		//out.println("</FORM>");
 
-		  add("Message:   " + ex.getMessage ());
+		//out.println("<hr><pre>e.g.:");
 
+		//out.println("SELECT * FROM COFFEES");
 
+		//out.println("SELECT * FROM COFFEES WHERE PRICE > 9");
 
-					      this.addBreak();
+		//out.println("SELECT PRICE, COF_NAME FROM COFFEES");
 
-		  add("SQLState:  " + ex.getSQLState ());
+		//out.println("<pre>");
 
-					      this.addBreak();
+		//out.println ("<hr><a href=\""+req.getRequestURI()+"\">Query again ?</a>");// | Source: <A HREF=\"/develop/servlets-ex/coffee-break/CoffeeBreakServlet.java\">CoffeeBreakServlet.java</A>");
 
-		  add("ErrorCode: " + ex.getErrorCode ());
-
-					      this.addBreak();
-
-		  ex = ex.getNextException();
-
-		  //out.println("");
-
-	      }
-
-	      //out.println ( "</PRE><P>" );
+		//out.println ( "</body></html>" );
 
 	}
 
-	finally{
+	public synchronized Object clone() {
 
-	  this.freeConnection(conn);
+		SQLQueryer obj = null;
+
+		try {
+
+			obj = (SQLQueryer) super.clone();
+
+			obj.queryParameter = this.queryParameter;
+
+			obj.queryPane = this.queryPane;
+
+			obj.resultsPane = this.resultsPane;
+
+			obj.query = this.query;
+
+			obj.displayForm = this.displayForm;
+
+			obj.resultName = this.resultName;
+
+		}
+
+		catch (Exception ex) {
+
+			ex.printStackTrace(System.err);
+
+		}
+
+		return obj;
 
 	}
 
-	//out.println ("<hr>You can now try to retrieve something.");
+	public String getBundleIdentifier() {
 
-	//out.println("<FORM METHOD=POST ACTION=\"/servlet/CoffeeBreakServlet\">");
+		return IW_BUNDLE_IDENTIFIER;
 
-	//out.println("<FORM METHOD=POST ACTION=\""+req.getRequestURI()+"\">");
-
-		      //out.println("Query: <INPUT TYPE=TEXT SIZE=50 NAME=\"QUERYSTRING\"> ");
-
-	//out.println("<INPUT TYPE=SUBMIT VALUE=\"GO!\">");
-
-	//out.println("</FORM>");
-
-	//out.println("<hr><pre>e.g.:");
-
-	//out.println("SELECT * FROM COFFEES");
-
-	//out.println("SELECT * FROM COFFEES WHERE PRICE > 9");
-
-	//out.println("SELECT PRICE, COF_NAME FROM COFFEES");
-
-	//out.println("<pre>");
-
-
-
-	//out.println ("<hr><a href=\""+req.getRequestURI()+"\">Query again ?</a>");// | Source: <A HREF=\"/develop/servlets-ex/coffee-break/CoffeeBreakServlet.java\">CoffeeBreakServlet.java</A>");
-
-	//out.println ( "</body></html>" );
-
-
-
-
-
-    }
-
-
-
-  public synchronized Object clone() {
-
-    SQLQueryer obj = null;
-
-    try {
-
-      obj = (SQLQueryer)super.clone();
-
-      obj.queryParameter = this.queryParameter;
-
-      obj.queryPane = this.queryPane;
-
-      obj.resultsPane = this.resultsPane;
-
-      obj.query = this.query;
-
-      obj.displayForm = this.displayForm;
-
-      obj.resultName = this.resultName;
-
-    }
-
-    catch(Exception ex) {
-
-      ex.printStackTrace(System.err);
-
-    }
-
-    return obj;
-
-  }
-
-
-
-  public String getBundleIdentifier(){
-
-    return IW_BUNDLE_IDENTIFIER;
-
-  }
-
-
+	}
 
 }
-
