@@ -16,6 +16,8 @@ import com.idega.core.component.data.ICObject;
 import com.idega.core.component.data.ICObjectType;
 import com.idega.core.component.data.ICObjectTypeHome;
 import com.idega.data.IDOLookup;
+import com.idega.repository.data.Instantiator;
+import com.idega.repository.data.SingletonRepository;
 
 /**
  * <p>Title: BundleComponentFactory</p>
@@ -29,7 +31,14 @@ import com.idega.data.IDOLookup;
  */
 public class BundleComponentFactory {
 	
-	static BundleComponentFactory factory = null;
+	static Instantiator instantiator = new Instantiator() { 
+		public Object getInstance() { 
+			return new BundleComponentFactory();
+		}
+		public void unload() {
+			lookup = null;
+		}
+	};
 	static Map lookup = null;
 	
 	private BundleComponentFactory(){
@@ -41,9 +50,7 @@ public class BundleComponentFactory {
 	 * @return instance of factory
 	 */
 	public static BundleComponentFactory getInstance(){
-		if(factory == null)
-			factory = new BundleComponentFactory();
-		return factory;
+		return (BundleComponentFactory) SingletonRepository.getRepository().getInstance(BundleComponentFactory.class, instantiator);
 	}
 	
 	public  BundleComponent getBundleComponent(String identifier)throws IllegalArgumentException{
