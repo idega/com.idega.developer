@@ -36,6 +36,7 @@ public class ApplicationPropertySetter extends Block {
 	private static final String AUTOCREATE_PROPERTIES_PARAMETER = "iw_a_c_p_p";
 	private static final String IDO_ENTITY_BEAN_CACHING_PARAMETER = "iw_e_b_c_p";
 	private static final String IDO_ENTITY_QUERY_CACHING_PARAMETER = "iw_e_q_c_p";
+	private static final String IDO_USE_PREPARED_STATEMENT = "iw_a_u_p_s";
 	private static final String DEBUG_PARAMETER = "iw_d_p";
 
 	public ApplicationPropertySetter() {
@@ -56,11 +57,11 @@ public class ApplicationPropertySetter extends Block {
 		form.maintainParameter(IWDeveloper.PARAMETER_CLASS_NAME);
 		//form.setTarget(IWDeveloper.frameName);
 		add(form);
-		Table table = new Table(2, 11);
+		Table table = new Table(2, 12);
 		table.setCellpadding(5);
 		table.mergeCells(1, 1, 2, 1);
-		table.mergeCells(1, 11, 2, 11);
-		table.setAlignment(1, 11, "right");
+		table.mergeCells(1, 12, 2, 12);
+		table.setAlignment(1, 12, "right");
 		form.add(table);
 		TextInput name = new TextInput(this.PROPERTY_KEY_NAME_PARAMETER);
 		TextInput value = new TextInput(this.PROPERTY_VALUE_PARAMETER);
@@ -113,17 +114,24 @@ public class ApplicationPropertySetter extends Block {
 		}
 		table.add(IWDeveloper.getText("Entity Query caching:"), 1, 9);
 		table.add(box7, 2, 9);
+		
+		CheckBox box8 = new CheckBox(IDO_USE_PREPARED_STATEMENT);
+		if (iwma.getSettings().getIfUsePreparedStatement()) {
+			box8.setChecked(true);
+		}
+		table.add(IWDeveloper.getText("Prepared statement:"), 1, 10);
+		table.add(box8, 2, 10);
 
 		DropdownMenu menu = new DropdownMenu(Page.MARKUP_LANGUAGE);
 		menu.addMenuElement(Page.HTML, "HTML 4.01");
 		menu.addMenuElement(Page.XHTML, "XHTML 1.0");
 		menu.addMenuElement(Page.XHTML1_1, "XHTML 1.1 (Experimental)");
 		menu.setSelectedElement(iwc.getApplicationSettings().getProperty(Page.MARKUP_LANGUAGE, Page.HTML));
-		table.add(IWDeveloper.getText("Markup Language:"), 1, 10);
-		table.add(menu, 2, 10);
+		table.add(IWDeveloper.getText("Markup Language:"), 1, 11);
+		table.add(menu, 2, 11);
 
-		table.add(new SubmitButton("Save", APPLICATION_SETTER_PARAMETER, "save"), 1, 11);
-		table.add(new SubmitButton("Store Application state", APPLICATION_SETTER_PARAMETER, "store"), 1, 11);
+		table.add(new SubmitButton("Save", APPLICATION_SETTER_PARAMETER, "save"), 1, 12);
+		table.add(new SubmitButton("Store Application state", APPLICATION_SETTER_PARAMETER, "store"), 1, 12);
 
 		add(getParametersTable(iwma));
 	}
@@ -142,6 +150,7 @@ public class ApplicationPropertySetter extends Block {
 			String autoCreateProperties = iwc.getParameter(AUTOCREATE_PROPERTIES_PARAMETER);
 			String entityBeanCache = iwc.getParameter(this.IDO_ENTITY_BEAN_CACHING_PARAMETER);
 			String entityQueryCache = iwc.getParameter(this.IDO_ENTITY_QUERY_CACHING_PARAMETER);
+			String usePreparedStatement = iwc.getParameter(this.IDO_USE_PREPARED_STATEMENT);
 			String debug = iwc.getParameter(DEBUG_PARAMETER);
 			String KeyName = iwc.getParameter(this.PROPERTY_KEY_NAME_PARAMETER);
 			String KeyValue = iwc.getParameter(this.PROPERTY_VALUE_PARAMETER);
@@ -163,6 +172,11 @@ public class ApplicationPropertySetter extends Block {
 				iwc.getIWMainApplication().getSettings().setEntityQueryCaching(true);
 			else
 				iwc.getIWMainApplication().getSettings().setEntityQueryCaching(false);
+			
+			if (usePreparedStatement != null)
+				iwc.getIWMainApplication().getSettings().setUsePreparedStatement(true);
+			else
+				iwc.getIWMainApplication().getSettings().setUsePreparedStatement(false);
 
 			if (autoCreateStrings != null) {
 				iwc.getIWMainApplication().getSettings().setAutoCreateStrings(true);
