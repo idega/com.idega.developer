@@ -38,11 +38,13 @@ public class IWDeveloper extends com.idega.presentation.app.IWApplication {
     super.setScrolling(1,false);
     super.setWidth(800);
     super.setHeight(600);
+    super.setOnLoad("moveTo(0,0);");
   }
 
   public static class IWDevPage extends com.idega.idegaweb.presentation.IWAdminWindow{
 
     public IWDevPage(){
+      this.setStatus(true);
     }
 
     private Table mainTable;
@@ -54,23 +56,23 @@ public class IWDeveloper extends com.idega.presentation.app.IWApplication {
       addTitle("idegaWeb Developer");
 
       mainTable = new Table(2,1);
-        mainTable.setHeight("100%");
-        mainTable.setWidth("100%");
-        mainTable.setWidth(1,"200");
-        mainTable.setWidth(2,"100%");
-        mainTable.setCellpadding(3);
-        mainTable.setCellspacing(0);
-        mainTable.setAlignment(1,1,"center");
-        mainTable.setVerticalAlignment(1,1,"top");
-        mainTable.setVerticalAlignment(2,1,"top");
-        //mainTable.setColor(IWConstants.DEFAULT_LIGHT_INTERFACE_COLOR);
-        mainTable.setColor("#B0B29D");
+	mainTable.setHeight("100%");
+	mainTable.setWidth("100%");
+	mainTable.setWidth(1,"200");
+	mainTable.setWidth(2,"100%");
+	mainTable.setCellpadding(3);
+	mainTable.setCellspacing(0);
+	mainTable.setAlignment(1,1,"center");
+	mainTable.setVerticalAlignment(1,1,"top");
+	mainTable.setVerticalAlignment(2,1,"top");
+	//mainTable.setColor(IWConstants.DEFAULT_LIGHT_INTERFACE_COLOR);
+	mainTable.setColor("#B0B29D");
       add(mainTable);
 
       IFrame menuFrame = new IFrame("menu",DeveloperList.class);
-        menuFrame.setWidth(200);
-        menuFrame.setHeight(215);
-        menuFrame.setScrolling(IFrame.SCROLLING_YES);
+	menuFrame.setWidth(200);
+	menuFrame.setHeight(215);
+	menuFrame.setScrolling(IFrame.SCROLLING_YES);
       mainTable.add(menuFrame,1,1);
 
       rightFrame = new IFrame(frameName);
