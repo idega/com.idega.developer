@@ -373,8 +373,8 @@ public class LDAPManager extends Block implements LDAPReplicationConstants,Embed
 		form.maintainParameter(IWDeveloper.PARAMETER_CLASS_NAME);
 		Table buttons = new Table(4,1);
 		SubmitButton newRep = new SubmitButton(PARAM_NEW_REPLICATION_SETTINGS,iwrb.getLocalizedString("LDAPMANAGER.new.replication.settings","new replicator"));
-		SubmitButton startAll = new SubmitButton(PARAM_START_ALL_REPLICATORS,iwrb.getLocalizedString("LDAPMANAGER.start.all.replicators","start all auto-starters"));
-		SubmitButton stopAll = new SubmitButton(PARAM_STOP_ALL_REPLICATORS,iwrb.getLocalizedString("LDAPMANAGER.stop.all.replicators","stop all auto-starters"));
+		SubmitButton startAll = new SubmitButton(PARAM_START_ALL_REPLICATORS,iwrb.getLocalizedString("LDAPMANAGER.start.all.replicators","start all active replicators"));
+		SubmitButton stopAll = new SubmitButton(PARAM_STOP_ALL_REPLICATORS,iwrb.getLocalizedString("LDAPMANAGER.stop.all.replicators","stop all replicators"));
 		buttons.add(newRep,1,1);
 		buttons.add(startAll,3,1);
 		buttons.add(stopAll,4,1);
