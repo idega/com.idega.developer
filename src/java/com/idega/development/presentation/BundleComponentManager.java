@@ -81,7 +81,7 @@ public class BundleComponentManager extends Block {
 	}
 
 	DropdownMenu typesDrop = new DropdownMenu(this.TYPE_INPUT_NAME);
-	List componentTypes = ICObject.getAvailableComponentTypes();
+	List componentTypes = com.idega.core.data.ICObjectBMPBean.getAvailableComponentTypes();
 	Iterator iter = componentTypes.iterator();
 
 	CheckBox deleteBox = new CheckBox(DELETE_CHECKBOX_NAME);
