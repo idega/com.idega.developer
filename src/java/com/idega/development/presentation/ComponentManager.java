@@ -54,23 +54,23 @@ public class ComponentManager extends JModuleObject {
       bundles.keepStatusOnAction();
       bundles.setToSubmit();
 
-      Form form = new Form();
+      /*Form form = new Form();
       form.maintainParameter(IWDeveloper.actionParameter);
-      add(form);
+      add(form);*/
+
       Table table = new Table();
         table.setCellpadding(5);
-      Table selectTable = new Table(3,1);
-      form.add(selectTable);
-      form.add(Text.getBreak());
-      form.add(Text.getBreak());
-      form.add(table);
+        table.setBorder(1);
+      add(Text.getBreak());
+      add(Text.getBreak());
+      add(table);
 
       int yindex = 1;
 
-      table.add("Bundle:",1,yindex);
+      table.add(IWDeveloper.getText("Bundle:"),1,yindex);
       table.add(bundles,2,yindex);
       SubmitButton button1 = new SubmitButton("Select");
-      table.add(button1,2,yindex);
+      table.add(button1,3,yindex);
 
 
       String bundleIdentifier = modinfo.getParameter(BUNDLE_PARAMETER);
@@ -94,7 +94,7 @@ public class ComponentManager extends JModuleObject {
           componentsDrop.addMenuElement(component);
         }
 
-        table.add("Component:",1,yindex);
+        table.add(IWDeveloper.getText("Component:"),1,yindex);
         table.add(componentsDrop,2,yindex);
         SubmitButton button2 = new SubmitButton("Select");
         table.add(button2,2,yindex);
@@ -138,7 +138,7 @@ public class ComponentManager extends JModuleObject {
           }
 
 
-          table.add("Method:",1,yindex);
+          table.add(IWDeveloper.getText("Method:"),1,yindex);
           table.add(methodsDrop,2,yindex);
           SubmitButton button3 = new SubmitButton("Select");
           table.add(button3,2,yindex);
@@ -148,7 +148,7 @@ public class ComponentManager extends JModuleObject {
           if(selectedMethodIdentifier!=null){
               yindex++;
               TextInput methodDesc = new TextInput(METHOD_DESCRIPTION_PARAMETER);
-              table.add("MethodDescription:",1,yindex);
+              table.add(IWDeveloper.getText("MethodDescription:"),1,yindex);
               table.add(methodDesc,2,yindex);
               SubmitButton button4 = new SubmitButton("Register Method");
               table.add(button4,2,yindex);
@@ -173,7 +173,7 @@ public class ComponentManager extends JModuleObject {
             CheckBox deleteBox = new CheckBox(DELETE_CHECKBOX_NAME);
             IWPropertyListIterator methodsIter = methodsList.getIWPropertyListIterator();
             yindex++;
-            table.add("Remove?",1,yindex);
+            table.add(IWDeveloper.getText("Remove?"),1,yindex);
             while (methodsIter.hasNext()) {
               yindex++;
               IWProperty prop = methodsIter.nextProperty();
