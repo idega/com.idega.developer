@@ -197,6 +197,8 @@ public class ApplicationPropertySetter extends Block {
 		java.util.Iterator iter = iwma.getSettings().getIWPropertyListIterator();
 
 		Form form = new Form();
+		form.maintainParameter(IWDeveloper.actionParameter);
+		form.maintainParameter(IWDeveloper.PARAMETER_CLASS_NAME);
 		Table table = new Table();
 
 		String value;
