@@ -24,7 +24,7 @@ import java.lang.reflect.Method;
 
 
 /**
- * Title:        idegaclasses
+ * Title:        idegaWeb Developer
  * Description:
  * Copyright:    Copyright (c) 2001
  * Company:      idega
@@ -309,7 +309,8 @@ public class NewComponentPropertyWindow extends Window {
       try{
       selectedClass = Class.forName(selectedComponentKey);
         //Method[] methods = selectedClass.getMethods();
-        info = Introspector.getBeanInfo(selectedClass,PresentationObject.class);
+        //info = Introspector.getBeanInfo(selectedClass,PresentationObject.class);
+        info = Introspector.getBeanInfo(selectedClass);
       }
       catch(Exception e){
         e.printStackTrace();
