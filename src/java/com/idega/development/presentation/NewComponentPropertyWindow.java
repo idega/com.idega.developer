@@ -306,26 +306,46 @@ public class NewComponentPropertyWindow extends Window {
   public DropdownMenu getMethodsDropdown(String selectedComponentKey,String name){
       Class selectedClass=null;
       BeanInfo info = null;
+      Method[] methods = null;
       try{
       selectedClass = Class.forName(selectedComponentKey);
+
         //Method[] methods = selectedClass.getMethods();
         //info = Introspector.getBeanInfo(selectedClass,PresentationObject.class);
-        info = Introspector.getBeanInfo(selectedClass);
+        //info = Introspector.getBeanInfo(selectedClass);
+        Class introspectionClass = selectedClass;
+        while (!introspectionClass.equals(PresentationObject.class)) {
+          Method[] newMethods = introspectionClass.getMethods();
+          if(methods==null){
+            methods = newMethods;
+          }
+          else{
+            int oldLength = methods.length;
+            Method[] newArray = new Method[oldLength+newMethods.length];
+            System.arraycopy(methods,0,newArray,0,oldLength);
+            System.arraycopy(newMethods,0,newArray,oldLength,newMethods.length);
+            methods = newArray;
+          }
+          introspectionClass = introspectionClass.getSuperclass();
+        }
+
       }
       catch(Exception e){
         e.printStackTrace();
       }
-      MethodDescriptor[] descriptors = info.getMethodDescriptors();
-      java.util.Arrays.sort(descriptors,com.idega.util.Comparators.getMethodDescriptorComparator());
+      //MethodDescriptor[] descriptors = info.getMethodDescriptors();
+      //java.util.Arrays.sort(descriptors,com.idega.util.Comparators.getMethodDescriptorComparator());
+      java.util.Arrays.sort(methods,com.idega.util.Comparators.getMethodComparator());
       DropdownMenu methodsDrop = new DropdownMenu(name);
       methodsDrop.keepStatusOnAction();
       methodsDrop.setToSubmit();
       String openingParentheses = "(";
       String closingParentheses = ")";
       String comma = ",";
-      for (int i = 0; i < descriptors.length; i++) {
-        Method method = descriptors[i].getMethod();
-        //Method method = methods[i];
+      for (int i = 0; i < methods.length; i++) {
+      //for (int i = 0; i < descriptors.length; i++) {
+        //Method method = descriptors[i].getMethod();
+        Method method = methods[i];
         if(method.getDeclaringClass().equals(selectedClass)){
           //String methodToString = methods[i].toString();
           String methodToString = method.getName()+openingParentheses;
