@@ -50,7 +50,7 @@ private static String styleName = "iwdClass";
     addToList(getClassLink(iwc, Logs.class,"Logs"),image);
     addToList(getClassLink(iwc, Versions.class,"Versions"),image);
 	addToList(getClassLink(iwc, UpdateManager.class,"UpdateManager"),image);
-	addToList(getClassLink(iwc, DeveloperHomepageGenerator.class,"Homepage Generator"),image);
+	addToList(getClassLink(iwc, HomePageGenerator.class,"Homepage Generator"),image);
 	addToList(getClassLink(iwc, PageObjects.class,"Page Object Viewer"),image);
 	addToList(getClassLink(iwc, ScriptManager.class,"Script Manager"),image);
 	addToList(getClassLink(iwc, LDAPManager.class,"LDAP Manager"),image);
