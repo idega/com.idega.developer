@@ -310,16 +310,19 @@ public class NewComponentPropertyWindow extends Window {
       try{
       selectedClass = Class.forName(selectedComponentKey);
 
-        //Method[] methods = selectedClass.getMethods();
-        //info = Introspector.getBeanInfo(selectedClass,PresentationObject.class);
-        //info = Introspector.getBeanInfo(selectedClass);
+        Class stopClass = PresentationObject.class;
         Class introspectionClass = selectedClass;
-        while (!introspectionClass.equals(PresentationObject.class)) {
+        //info = Introspector.getBeanInfo(selectedClass,stopClass);
+
+        while (!introspectionClass.equals(stopClass)) {
           Method[] newMethods = introspectionClass.getMethods();
+          //System.out.println("newMethods.length="+newMethods.length);
           if(methods==null){
             methods = newMethods;
+            //System.out.println("NewComponentPropertyWindow 1 for: "+introspectionClass.getName());
           }
           else{
+            //System.out.println("NewComponentPropertyWindow 2 for: "+introspectionClass.getName());
             int oldLength = methods.length;
             Method[] newArray = new Method[oldLength+newMethods.length];
             System.arraycopy(methods,0,newArray,0,oldLength);
@@ -333,9 +336,9 @@ public class NewComponentPropertyWindow extends Window {
       catch(Exception e){
         e.printStackTrace();
       }
+      java.util.Arrays.sort(methods,com.idega.util.Comparators.getMethodComparator());
       //MethodDescriptor[] descriptors = info.getMethodDescriptors();
       //java.util.Arrays.sort(descriptors,com.idega.util.Comparators.getMethodDescriptorComparator());
-      java.util.Arrays.sort(methods,com.idega.util.Comparators.getMethodComparator());
       DropdownMenu methodsDrop = new DropdownMenu(name);
       methodsDrop.keepStatusOnAction();
       methodsDrop.setToSubmit();
@@ -344,10 +347,8 @@ public class NewComponentPropertyWindow extends Window {
       String comma = ",";
       for (int i = 0; i < methods.length; i++) {
       //for (int i = 0; i < descriptors.length; i++) {
-        //Method method = descriptors[i].getMethod();
         Method method = methods[i];
-        if(method.getDeclaringClass().equals(selectedClass)){
-          //String methodToString = methods[i].toString();
+        //Method method = descriptors[i].getMethod();
           String methodToString = method.getName()+openingParentheses;
           Class[] arguments = method.getParameterTypes();
           for (int j = 0; j < arguments.length; j++) {
@@ -360,7 +361,7 @@ public class NewComponentPropertyWindow extends Window {
           String methodIdentifier = MethodFinder.getInstance().getMethodIdentifierWithoutDeclaringClass(method);
           methodsDrop.addMenuElement(methodIdentifier,methodToString);
         }
-      }
+
     return methodsDrop;
   }
 
