@@ -180,9 +180,9 @@ public class UserTransformer extends Block{
 		String deleteUserGroupRelationSQL2 = " delete from ic_group_relation where related_ic_group_id = ?";
 		String deleteUserGroupSQL = "delete from ic_group where ic_group_id = ?";
 		String insertGroupSQL 	= "insert into ic_group (ic_group_id,group_type,name,extra_info) values (?,'ic_user_representative',?,'Fixed "+df.format(new Date())+"')";
-		String insertGroupRelationSQL = "insert into ic_group_relation(IC_GROUP_ID,RELATIONSHIP_TYPE,INITIATION_DATE ,RELATED_IC_GROUP_ID ,GROUP_RELATION_STATUS ,INIT_MODIFICATION_DATE) values (?,'GROUP_PARENT', '"+com.idega.util.IWTimestamp.RightNow().getTimestamp().toString()+"',?,'ST_ACTIVE','"+com.idega.util.IWTimestamp.RightNow().getTimestamp().toString()+"')";
+		String insertGroupRelationSQL = "insert into ic_group_relation(IC_GROUP_ID,RELATIONSHIP_TYPE,INITIATION_DATE ,RELATED_IC_GROUP_ID ,GROUP_RELATION_STATUS ,INIT_MODIFICATION_DATE) values (?,'GROUP_PARENT', '"+com.idega.util.IWTimestamp.RightNow().toSQLString()+"',?,'ST_ACTIVE','"+com.idega.util.IWTimestamp.RightNow().toSQLString()+"')";
 		if (sap) {
-			insertGroupRelationSQL = "insert into ic_group_relation(IC_GROUP_ID,RELATIONSHIP_TYPE,INITIATION_DATE ,RELATED_IC_GROUP_ID ,GROUP_RELATION_STATUS ,INIT_MODIFICATION_DATE,IC_GROUP_RELATION_ID) values (?,'GROUP_PARENT', '"+com.idega.util.IWTimestamp.RightNow().getTimestamp().toString()+"',?,'ST_ACTIVE','"+com.idega.util.IWTimestamp.RightNow().getTimestamp().toString()+"', ?)";
+			insertGroupRelationSQL = "insert into ic_group_relation(IC_GROUP_ID,RELATIONSHIP_TYPE,INITIATION_DATE ,RELATED_IC_GROUP_ID ,GROUP_RELATION_STATUS ,INIT_MODIFICATION_DATE,IC_GROUP_RELATION_ID) values (?,'GROUP_PARENT', '"+com.idega.util.IWTimestamp.RightNow().toSQLString()+"',?,'ST_ACTIVE','"+com.idega.util.IWTimestamp.RightNow().toSQLString()+"', ?)";
 		}
 		String updateGroupMetadataSQL = "update ic_group_ic_metadata set ic_group_id = ? where ic_group_id = ?";
 		String updateGroupProtocolSQL = "update ic_group_protocol set ic_group_id = ? where ic_group_id = ?";
