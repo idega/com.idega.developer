@@ -2,10 +2,12 @@ package com.idega.development.presentation;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
-
+import javax.ejb.FinderException;
 import com.idega.core.idgenerator.business.UUIDBusiness;
 import com.idega.core.ldap.replication.business.LDAPReplicationBusiness;
 import com.idega.core.ldap.replication.business.LDAPReplicationConstants;
@@ -21,9 +23,15 @@ import com.idega.presentation.text.HorizontalRule;
 import com.idega.presentation.text.Text;
 import com.idega.presentation.ui.CheckBox;
 import com.idega.presentation.ui.Form;
+import com.idega.presentation.ui.InterfaceObject;
 import com.idega.presentation.ui.RadioButton;
 import com.idega.presentation.ui.SubmitButton;
 import com.idega.presentation.ui.TextInput;
+import com.idega.user.business.GroupBusiness;
+import com.idega.user.business.GroupTreeNode;
+import com.idega.user.data.Group;
+import com.idega.user.presentation.GroupChooser;
+import com.idega.util.text.TextSoap;
 /**
  * A manager for IdegaWeb's integrated LDAP server and replication services.
 *@author <a href="mailto:eiki@idega.is">Eirikur S. Hrafnsson</a>
@@ -66,6 +74,8 @@ public class LDAPManager extends Block implements LDAPReplicationConstants,Embed
 
 	private boolean justCreatedUUIDs = false;
 	private boolean justRemovedUUIDs = false;
+
+	private GroupBusiness groupBiz = null;
 		
 	public LDAPManager() {
 	}
@@ -225,20 +235,36 @@ public class LDAPManager extends Block implements LDAPReplicationConstants,Embed
 		for(int i = 1; i<=numberOfReplicators; i++){
 			
 			
-			replicationSettings.setProperty(PROPS_REPLICATOR_PREFIX +i+ PROPS_REPLICATOR_BASE_RDN, iwc.getParameter(PROPS_REPLICATOR_PREFIX +i+ PROPS_REPLICATOR_BASE_RDN));
-			replicationSettings.setProperty(PROPS_REPLICATOR_PREFIX +i+ PROPS_REPLICATOR_BASE_UNIQUE_ID, iwc.getParameter(PROPS_REPLICATOR_PREFIX +i+ PROPS_REPLICATOR_BASE_UNIQUE_ID));
-			replicationSettings.setProperty(PROPS_REPLICATOR_PREFIX +i+ PROPS_REPLICATOR_HOST, iwc.getParameter(PROPS_REPLICATOR_PREFIX +i+ PROPS_REPLICATOR_HOST));
-			replicationSettings.setProperty(PROPS_REPLICATOR_PREFIX +i+ PROPS_REPLICATOR_PORT, iwc.getParameter(PROPS_REPLICATOR_PREFIX +i+ PROPS_REPLICATOR_PORT));
-			replicationSettings.setProperty(PROPS_REPLICATOR_PREFIX +i+ PROPS_REPLICATOR_INTERVAL_MINUTES,iwc.getParameter(PROPS_REPLICATOR_PREFIX +i+ PROPS_REPLICATOR_INTERVAL_MINUTES));
-			replicationSettings.setProperty(PROPS_REPLICATOR_PREFIX +i+ PROPS_REPLICATOR_SCHEDULER_STRING,iwc.getParameter(PROPS_REPLICATOR_PREFIX +i+ PROPS_REPLICATOR_SCHEDULER_STRING));
-			replicationSettings.setProperty(PROPS_REPLICATOR_PREFIX +i+ PROPS_REPLICATOR_SEARCH_TIMEOUT_MS,iwc.getParameter(PROPS_REPLICATOR_PREFIX +i+ PROPS_REPLICATOR_SEARCH_TIMEOUT_MS));
-			replicationSettings.setProperty(PROPS_REPLICATOR_PREFIX +i+ PROPS_REPLICATOR_SEARCH_ENTRY_LIMIT,iwc.getParameter(PROPS_REPLICATOR_PREFIX +i+ PROPS_REPLICATOR_SEARCH_ENTRY_LIMIT));
-			replicationSettings.setProperty(PROPS_REPLICATOR_PREFIX +i+ PROPS_REPLICATOR_ROOT_USER, iwc.getParameter(PROPS_REPLICATOR_PREFIX +i+ PROPS_REPLICATOR_ROOT_USER));
-			replicationSettings.setProperty(PROPS_REPLICATOR_PREFIX +i+ PROPS_REPLICATOR_ROOT_PASSWORD, iwc.getParameter(PROPS_REPLICATOR_PREFIX +i+ PROPS_REPLICATOR_ROOT_PASSWORD));
+			setReplicationProperty(iwc, PROPS_REPLICATOR_BASE_RDN, i);
+			setReplicationProperty(iwc, PROPS_REPLICATOR_BASE_UNIQUE_ID,i);
+			
+			//special case because we cannot have "." in javascript variables
+			String underScoreKey = TextSoap.findAndReplace(PROPS_REPLICATOR_PREFIX +i+PROPS_REPLICATOR_BASE_GROUP_ID, ".", "_");
+			String baseGroupId = iwc.getParameter(underScoreKey);
+			if(baseGroupId!=null){
+				baseGroupId = baseGroupId.substring(baseGroupId.indexOf("_")+1);
+			}
+			replicationSettings.setProperty(PROPS_REPLICATOR_PREFIX +i+PROPS_REPLICATOR_BASE_GROUP_ID, baseGroupId);
+			String underScoreKey2 = TextSoap.findAndReplace(PROPS_REPLICATOR_PREFIX +i+PROPS_REPLICATOR_PARENT_GROUP_ID, ".", "_");
+			String parentGroupId = iwc.getParameter(underScoreKey2);
+			if(parentGroupId!=null){
+				parentGroupId = parentGroupId.substring(parentGroupId.indexOf("_")+1);
+			}
+			replicationSettings.setProperty(PROPS_REPLICATOR_PREFIX +i+PROPS_REPLICATOR_PARENT_GROUP_ID, parentGroupId);
+			//
+			
+			setReplicationProperty(iwc, PROPS_REPLICATOR_HOST,i);
+			setReplicationProperty(iwc, PROPS_REPLICATOR_PORT,i);
+			setReplicationProperty(iwc, PROPS_REPLICATOR_INTERVAL_MINUTES,i);
+			setReplicationProperty(iwc, PROPS_REPLICATOR_SCHEDULER_STRING,i);
+			setReplicationProperty(iwc, PROPS_REPLICATOR_SEARCH_TIMEOUT_MS,i);
+			setReplicationProperty(iwc, PROPS_REPLICATOR_SEARCH_ENTRY_LIMIT,i);
+			setReplicationProperty(iwc, PROPS_REPLICATOR_ROOT_USER,i);
+			setReplicationProperty(iwc, PROPS_REPLICATOR_ROOT_PASSWORD,i);
 			
 			toggleBooleanProperty(replicationSettings, PROPS_REPLICATOR_PREFIX +i+ PROPS_REPLICATOR_REPLICATE_BASE_RDN, iwc);
 			toggleBooleanProperty(replicationSettings, PROPS_REPLICATOR_PREFIX +i+ PROPS_REPLICATOR_MATCH_BY_UNIQUE_ID, iwc);
-			toggleBooleanProperty(replicationSettings, PROPS_REPLICATOR_PREFIX +i+ PROPS_REPLICATOR_AUTO_START, iwc);
+			toggleBooleanProperty(replicationSettings, PROPS_REPLICATOR_PREFIX +i+ PROPS_REPLICATOR_ACTIVE, iwc);
 			
 		}
 		
@@ -247,6 +273,25 @@ public class LDAPManager extends Block implements LDAPReplicationConstants,Embed
 	}
 
 
+
+	/**
+	 * @param iwc
+	 * @param replicationSettings
+	 * @param i
+	 */
+	private void setReplicationProperty(IWContext iwc, String propertyKey, int replicatorId) {
+		Properties replicationSettings;
+		try {
+			replicationSettings = getLDAPReplicationBusiness(iwc).getReplicationSettings();
+			replicationSettings.setProperty(PROPS_REPLICATOR_PREFIX +replicatorId+ propertyKey, iwc.getParameter(PROPS_REPLICATOR_PREFIX +replicatorId+ propertyKey));
+		}
+		catch (RemoteException e) {
+			e.printStackTrace();
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
 	/**
 	 * Adds a table of properties and values from the javaldap.prop properties file
@@ -264,7 +309,7 @@ public class LDAPManager extends Block implements LDAPReplicationConstants,Embed
 		List checkBoxes = new ArrayList();
 		checkBoxes.add(PROPS_JAVALDAP_AUTO_START);
 		
-		addSettings(PARAM_SAVE_LDAP_SETTINGS,getEmbeddedLDAPServerBusiness(iwc).getLDAPSettings(),iwrb.getLocalizedString("LDAPMANAGER.ldap.settings","LDAP Settings"),editable,null,checkBoxes,null,true);
+		addSettings(iwc,PARAM_SAVE_LDAP_SETTINGS,getEmbeddedLDAPServerBusiness(iwc).getLDAPSettings(),iwrb.getLocalizedString("LDAPMANAGER.ldap.settings","LDAP Settings"),editable,null,checkBoxes,null,null,true);
 	}
 	
 	/**
@@ -275,7 +320,7 @@ public class LDAPManager extends Block implements LDAPReplicationConstants,Embed
 		List editable = new ArrayList();
 		editable.add(PROPS_BACKEND_ZERO_ROOT);
 		
-		addSettings(PARAM_SAVE_BACKEND_SETTINGS, getEmbeddedLDAPServerBusiness(iwc).getBackendSettings(),iwrb.getLocalizedString("LDAPMANAGER.backend.settings","Backend Settings"),editable,null,null,null,false);
+		addSettings(iwc,PARAM_SAVE_BACKEND_SETTINGS, getEmbeddedLDAPServerBusiness(iwc).getBackendSettings(),iwrb.getLocalizedString("LDAPMANAGER.backend.settings","Backend Settings"),editable,null,null,null,null,false);
 	}
 	
 	/**
@@ -287,15 +332,18 @@ public class LDAPManager extends Block implements LDAPReplicationConstants,Embed
 		List editable = new ArrayList();
 		editable.add(PROPS_REPLICATOR_BASE_RDN);
 		editable.add(PROPS_REPLICATOR_BASE_UNIQUE_ID);
+		editable.add(PROPS_REPLICATOR_BASE_GROUP_ID);
+		editable.add(PROPS_REPLICATOR_PARENT_GROUP_ID);
 		editable.add(PROPS_REPLICATOR_HOST);
 		editable.add(PROPS_REPLICATOR_PORT);
 		editable.add(PROPS_REPLICATOR_REPLICATE_BASE_RDN);
 		editable.add(PROPS_REPLICATOR_INTERVAL_MINUTES);
 		editable.add(PROPS_REPLICATOR_SCHEDULER_STRING);
+		editable.add(PROPS_REPLICATOR_REPEAT);
 		editable.add(PROPS_REPLICATOR_SEARCH_TIMEOUT_MS);
 		editable.add(PROPS_REPLICATOR_SEARCH_ENTRY_LIMIT);
 		editable.add(PROPS_REPLICATOR_MATCH_BY_UNIQUE_ID);
-		editable.add(PROPS_REPLICATOR_AUTO_START);
+		editable.add(PROPS_REPLICATOR_ACTIVE);
 		editable.add(PROPS_REPLICATOR_ROOT_USER);
 		editable.add(PROPS_REPLICATOR_ROOT_PASSWORD);
 		
@@ -303,13 +351,17 @@ public class LDAPManager extends Block implements LDAPReplicationConstants,Embed
 		invisible.add(PROPS_REPLICATION_NUM);
 
 		List checkBoxes = new ArrayList();
-		checkBoxes.add(PROPS_REPLICATOR_AUTO_START);
+		checkBoxes.add(PROPS_REPLICATOR_ACTIVE);
 		checkBoxes.add(PROPS_REPLICATOR_REPLICATE_BASE_RDN);
 		checkBoxes.add(PROPS_REPLICATOR_MATCH_BY_UNIQUE_ID);
+		checkBoxes.add(PROPS_REPLICATOR_REPEAT);
 
 		List splitter = new ArrayList();
 		splitter.add(PROPS_REPLICATOR_SEARCH_TIMEOUT_MS);
-
+		
+		Map specialIOMap = new HashMap();
+		specialIOMap.put(PROPS_REPLICATOR_BASE_GROUP_ID, new GroupChooser(PROPS_REPLICATOR_BASE_GROUP_ID));
+		specialIOMap.put(PROPS_REPLICATOR_PARENT_GROUP_ID, new GroupChooser(PROPS_REPLICATOR_PARENT_GROUP_ID));
 		
 		Text headerText = new Text(iwrb.getLocalizedString("LDAPMANAGER.replication.settings","Replication Settings"));
 		headerText.setBold();
@@ -330,7 +382,7 @@ public class LDAPManager extends Block implements LDAPReplicationConstants,Embed
 		add(form);
 		addBreak();
 		
-		addSettings(PARAM_SAVE_REPLICATION_SETTINGS, repProps,null,editable,invisible,checkBoxes,splitter,false);
+		addSettings(iwc,PARAM_SAVE_REPLICATION_SETTINGS, repProps,null,editable,invisible,checkBoxes,splitter,specialIOMap,false);
 	}
 	
 
@@ -339,7 +391,7 @@ public class LDAPManager extends Block implements LDAPReplicationConstants,Embed
 	 * Adds a table of properties and values from a properties file
 	 * @throws IOException
 	 */
-	private void addSettings(String saveParameterName, Properties serverProps, String header, List editableKeys, List invisibleKeys, List checkBoxKeys, List keySplitters, boolean onlyShowEditable) throws IOException {
+	private void addSettings(IWContext iwc, String saveParameterName, Properties serverProps, String header, List editableKeys, List invisibleKeys, List checkBoxKeys, List keySplitters, Map customInterfaceObjectMap, boolean onlyShowEditable) throws IOException {
 		Form settingsForm = new Form();
 		settingsForm.maintainParameter(IWDeveloper.PARAMETER_CLASS_NAME);
 		Table settingsTable = new Table();
@@ -363,7 +415,16 @@ public class LDAPManager extends Block implements LDAPReplicationConstants,Embed
 
 		while (keys.hasNext()) {
 			String key = (String)keys.next();
-	
+			//this is only for replication settings
+			String temp = key.substring(key.indexOf(".")+1);
+			int index = temp.indexOf(".");
+			String cleanPropertyKey = temp;
+			if(index>0){
+				cleanPropertyKey = temp.substring(index);
+			}
+			 
+			//ends
+			
 			if(!isInvisibleKey(invisibleKeys,key)){
 				boolean isEditable = isEditableKey(editableKeys,key);
 				if(onlyShowEditable && !isEditable){
@@ -382,7 +443,41 @@ public class LDAPManager extends Block implements LDAPReplicationConstants,Embed
 							box.setChecked(true);
 						}
 						settingsTable.add(box,2,row);
-					}else{
+					}else if(isCustomIOKey(customInterfaceObjectMap,key)){
+						Object obj = customInterfaceObjectMap.get(cleanPropertyKey);
+						if(obj instanceof InterfaceObject){
+							InterfaceObject iObj = (InterfaceObject)((InterfaceObject) obj).clone();
+							iObj.setContent(value);
+							iObj.setName(key);
+							settingsTable.add(iObj,2,row);
+						}
+						else if(obj instanceof GroupChooser){
+							//GroupChooser chooser = (GroupChooser)((GroupChooser)obj).clone();
+							String underScoreKey = TextSoap.findAndReplace(key, ".", "_");
+							GroupChooser chooser = new GroupChooser(underScoreKey);
+							//special hack because group chooser is not an interfaceobject
+							if(value!=null && !"".equals(value)){
+								Group group;
+								try {
+									group = getGroupBusiness(iwc).getGroupByGroupID(Integer.parseInt(value));
+									GroupTreeNode node = new GroupTreeNode(group,iwc.getApplicationContext());
+									chooser.setSelectedNode(node);
+									chooser.setChooserParameter(underScoreKey);
+									settingsTable.add(chooser,2,row);
+								}
+								catch (NumberFormatException e) {
+									e.printStackTrace();
+								}
+								catch (FinderException e) {
+									e.printStackTrace();
+								}
+							}else{
+								chooser.setChooserParameter(underScoreKey);
+								settingsTable.add(chooser,2,row);
+							}
+						}
+					}
+					else{
 						TextInput valueInput = new TextInput(key,value);
 						settingsTable.add(valueInput,2,row);
 					}
@@ -528,6 +623,27 @@ public class LDAPManager extends Block implements LDAPReplicationConstants,Embed
 			return false;
 		}
 		else return true;
+	}
+	
+	
+	/**
+	 * Checks if the key has a custom interface object
+	 * @param serverProps
+	 * @param key
+	 * @return
+	 */
+	private boolean isCustomIOKey(Map customIOObjects, String key) {
+		if(customIOObjects!=null && !customIOObjects.isEmpty()){
+			Iterator iter = customIOObjects.keySet().iterator();
+			while (iter.hasNext()) {
+				String checkKey = (String) iter.next();
+				if( key.indexOf(checkKey)>=0 ){
+					return true;
+				}
+			}
+			return false;
+		}
+		else return false;
 	}
 	
 	/**
@@ -677,5 +793,17 @@ public class LDAPManager extends Block implements LDAPReplicationConstants,Embed
 			}
 		}
 		return uuidBiz;
+	}
+	
+	private GroupBusiness getGroupBusiness(IWApplicationContext iwc) {
+		if (groupBiz == null) {
+			try {
+				groupBiz = (GroupBusiness) com.idega.business.IBOLookup.getServiceInstance(iwc,GroupBusiness.class);
+			}
+			catch (java.rmi.RemoteException rme) {
+				throw new RuntimeException(rme.getMessage());
+			}
+		}
+		return groupBiz;
 	}
 }
