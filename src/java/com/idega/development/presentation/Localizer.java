@@ -1,6 +1,9 @@
 package com.idega.development.presentation;
 
+import java.rmi.RemoteException;
+
 import com.idega.builder.presentation.IBAddModuleWindow;
+import com.idega.business.IBOLookup;
 import com.idega.core.localisation.presentation.LocalePresentationUtil;
 import com.idega.core.localisation.presentation.LocaleSwitcher;
 import com.idega.idegaweb.IWBundle;
@@ -18,6 +21,7 @@ import com.idega.presentation.ui.SubmitButton;
 import com.idega.presentation.ui.TextArea;
 import com.idega.presentation.ui.TextInput;
 import com.idega.util.LocaleUtil;
+import com.idega.versioncontrol.business.UpdateService;
 
 /**
  * Title:        idega Framework
@@ -36,7 +40,10 @@ public class Localizer extends PresentationObjectContainer {
 	private static String areaParameter = "iw_stringsarea";
 	private static String subAction = "iw_localizer_sub_action";
 	private static String newStringKeyParameter = "iw_new_string_key";
-
+	private static String ACTION_COMMIT_REPO="iw_commit_repos";
+	private static String ACTION_SAVE="save";
+	private static String ACTION_DELETE="delete";
+	
 	public Localizer() {
 	}
 
@@ -114,17 +121,20 @@ public class Localizer extends PresentationObjectContainer {
 						}
 						table.add(area, 2, 5);
 					}
-					else if (this.isDeleteable(iwc)) {
+					else if (this.isDeleting(iwc)) {
 						iwb.removeLocalizableString(stringsKey);
 						//boolean b = iwrb.removeString(stringsKey);
 						iwrb.storeState();
+					}
+					else if (this.isCommitting(iwc)) {
+							this.commitLocalizationFile(iwc);
 					}
 					else {
 						PresentationObject area;
 						/**
 						 * Saving possible
 						 */
-						if (this.isSaveable(iwc)) {
+						if (this.isSaving(iwc)) {
 							String newKey = iwc.getParameter(newStringKeyParameter);
 
 							if (newKey != null) {
@@ -161,8 +171,9 @@ public class Localizer extends PresentationObjectContainer {
 					IBAddModuleWindow.removeAttributes(iwc);
 
 				}
-				table.add(new SubmitButton("Save", subAction, "save"), 2, 6);
-				table.add(new SubmitButton("Delete", subAction, "delete"), 2, 6);
+				table.add(new SubmitButton("Save", subAction, ACTION_SAVE), 2, 6);
+				table.add(new SubmitButton("Commit to repository", subAction, ACTION_COMMIT_REPO), 2, 6);
+				table.add(new SubmitButton("Delete", subAction, ACTION_DELETE), 2, 6);
 				table.add(IWDeveloper.getText("New String key:"), 1, 4);
 				table.add(IWDeveloper.getText("New String value:"), 1, 5);
 				TextInput newInput = new TextInput(newStringKeyParameter);
@@ -170,7 +181,8 @@ public class Localizer extends PresentationObjectContainer {
 			}
 			else {
 				table.add(getTextArea(areaParameter, ""), 2, 5);
-				table.add(new SubmitButton("Save", subAction, "save"), 2, 6);
+				table.add(new SubmitButton("Save", subAction, ACTION_SAVE), 2, 6);
+				table.add(new SubmitButton("Commit to repository", subAction, ACTION_COMMIT_REPO), 2, 6);
 				table.add(IWDeveloper.getText("New String key:"), 1, 4);
 				table.add(IWDeveloper.getText("New String value:"), 1, 5);
 				TextInput newInput = new TextInput(newStringKeyParameter);
@@ -248,35 +260,70 @@ public class Localizer extends PresentationObjectContainer {
 		return down;
 	}
 
-	private boolean isSaveable(IWContext iwc) {
+	private boolean isSaving(IWContext iwc) {
 		String subActioner = iwc.getParameter(subAction);
 		if (subActioner == null) {
 			return false;
 		}
 		else {
-			if (subActioner.equals("save")) {
+			if (subActioner.equals(ACTION_SAVE)) {
 				return true;
 			}
 			return false;
 		}
 	}
 
-	private boolean isDeleteable(IWContext iwc) {
+	private boolean isDeleting(IWContext iwc) {
 		String subActioner = iwc.getParameter(subAction);
 		if (subActioner == null) {
 			return false;
 		}
 		else {
-			if (subActioner.equals("delete")) {
+			if (subActioner.equals(ACTION_DELETE)) {
 				return true;
 			}
 			return false;
 		}
 	}
+	
+	private boolean isCommitting(IWContext iwc) {
+		String subActioner = iwc.getParameter(subAction);
+		if (subActioner == null) {
+			return false;
+		}
+		else {
+			if (subActioner.equals(ACTION_COMMIT_REPO)) {
+				return true;
+			}
+			return false;
+		}
+	}	
 
 	private PresentationObject getTextArea(String name, String startValue) {
 		TextArea area = new TextArea(name, startValue);
 		area.setWidth(30);
 		return area;
+	}
+	
+	private void commitLocalizationFile(IWContext iwc){
+	
+		String bundleIdentifier = iwc.getParameter(this.bundlesParameter);
+		String localeString = iwc.getParameter(this.localesParameter);
+		
+		UpdateService updateservice;
+		boolean succeeded=false;
+		try {
+			updateservice = (UpdateService)IBOLookup.getServiceInstance(iwc,UpdateService.class);
+			succeeded = updateservice.commitLocalizationFile(bundleIdentifier,localeString);
+		}
+		catch (Exception e) {
+			log(e);
+		}
+		if(succeeded){
+			add("Commit successful");
+		}
+		else{
+			add("Commit failed");			
+		}
 	}
 }
