@@ -30,6 +30,7 @@ private IWBundle iwb;
 
     addToList(Localizer.class,image,getClassName(Localizer.class),IWDeveloper.frameName);
     addToList(LocaleSwitcher.class,image,getClassName(LocaleSwitcher.class),IWDeveloper.frameName);
+    addToList(LocaleSetter.class,image,getClassName(LocaleSetter.class),IWDeveloper.frameName);
     addToList(BundleCreator.class,image,getClassName(BundleCreator.class),IWDeveloper.frameName);
     addToList(BundlePropertySetter.class,image,getClassName(BundlePropertySetter.class),IWDeveloper.frameName);
     addToList(BundleComponentManager.class,image,"BundleComponents",IWDeveloper.frameName);
