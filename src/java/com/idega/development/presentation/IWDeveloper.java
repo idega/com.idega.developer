@@ -69,16 +69,15 @@ public class IWDeveloper extends com.idega.presentation.app.IWApplication {
 
       IFrame menuFrame = new IFrame("menu",DeveloperList.class);
         menuFrame.setWidth(200);
-        menuFrame.setHeight(200);
+        menuFrame.setHeight(550);
         menuFrame.setScrolling(IFrame.SCROLLING_YES);
       mainTable.add(menuFrame,1,1);
 
       rightFrame = new IFrame(frameName);
-        rightFrame.setWidth("100%");
-        rightFrame.setHeight("100%");
-        rightFrame.setScrolling(IFrame.SCROLLING_YES);
+      rightFrame.setWidth("100%");
+      rightFrame.setHeight(550);
+      rightFrame.setScrolling(IFrame.SCROLLING_YES);
       mainTable.add(rightFrame,2,1);
-
     }
   }
 
