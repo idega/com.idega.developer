@@ -1,5 +1,5 @@
 /*
- * $Id: UpdateManager.java,v 1.5 2004/11/11 13:53:44 birna Exp $
+ * $Id: UpdateManager.java,v 1.6 2004/11/11 13:54:27 birna Exp $
  *
  * Copyright (C) 2002 Idega hf. All Rights Reserved.
  *
@@ -25,7 +25,6 @@ import com.idega.presentation.text.Text;
 import com.idega.presentation.ui.CheckBox;
 import com.idega.presentation.ui.DeselectAllButton;
 import com.idega.presentation.ui.Form;
-import com.idega.presentation.ui.RadioButton;
 import com.idega.presentation.ui.SelectAllButton;
 import com.idega.presentation.ui.SubmitButton;
 import com.idega.versioncontrol.business.UpdateService;
