@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
+import com.idega.core.idgenerator.business.UUIDBusiness;
 import com.idega.core.ldap.replication.business.LDAPReplicationBusiness;
 import com.idega.core.ldap.replication.business.LDAPReplicationConstants;
 import com.idega.core.ldap.server.business.EmbeddedLDAPServerBusiness;
@@ -20,6 +21,7 @@ import com.idega.presentation.text.HorizontalRule;
 import com.idega.presentation.text.Text;
 import com.idega.presentation.ui.CheckBox;
 import com.idega.presentation.ui.Form;
+import com.idega.presentation.ui.RadioButton;
 import com.idega.presentation.ui.SubmitButton;
 import com.idega.presentation.ui.TextInput;
 /**
@@ -44,14 +46,23 @@ public class LDAPManager extends Block implements LDAPReplicationConstants,Embed
 	private static final String PARAM_DELETE_REPLICATION_SETTINGS = "del_rep";
 	private static final String PARAM_NEW_REPLICATION_SETTINGS = "new_rep";
 	private static final String PARAM_TOGGLE_START_STOP = "ldap_start_stop";
+	private static final String PARAM_RUN_UUID_PROCESS = "run_uuid_proc";
+	private static final String PARAM_UUID_PROCESS = "uuid_proc";
+	private static final String PARAM_VALUE_CREATE_ALL_UNIQUE_IDs = "uuid_proc_cr_all";
+	private static final String PARAM_VALUE_REMOVE_ALL_UNIQUE_IDs = "uuid_proc_re_all";
 
+	
 	private EmbeddedLDAPServerBusiness embeddedLDAPServerBiz;
 	private LDAPReplicationBusiness ldapReplicationBiz;
-
+	private UUIDBusiness uuidBiz;
+	
 	private String pathToConfigFiles;
 	
 	private static String darkColor = "#BCBCBC";
 	private static String lightColor = "#DEDEDE";
+
+	private boolean justCreatedUUIDs = false;
+	private boolean justRemovedUUIDs = false;
 		
 	public LDAPManager() {
 	}
@@ -83,6 +94,9 @@ public class LDAPManager extends Block implements LDAPReplicationConstants,Embed
 		addBreak();
 		addReplicationSettings(iwc);
 			
+		//add the universal unique id util, to create or remove all unique id for users and groups
+		addBreak();
+		addUniqueIdUtil(iwc);
 		}
 		else {
 			add(iwrb.getLocalizedString("not.logged.on","Not logged on"));
@@ -118,6 +132,20 @@ public class LDAPManager extends Block implements LDAPReplicationConstants,Embed
 			}
 			else if(iwc.isParameterSet(PARAM_STOP_ALL_REPLICATORS)){
 				getLDAPReplicationBusiness(iwc).stopAllReplicators();
+			}
+			else if(iwc.isParameterSet(PARAM_RUN_UUID_PROCESS)){
+				String param = iwc.getParameter(PARAM_UUID_PROCESS);
+				
+				if(param!=null){
+					if(param.equals(PARAM_VALUE_CREATE_ALL_UNIQUE_IDs)){
+						getUUIDBusiness(iwc).createUniqueIDsForUsersAndGroups();
+						justCreatedUUIDs = true;
+					}
+					else if(param.equals(PARAM_VALUE_REMOVE_ALL_UNIQUE_IDs)){
+						getUUIDBusiness(iwc).removeUniqueIDsForUsersAndGroups();
+						justRemovedUUIDs = true;
+					}
+				}
 			}
 		}
 		catch(Exception e){
@@ -366,6 +394,51 @@ public class LDAPManager extends Block implements LDAPReplicationConstants,Embed
 		add(settingsForm);
 	}
 	
+	
+	/**
+	 * Adds a toolset for creating and removing UUIDs
+	 * @throws IOException
+	 */
+	private void addUniqueIdUtil(IWContext iwc) throws IOException {
+		Form uuidForm = new Form();
+		uuidForm.maintainParameter(IWDeveloper.PARAMETER_CLASS_NAME);
+		
+		Table settingsTable = new Table(2,3);
+		settingsTable.setCellspacing(0);
+		
+		Text headerText = new Text(iwrb.getLocalizedString("LDAPMANAGER.UUID.util.header","Universally Unique Identifier Utility"));
+		headerText.setBold();
+		headerText.setFontSize(Text.FONT_SIZE_10_HTML_2);
+		add(headerText);
+		add(new HorizontalRule());
+	
+		RadioButton create = new RadioButton(PARAM_UUID_PROCESS,PARAM_VALUE_CREATE_ALL_UNIQUE_IDs);
+		RadioButton remove = new RadioButton(PARAM_UUID_PROCESS,PARAM_VALUE_REMOVE_ALL_UNIQUE_IDs);
+		SubmitButton save = new SubmitButton(PARAM_RUN_UUID_PROCESS,iwrb.getLocalizedString("LDAPMANAGER.run.process","run process"));
+		save.setSubmitConfirm(iwrb.getLocalizedString("LDAPMANAGER.run.process.confirm","Are you sure you want to run the process? It will affect all users and groups in the database."));
+		
+
+		settingsTable.add(iwrb.getLocalizedString("LDAPMANAGER.run.process.create","Create UUID for all users and groups"),1,1);
+		settingsTable.add(create,2,1);
+		settingsTable.add(iwrb.getLocalizedString("LDAPMANAGER.run.process.remove","Remove all UUID from all users and groups"),1,2);
+		settingsTable.add(remove,2,2);
+		settingsTable.add(save,2,3);
+		uuidForm.add(settingsTable);
+		add(uuidForm);
+		
+		if(justCreatedUUIDs){
+			addBreak();
+			Text message = new Text(iwrb.getLocalizedString("LDAPMANAGER.run.process.create.done","Done creating UUID for all users and groups!"));
+			message.setBold();
+			add(message);
+		}
+		else if(justRemovedUUIDs){
+			Text message = new Text(iwrb.getLocalizedString("LDAPMANAGER.run.process.remove.done","Done removing UUIDs from all users and groups!"));
+			message.setBold();
+			add(message);
+		}
+	}
+	
 	private void setColorForRow(Table settingsTable, String rowColor, int row) {
 		settingsTable.setColor(1,row,rowColor);
 		settingsTable.setColor(2,row,rowColor);
@@ -557,5 +630,16 @@ public class LDAPManager extends Block implements LDAPReplicationConstants,Embed
 			}
 		}
 		return ldapReplicationBiz;
+	}
+	
+	public UUIDBusiness getUUIDBusiness(IWApplicationContext iwc) {
+		if (uuidBiz == null) {
+			try {
+				uuidBiz = (UUIDBusiness) com.idega.business.IBOLookup.getServiceInstance(iwc, UUIDBusiness.class);
+			} catch (java.rmi.RemoteException rme) {
+				throw new RuntimeException(rme.getMessage());
+			}
+		}
+		return uuidBiz;
 	}
 }
