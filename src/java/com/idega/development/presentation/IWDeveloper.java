@@ -35,7 +35,6 @@ public class IWDeveloper extends com.idega.jmodule.object.app.IWApplication {
     add(IWDeveloper.IWDevPage.class);
     super.setResizable(true);
     super.setScrollbar(false);
-    super.setToolbar(true);
     super.setScrolling(1,false);
     super.setWidth(800);
     super.setHeight(600);
