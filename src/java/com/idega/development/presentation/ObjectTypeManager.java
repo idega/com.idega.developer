@@ -99,10 +99,6 @@ public class ObjectTypeManager extends Block {
 		 		}
 		 		ot.setName(name);
 		 		ot.setType(type);
-		 		System.out.println("rSuper : "+rSuper);
-				System.out.println("rInter : "+rInter);
-				System.out.println("refl : "+refl);
-				System.out.println("filters : "+filters);
 		 		if (rSuper != null && !rSuper.equals("")) {
 					Class.forName(rSuper);
 		 			ot.setRequiredSuperClassName(rSuper);
@@ -110,12 +106,10 @@ public class ObjectTypeManager extends Block {
 				if (rInter != null && !rInter.equals("")) {
 					Vector vector = ot.seperateStringIntoVector(rInter);
 					if (vector != null) {
-						System.out.println("Vector.size() = "+vector.size());
 						Iterator iter = vector.iterator();
 						String className;
 						while (iter.hasNext()) {
 							className = (String) iter.next();
-							System.out.println("ClassName : "+className);
 							Class.forName(className);
 						}
 					}
