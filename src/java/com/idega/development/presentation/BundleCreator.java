@@ -1,6 +1,5 @@
 package com.idega.development.presentation;
 
-import java.io.File;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -28,7 +27,7 @@ public class BundleCreator extends Block {
 
 	private static final String NEW_BUNDLE_PARAMETER = "iw_b_i";
 	private static final String NEW_BUNDLE_NAME_PARAMETER = "iw_b_i_n_b_n";
-	private static final String NEW_BUNDLE_PATH_PARAMETER = "iw_b_i_n_b_p";
+	//private static final String NEW_BUNDLE_PATH_PARAMETER = "iw_b_i_n_b_p";
 
 	public BundleCreator() {
 	}
@@ -46,7 +45,7 @@ public class BundleCreator extends Block {
 		Table table = new Table(2, 4);
 		table.setAlignment(2, 3, "right");
 		form.add(table);
-		TextInput name = new TextInput(this.NEW_BUNDLE_NAME_PARAMETER);
+		TextInput name = new TextInput(NEW_BUNDLE_NAME_PARAMETER);
 		//TextInput path = new TextInput(this.NEW_BUNDLE_PATH_PARAMETER);
 
 		table.add(IWDeveloper.getText("Create New Bundle"), 1, 1);
@@ -55,7 +54,7 @@ public class BundleCreator extends Block {
 		//table.add("Bundle Directory Name",2,2);
 		//table.add(path,2,2);
 		table.add(new Parameter(NEW_BUNDLE_PARAMETER, "dummy"));
-		table.add(new SubmitButton("Create", this.NEW_BUNDLE_PARAMETER, "save"), 2, 3);
+		table.add(new SubmitButton("Create", NEW_BUNDLE_PARAMETER, "save"), 2, 3);
 
 		doBusiness(iwc);
 
@@ -81,14 +80,15 @@ public class BundleCreator extends Block {
 	private void doBusiness(IWContext iwc) throws Exception {
 		String check = iwc.getParameter(NEW_BUNDLE_PARAMETER);
 		if (check != null) {
-			String bundleIdentifier = iwc.getParameter(this.NEW_BUNDLE_NAME_PARAMETER);
+			String bundleIdentifier = iwc.getParameter(NEW_BUNDLE_NAME_PARAMETER);
 			//String bundleDir = iwc.getParameter(this.NEW_BUNDLE_PATH_PARAMETER);
-			String bundleDir = bundleIdentifier + ".bundle";
+			//String bundleDir = bundleIdentifier + ".bundle";
 			IWMainApplication iwma = iwc.getIWMainApplication();
-			if (bundleDir.indexOf(IWMainApplication.BUNDLES_STANDARD_DIRECTORY) == -1) {
-				bundleDir = IWMainApplication.BUNDLES_STANDARD_DIRECTORY + File.separator + bundleDir;
-			}
-			iwma.registerBundle(bundleIdentifier, bundleDir, true);
+			//if (bundleDir.indexOf(IWMainApplication.BUNDLES_STANDARD_DIRECTORY) == -1) {
+				//bundleDir = IWMainApplication.BUNDLES_STANDARD_DIRECTORY + File.separator + bundleDir;
+				//bundleDir = iwma.getBundlesRealPath() + File.separator + bundleDir;
+			//}
+			iwma.registerBundle(bundleIdentifier, true);
 			add(IWDeveloper.getText("Creation Successful"));
 		}
 	}
