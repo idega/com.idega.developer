@@ -43,7 +43,7 @@ public class Caches extends Block
 		table.add(lookup, 3, 2);
 		table.add(ido_bean, 3, 3);
 		table.add(ido_query, 3, 4);
-		
+
 		processBusiness(iwc);
 	}
 	private void processBusiness(IWContext iwc) throws Exception
@@ -72,6 +72,6 @@ public class Caches extends Block
 			IDOContainer.getInstance().flushAllQueryCache();
 			add(IWDeveloper.getText("Flushed all IDO query cache!"));
 		}
-		
+
 	}
 }
