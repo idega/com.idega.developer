@@ -4,6 +4,7 @@ package com.idega.development.presentation;
 import com.idega.jmodule.object.*;
 import com.idega.jmodule.object.interfaceobject.*;
 import com.idega.jmodule.object.textObject.*;
+import com.idega.idegaweb.IWConstants;
 
 
 /**
@@ -36,6 +37,7 @@ public class IWDeveloper extends JModuleObject {
     menuTable = new Table();
     mainTable.add(menuTable,1,1);
     mainTable.setVerticalAlignment(1,1,"top");
+    mainTable.setColor(1,1,IWConstants.DEFAULT_LIGHT_INTERFACE_COLOR);
 
     addToMenu("Localizer",localizerParameter);
     addToMenu("Localeswitcher",localeswitcherParameter);
