@@ -53,6 +53,7 @@ private static String styleName = "iwdClass";
 	addToList(getClassLink(iwc, DeveloperHomepageGenerator.class,"Homepage Generator"),image);
 	addToList(getClassLink(iwc, PageObjects.class,"Page Object Viewer"),image);
 	addToList(getClassLink(iwc, ScriptManager.class,"Script Manager"),image);
+	addToList(getClassLink(iwc, LDAPManager.class,"LDAP Manager"),image);
 	
     setZebraColors("#B0B29D","#B0B29D");
   }
