@@ -49,7 +49,7 @@ public class Localizer extends ModuleObjectContainer {
       Form form = new Form();
       form.maintainParameter(IWDeveloper.actionParameter);
       add(form);
-      Table table = new Table(4,2);
+      Table table = new Table(4,3);
       form.add(table);
       table.add("Bundle",1,1);
       table.add(bundlesDrop,1,1);
@@ -61,6 +61,7 @@ public class Localizer extends ModuleObjectContainer {
         table.add(new SubmitButton("Get Available Keys",subAction,"choose"),2,1);
       }
       else{
+
 
         IWResourceBundle iwrb = iwma.getBundle(selectedBundle).getResourceBundle(LocaleUtil.getLocale(modinfo.getParameter(localesParameter)));
         String stringsKey = modinfo.getParameter(stringsParameter);
@@ -152,7 +153,11 @@ public class Localizer extends ModuleObjectContainer {
         table.add(stringsDrop,3,1);
         //table.add(new SubmitButton("Choose String",subAction,"choose"),3,1);
 
+        table.add(this.getLocalizeableStringsTable(iwma,selectedBundle,iwrb),2,3);
+
       }
+
+
 
 
   }
@@ -166,6 +171,26 @@ public class Localizer extends ModuleObjectContainer {
       down.addMenuElement(item.toString(),item.getDisplayName());
     }
     return down;
+  }
+
+   public static Table getLocalizeableStringsTable(IWMainApplication iwma,String bundleIdentifier, IWResourceBundle iwrb){
+    IWBundle bundle = iwma.getBundle(bundleIdentifier);
+    String[] strings = bundle.getLocalizableStrings();
+    Table table = new Table(2,strings.length);
+    String localizedString;
+    Text name;
+    for (int i = 0; i < strings.length; i++) {
+      name = new Text(strings[i],true,false,false);
+      table.add(name,1,i+1);
+      localizedString = iwrb.getLocalizedString(strings[i]);
+      if (localizedString==null) localizedString = "";
+      table.add(localizedString ,2,i+1);
+    }
+
+    table.setWidth(300);
+    table.setColor("#9FA9B3");
+
+    return table;
   }
 
   public static DropdownMenu getRegisteredDropdown(IWMainApplication iwma,String name){
