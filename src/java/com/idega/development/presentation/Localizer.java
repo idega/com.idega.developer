@@ -34,6 +34,8 @@ public class Localizer extends ModuleObjectContainer {
   }
 
   public void main(ModuleInfo modinfo){
+      add(new Text(this.getName()));
+
       IWMainApplication iwma = modinfo.getApplication();
       DropdownMenu bundlesDrop = getRegisteredDropdown(iwma,bundlesParameter);
       bundlesDrop.keepStatusOnAction();
