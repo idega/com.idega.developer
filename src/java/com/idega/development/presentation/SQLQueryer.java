@@ -18,6 +18,7 @@ import java.util.StringTokenizer;
 import com.idega.presentation.Block;
 import com.idega.presentation.IWContext;
 import com.idega.presentation.Table;
+import com.idega.presentation.text.DownloadLink;
 import com.idega.presentation.text.Link;
 import com.idega.presentation.text.Text;
 import com.idega.presentation.ui.CheckBox;
@@ -203,9 +204,10 @@ public class SQLQueryer extends Block {
 					dumper.setDumpFolder(iwc.getIWMainApplication().getRealPath(virtualFolderPath));
 					java.io.File file = dumper.dump();
 					//innerTable.add(file.getAbsolutePath(),1,4);
-					String fileURI = virtualFolderPath+"/"+file.getName();
-					Link fileLink =new Link(file.getName(),fileURI);
-					fileLink.setTarget(Link.TARGET_NEW_WINDOW);
+					//String fileURI = virtualFolderPath+"/"+file.getName();
+					//Link fileLink =new Link(file.getName(),fileURI);
+					//fileLink.setTarget(Link.TARGET_NEW_WINDOW);
+					DownloadLink fileLink = new DownloadLink(file.getName(),file.getAbsolutePath());
 					innerTable.add(Text.getNonBrakingSpace(),1,4);
 					innerTable.add(fileLink,1,4);
 					
