@@ -70,8 +70,8 @@ public class Versions extends Block {
       IWBundle item = (IWBundle)it.next();
       bundleName = item.getBundleIdentifier();
       table.add(bundleName,1,row);
-/*			pack = Package.getPackage(bundleName);
-			String version = null;
+			pack = Package.getPackage(bundleName);
+			String version = defaultVersion;
 			if (pack != null) {
 				version = pack.getImplementationVersion();
 				if (version == null)
@@ -81,8 +81,8 @@ public class Versions extends Block {
 				version = defaultVersion;
 			}
       
-      table.add(version,2,row++);*/
-      table.add(defaultVersion,2,row++);
+      table.add(version,2,row++);
+      //table.add(defaultVersion,2,row++);
     }
     
     add(table);
