@@ -28,6 +28,7 @@ public class ApplicationPropertySetter extends Block {
   private static final String PROPERTY_VALUE_PARAMETER="iw_a_p_s_v";
   private static final String ENTITY_AUTOCREATE_PARAMETER="iw_e_a_c_p";
   private static final String AUTOCREATE_STRINGS_PARAMETER="iw_a_c_s_p";
+  private static final String AUTOCREATE_PROPERTIES_PARAMETER="iw_a_c_p_p";
   private static final String DEBUG_PARAMETER="iw_d_p";
 
 
@@ -60,18 +61,28 @@ public class ApplicationPropertySetter extends Block {
       table.add(name,2,2);
       table.add(IWDeveloper.getText("Property Key Value:"),1,3);
       table.add(value,2,3);
+
       CheckBox box = new CheckBox(ENTITY_AUTOCREATE_PARAMETER);
       if(iwma.getSettings().getIfEntityAutoCreate()){
        box.setChecked(true);
       }
       table.add(IWDeveloper.getText("Autocreate Data Entities:"),1,4);
       table.add(box,2,4);
+
       CheckBox box3 = new CheckBox(AUTOCREATE_STRINGS_PARAMETER);
       if(iwma.getSettings().isAutoCreateStringsActive()){
        box3.setChecked(true);
       }
       table.add(IWDeveloper.getText("Autocreate Localized Strings:"),1,5);
       table.add(box3,2,5);
+
+      CheckBox box4 = new CheckBox(AUTOCREATE_PROPERTIES_PARAMETER);
+      if(iwma.getSettings().isAutoCreatePropertiesActive()){
+       box4.setChecked(true);
+      }
+      table.add(IWDeveloper.getText("Autocreate Properties:"),1,5);
+      table.add(box4,2,5);
+
       CheckBox box2 = new CheckBox(DEBUG_PARAMETER);
       if(iwma.getSettings().getIfDebug()){
        box2.setChecked(true);
@@ -95,29 +106,40 @@ public class ApplicationPropertySetter extends Block {
       if(setterState!=null){
 	String entityAutoCreate = iwc.getParameter(ENTITY_AUTOCREATE_PARAMETER);
 	String autoCreateStrings = iwc.getParameter(AUTOCREATE_STRINGS_PARAMETER);
+	String autoCreateProperties = iwc.getParameter(AUTOCREATE_PROPERTIES_PARAMETER);
 	String debug = iwc.getParameter(DEBUG_PARAMETER);
 	String KeyName = iwc.getParameter(this.PROPERTY_KEY_NAME_PARAMETER);
 	String KeyValue = iwc.getParameter(this.PROPERTY_VALUE_PARAMETER);
 	if ( KeyName != null && KeyName.length() > 0 )
 	  iwc.getApplication().getSettings().setProperty(KeyName,KeyValue);
+
 	if(entityAutoCreate!=null){
 	  iwc.getApplication().getSettings().setEntityAutoCreation(true);
 	}
 	else
 	  iwc.getApplication().getSettings().setEntityAutoCreation(false);
+
 	if(autoCreateStrings!=null){
 	  iwc.getApplication().getSettings().setAutoCreateStrings(true);
 	}
 	else
 	  iwc.getApplication().getSettings().setAutoCreateStrings(false);
-	if(setterState.equalsIgnoreCase("store")){
-	  iwc.getApplication().storeStatus();
+
+	if(autoCreateProperties!=null){
+	  iwc.getApplication().getSettings().setAutoCreateProperties(true);
 	}
+	else
+	  iwc.getApplication().getSettings().setAutoCreateProperties(false);
+
 	if(debug!=null){
 	  iwc.getApplication().getSettings().setDebug(true);
 	}
 	else {
 	  iwc.getApplication().getSettings().setDebug(false);
+	}
+
+	if(setterState.equalsIgnoreCase("store")){
+	  iwc.getApplication().storeStatus();
 	}
 
 	add(IWDeveloper.getText("Status: "));
