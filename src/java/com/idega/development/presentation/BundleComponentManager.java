@@ -4,7 +4,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.idega.builder.presentation.IBAddModuleWindow;
-import com.idega.development.presentation.comp.BundleComponent;
+import com.idega.core.component.data.BundleComponent;
 import com.idega.development.presentation.comp.BundleComponentFactory;
 import com.idega.idegaweb.IWBundle;
 import com.idega.idegaweb.IWMainApplication;
@@ -84,7 +84,7 @@ public class BundleComponentManager extends Block {
 			}
 
 			DropdownMenu typesDrop = new DropdownMenu(this.TYPE_INPUT_NAME);
-			List componentTypes = com.idega.core.data.ICObjectBMPBean.getAvailableComponentTypes();
+			List componentTypes = com.idega.core.component.data.ICObjectBMPBean.getAvailableComponentTypes();
 			Iterator iter = componentTypes.iterator();
 
 			CheckBox deleteBox = new CheckBox(DELETE_CHECKBOX_NAME);

@@ -8,10 +8,10 @@ import javax.ejb.CreateException;
 import javax.ejb.FinderException;
 import javax.ejb.RemoveException;
 
-import com.idega.core.data.ICObject;
-import com.idega.core.data.ICObjectHome;
-import com.idega.core.data.ICObjectType;
-import com.idega.core.data.ICObjectTypeHome;
+import com.idega.core.component.data.ICObject;
+import com.idega.core.component.data.ICObjectHome;
+import com.idega.core.component.data.ICObjectType;
+import com.idega.core.component.data.ICObjectTypeHome;
 import com.idega.data.IDOLookup;
 import com.idega.data.IDOLookupException;
 import com.idega.development.presentation.comp.BundleComponentFactory;

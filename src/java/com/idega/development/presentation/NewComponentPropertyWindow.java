@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.idega.builder.business.IBPropertyHandler;
-import com.idega.core.data.ICObject;
-import com.idega.development.presentation.comp.BundleComponent;
+import com.idega.core.component.data.BundleComponent;
+import com.idega.core.component.data.ICObject;
 import com.idega.development.presentation.comp.BundleComponentFactory;
 import com.idega.idegaweb.IWBundle;
 import com.idega.presentation.IWContext;

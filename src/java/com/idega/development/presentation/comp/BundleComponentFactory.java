@@ -10,9 +10,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import com.idega.core.data.ICObject;
-import com.idega.core.data.ICObjectType;
-import com.idega.core.data.ICObjectTypeHome;
+
+import com.idega.core.component.data.*;
+import com.idega.core.data.*;
 import com.idega.data.IDOLookup;
 
 /**
@@ -45,8 +45,8 @@ public class BundleComponentFactory {
 	}
 	
 	public  BundleComponent getBundleComponent(String identifier)throws IllegalArgumentException{
-		if(lookup.containsKey(identifier))
-			return (BundleComponent) lookup.get(identifier);
+		if(getLookupTable().containsKey(identifier))
+			return (BundleComponent) getLookupTable().get(identifier);
 		else
 			throw new IllegalArgumentException("Argument "+identifier+" not recognized");
 	}
@@ -75,6 +75,14 @@ public class BundleComponentFactory {
 			createLookupTableOld();
 			e.printStackTrace();
 		}
+	}
+	
+	private Map getLookupTable(){
+		if(lookup==null){
+			lookup = new HashMap();
+			createLookupTable();
+		}
+		return lookup;
 	}
 	
 	private void createLookupTableOld(){

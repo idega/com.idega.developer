@@ -5,6 +5,11 @@
  * Window>Preferences>Java>Code Generation>Code Template
  */
 package com.idega.development.presentation.comp;
+
+import com.idega.core.component.data.*;
+import com.idega.core.data.*;
+import com.idega.core.data.*;
+
 /**
  * <p>Title: idegaWeb</p>
  * <p>Description: </p>

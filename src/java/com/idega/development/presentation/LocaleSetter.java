@@ -4,8 +4,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
-import com.idega.core.data.ICLocale;
 import com.idega.core.localisation.business.ICLocaleBusiness;
+import com.idega.core.localisation.data.ICLocale;
 import com.idega.idegaweb.IWResourceBundle;
 import com.idega.presentation.IWContext;
 import com.idega.presentation.PresentationObjectContainer;

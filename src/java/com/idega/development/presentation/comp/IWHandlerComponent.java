@@ -7,7 +7,8 @@
 package com.idega.development.presentation.comp;
 
 import com.idega.builder.handler.PropertyHandler;
-import com.idega.core.data.ICObjectBMPBean;
+import com.idega.core.component.data.*;
+import com.idega.core.data.*;
 
 /**
  * <p>Title: idegaWeb</p>
