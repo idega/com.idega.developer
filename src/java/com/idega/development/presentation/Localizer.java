@@ -208,6 +208,11 @@ public class Localizer extends PresentationObjectContainer {
     IWMainApplication iwma = iwc.getApplication();
 
     DropdownMenu down = getAvailableLocalesDropdown(iwma,com.idega.core.localisation.business.LocaleSwitcher.languageParameterString);
+      Locale l = iwc.getCurrentLocale();
+      if( l != null){
+        down.setSelectedElement(l.toString());
+      }
+
       down.keepStatusOnAction();
       down.setToSubmit();
 
