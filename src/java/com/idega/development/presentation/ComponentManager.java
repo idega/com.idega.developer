@@ -51,7 +51,7 @@ public class ComponentManager extends Block {
   public ComponentManager() {
   }
 
-  public void main(IWContext iwc){
+  public void main(IWContext iwc)throws Exception{
       add(IWDeveloper.getTitleTable(this.getClass()));
       IWMainApplication iwma = iwc.getApplication();
       DropdownMenu bundles = BundlePropertySetter.getRegisteredBundlesDropdown(iwma,BUNDLE_PARAMETER);
@@ -106,46 +106,13 @@ public class ComponentManager extends Block {
         if(selectedComponentKey!=null){
 
           yindex++;
-          Class selectedClass=null;
-          BeanInfo info = null;
-          try{
-          selectedClass = Class.forName(selectedComponentKey);
-            //Method[] methods = selectedClass.getMethods();
-            info = Introspector.getBeanInfo(selectedClass,PresentationObject.class);
-          }
-          catch(Exception e){
-            e.printStackTrace();
-          }
-          MethodDescriptor[] descriptors = info.getMethodDescriptors();
-          java.util.Arrays.sort(descriptors,com.idega.util.Comparators.getMethodDescriptorComparator());
-          DropdownMenu methodsDrop = new DropdownMenu(METHOD_PARAMETER);
-          methodsDrop.keepStatusOnAction();
-          methodsDrop.setToSubmit();
-          String openingParentheses = "(";
-          String closingParentheses = ")";
-          String comma = ",";
-          for (int i = 0; i < descriptors.length; i++) {
-            Method method = descriptors[i].getMethod();
-            //Method method = methods[i];
-            if(method.getDeclaringClass().equals(selectedClass)){
-              //String methodToString = methods[i].toString();
-              String methodToString = method.getName()+openingParentheses;
-              Class[] arguments = method.getParameterTypes();
-              for (int j = 0; j < arguments.length; j++) {
-                  if(j!=0){
-                    methodToString += comma;
-                  }
-                  methodToString += arguments[j].getName();
-              }
-              methodToString += closingParentheses;
-              String methodIdentifier = MethodFinder.getInstance().getMethodIdentifierWithoutDeclaringClass(method);
-              methodsDrop.addMenuElement(methodIdentifier,methodToString);
-            }
-          }
+          //DropdownMenu methodsDrop = this.getMethodsDropdown(selectedComponentKey);
 
+          PresentationObject newPropertyOpener = getNewPropertyOpener(bundleIdentifier,selectedComponentKey);
 
-          table.add(IWDeveloper.getText("Method:"),1,yindex);
-          table.add(methodsDrop,2,yindex);
+          //table.add(IWDeveloper.getText("Method:"),1,yindex);
+          //table.add(methodsDrop,2,yindex);
+          table.add(newPropertyOpener,2,yindex);
           SubmitButton button3 = new SubmitButton("Select");
           table.add(button3,3,yindex);
 
@@ -200,7 +167,9 @@ public class ComponentManager extends Block {
               String identifier = IBPropertyHandler.getInstance().getMethodIdentifier(prop);
               String description = IBPropertyHandler.getInstance().getMethodDescription(prop,iwc);
               Method method = null;
+              Class selectedClass=Class.forName(selectedComponentKey);
               try{
+                //System.out.println("ComponentManager: "+identifier);
                 method = MethodFinder.getInstance().getMethod(identifier,selectedClass);
               }
               catch(Exception e){
@@ -318,6 +287,17 @@ public class ComponentManager extends Block {
       T.setFontFace(Text.FONT_FACE_VERDANA);
       T.setFontSize(Text.FONT_SIZE_7_HTML_1);
     return T;
+  }
+
+
+
+  public PresentationObject getNewPropertyOpener(String bundleIdentifier,String componentKey){
+
+          Link newProperty = new Link("Add New Property");
+          newProperty.setWindowToOpen(NewComponentPropertyWindow.class);
+          newProperty.addParameter(NewComponentPropertyWindow.PARAMETER_BUNDLE,bundleIdentifier);
+          newProperty.addParameter(NewComponentPropertyWindow.PARAMETER_COMPONENT,componentKey);
+          return newProperty;
   }
 
 }
