@@ -1,5 +1,6 @@
 package com.idega.development.presentation;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -138,6 +139,8 @@ public class BundlePropertySetter extends Block {
 
 	public static Form getParametersTable(IWBundle bundle, String bundleIdentifier) {
 		String[] strings = bundle.getAvailableProperties();
+		List list = Arrays.asList(strings);
+		Collections.sort(list);
 
 		Form form = new Form();
 		form.setMethod("get");
@@ -151,14 +154,17 @@ public class BundlePropertySetter extends Block {
 		table.setColumnAlignment(3, "center");
 		String localizedString;
 		Text name;
-		for (int i = 0; i < strings.length; i++) {
-			name = new Text(strings[i], true, false, false);
+		Iterator iter = list.iterator();
+		int i = 0;
+		while (iter.hasNext()) {
+			name = new Text((String)iter.next(), true, false, false);
 			table.add(name, 1, i + 1);
 			localizedString = bundle.getProperty(strings[i]);
 			if (localizedString == null)
 				localizedString = "";
 			table.add(localizedString, 2, i + 1);
 			table.add(new CheckBox("property", strings[i]), 3, i + 1);
+			i++;
 		}
 
 		table.setWidth(400);

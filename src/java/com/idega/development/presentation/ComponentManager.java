@@ -5,6 +5,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import com.idega.builder.business.IBPropertyHandler;
 import com.idega.idegaweb.IWBundle;
@@ -87,14 +88,21 @@ public class ComponentManager extends Block {
 			yindex++;
 
 			List componentNames = iwb.getComponentKeys();
+			Map names = new TreeMap();
+			Iterator iter = componentNames.iterator();
+			while (iter.hasNext()) {
+				String element = (String) iter.next();
+				names.put(element.substring(element.lastIndexOf(".") + 1), element);
+			}
+
 			DropdownMenu componentsDrop = new DropdownMenu(this.CLASS_PARAMETER);
 			componentsDrop.keepStatusOnAction();
 			componentsDrop.setToSubmit();
 
-			Iterator iter = componentNames.iterator();
+			iter = names.keySet().iterator();
 			while (iter.hasNext()) {
-				String component = (String) iter.next();
-				String display = component.substring(component.lastIndexOf(".") + 1);
+				String display = (String) iter.next();
+				String component = (String) names.get(display);
 
 				componentsDrop.addMenuElement(component, display);
 			}

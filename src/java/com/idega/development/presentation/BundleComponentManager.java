@@ -1,5 +1,6 @@
 package com.idega.development.presentation;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -85,6 +86,7 @@ public class BundleComponentManager extends Block {
 
 			DropdownMenu typesDrop = new DropdownMenu(this.TYPE_INPUT_NAME);
 			List componentTypes = com.idega.core.component.data.ICObjectBMPBean.getAvailableComponentTypes();
+			Collections.sort(componentTypes);
 			Iterator iter = componentTypes.iterator();
 
 			CheckBox deleteBox = new CheckBox(DELETE_CHECKBOX_NAME);
@@ -104,6 +106,7 @@ public class BundleComponentManager extends Block {
 			table.add(IWDeveloper.getText("Remove?"), 3, 1);
 
 			List compList = iwb.getComponentKeys();
+			Collections.sort(compList);
 			Iterator compIter = compList.iterator();
 			while (compIter.hasNext()) {
 				String className = (String) compIter.next();

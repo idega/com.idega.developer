@@ -31,6 +31,7 @@ public class LocaleSetter extends PresentationObjectContainer {
 	private static String action = "iw_localeswitcher_sub_action";
 	private int count = 0;
 	private IWResourceBundle iwrb = null;
+	private Locale _coreLocale = null;
 
 	public LocaleSetter() {
 	}
@@ -41,6 +42,7 @@ public class LocaleSetter extends PresentationObjectContainer {
 			getParentPage().setBackgroundColor("#FFFFFF");
 
 		iwrb = getResourceBundle(iwc);
+		_coreLocale = iwc.getApplication().getCoreLocale();
 
 		if (iwc.getParameter("save") != null)
 			save(iwc);
@@ -85,6 +87,9 @@ public class LocaleSetter extends PresentationObjectContainer {
 				javaLocale = ICLocaleBusiness.getLocaleFromLocaleString(icLocale.getLocale());
 				chk = new CheckBox("loc_chk" + count, String.valueOf(icLocale.getID()));
 				chk.setChecked(icLocale.getInUse());
+				if (javaLocale.equals(_coreLocale)) {
+					chk.setDisabled(true);
+				}
 				T.add(chk, 1, count);
 				T.add(IWDeveloper.getText(javaLocale.getDisplayCountry()), 2, count);
 				T.add(IWDeveloper.getText(javaLocale.getDisplayLanguage()), 3, count);
