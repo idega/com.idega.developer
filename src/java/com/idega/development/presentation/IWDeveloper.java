@@ -18,12 +18,13 @@ import com.idega.idegaweb.IWConstants;
 
 public class IWDeveloper extends JModuleObject {
 
-  private static String localizerParameter = "iw_localizer";
-  private static String localeswitcherParameter = "iw_localeswitcher";
-  private static String bundleCreatorParameter = "iw_bundlecreator";
-  private static String applicationPropertiesParameter = "iw_application_properties_setter";
-  private static String bundlesPropertiesParameter = "iw_bundle_properties_setter";
-  public static String actionParameter = "iw_developer_action";
+  private static final String localizerParameter = "iw_localizer";
+  private static final String localeswitcherParameter = "iw_localeswitcher";
+  private static final String bundleCreatorParameter = "iw_bundlecreator";
+  private static final String applicationPropertiesParameter = "iw_application_properties_setter";
+  private static final String bundlesPropertiesParameter = "iw_bundle_properties_setter";
+  public static final String actionParameter = "iw_developer_action";
+  public static final String dbPoolStatusViewerParameter = "iw_poolstatus_viewer";
   private Table mainTable;
   private Table menuTable;
   private int count = 1;
@@ -44,7 +45,7 @@ public class IWDeveloper extends JModuleObject {
     addToMenu("BundleCreator",bundleCreatorParameter);
     addToMenu("BundlePropertySetter",bundlesPropertiesParameter);
     addToMenu("ApplicationPropertySetter",applicationPropertiesParameter);
-
+    addToMenu("DB PoolStatusViewer",dbPoolStatusViewerParameter);
 
     String action = modinfo.getParameter(actionParameter);
     if(action!=null){
@@ -62,6 +63,9 @@ public class IWDeveloper extends JModuleObject {
       }
       if(action.equals(this.applicationPropertiesParameter)){
         useDeveloperModule(new ApplicationPropertySetter());
+      }
+      if(action.equals(this.dbPoolStatusViewerParameter)){
+        useDeveloperModule(new DBPoolStatusViewer());
       }
     }
   }
