@@ -23,7 +23,8 @@ public class DBPoolStatusViewer extends PresentationObjectContainer {
 
   public void main(IWContext iwc){
       add(IWDeveloper.getTitleTable(this.getClass()));
-      getParentPage().setBackgroundColor("#FFFFFF");
+			if (!iwc.isIE())
+				getParentPage().setBackgroundColor("#FFFFFF");
       add(Text.getBreak());
       add(Text.getBreak());
 

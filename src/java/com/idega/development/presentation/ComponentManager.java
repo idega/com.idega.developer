@@ -49,7 +49,9 @@ public class ComponentManager extends Block {
 
 	public void main(IWContext iwc) throws Exception {
 		add(IWDeveloper.getTitleTable(this.getClass()));
-		getParentPage().setBackgroundColor("#FFFFFF");
+		if (!iwc.isIE())
+			getParentPage().setBackgroundColor("#FFFFFF");
+
 		IWMainApplication iwma = iwc.getApplication();
 		DropdownMenu bundles = BundlePropertySetter.getRegisteredBundlesDropdown(iwma, BUNDLE_PARAMETER);
 		bundles.keepStatusOnAction();

@@ -41,7 +41,8 @@ public class BundlePropertySetter extends Block {
 	public void main(IWContext iwc) {
 		iwb = getBundle(iwc);
 		add(IWDeveloper.getTitleTable(this.getClass()));
-		getParentPage().setBackgroundColor("#FFFFFF");
+		if (!iwc.isIE())
+			getParentPage().setBackgroundColor("#FFFFFF");
 
 		IWMainApplication iwma = iwc.getApplication();
 		DropdownMenu bundles = getRegisteredBundlesDropdown(iwma, BUNDLE_PARAMETER);

@@ -57,6 +57,8 @@ public class SQLQueryer extends Block {
 		this.resultName = resultName;
 	}
 	public void main(IWContext iwc) throws Exception {
+		if (!iwc.isIE())
+			getParentPage().setBackgroundColor("#FFFFFF");
 
 
 		resultsPane = new FramePane(resultName);

@@ -43,7 +43,8 @@ public class Localizer extends PresentationObjectContainer {
 
 	public void main(IWContext iwc) {
 		add(IWDeveloper.getTitleTable(this.getClass()));
-		getParentPage().setBackgroundColor("#FFFFFF");
+		if (!iwc.isIE())
+			getParentPage().setBackgroundColor("#FFFFFF");
 
 		IWMainApplication iwma = iwc.getApplication();
 		DropdownMenu bundlesDrop = getRegisteredDropdown(iwma, bundlesParameter);
@@ -254,7 +255,7 @@ public class Localizer extends PresentationObjectContainer {
 			name.addParameter(parameterName, strings[i]);
 			name.maintainParameter(IWDeveloper.PARAMETER_CLASS_NAME, iwc);
 			//name.setTarget(IWDeveloper.frameName);
-			name.setClassToInstanciate(Localizer.class);
+			//name.setClassToInstanciate(Localizer.class);
 			table.add(name, 1, i + 1);
 			localizedString = iwrb.getLocalizedString(strings[i]);
 			if (localizedString == null)
