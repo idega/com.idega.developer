@@ -1,9 +1,6 @@
 package com.idega.development.presentation;
 
-import java.util.Locale;
-
 import com.idega.builder.presentation.IBAddModuleWindow;
-import com.idega.core.localisation.business.ICLocaleBusiness;
 import com.idega.core.localisation.presentation.LocalePresentationUtil;
 import com.idega.core.localisation.presentation.LocaleSwitcher;
 import com.idega.idegaweb.IWBundle;
