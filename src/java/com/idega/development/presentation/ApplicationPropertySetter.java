@@ -5,8 +5,10 @@ import com.idega.presentation.ui.*;
 import com.idega.presentation.text.*;
 import com.idega.idegaweb.IWMainApplication;
 import com.idega.idegaweb.IWBundle;
+import com.idega.idegaweb.IWProperty;
 import java.util.List;
 import java.util.Iterator;
+
 
 /**
  * Title:        idega Framework
@@ -64,6 +66,8 @@ public class ApplicationPropertySetter extends Block {
       table.add(box,2,4);
       table.add(new SubmitButton("Save",APPLICATION_SETTER_PARAMETER,"save"),1,5);
       table.add(new SubmitButton("Store Application state",APPLICATION_SETTER_PARAMETER,"store"),1,5);
+
+      add(getParametersTable(iwma));
   }
 
   private void doBusiness(IWContext iwc){
@@ -88,6 +92,41 @@ public class ApplicationPropertySetter extends Block {
         add(IWDeveloper.getText("Status: "));
         add("Property set successfully");
       }
+  }
+
+  public static Table getParametersTable(IWMainApplication iwma){
+    java.util.Iterator iter =  iwma.getSettings().getIWPropertyListIterator();
+
+    Table table = new Table();
+
+    String localizedString;
+    String name;
+    String value;
+    IWProperty property;
+    int row = 1;
+    while(iter.hasNext()){
+      property = (IWProperty) iter.next();
+      table.add(new Text(property.getName(),true,false,false),1,row);
+      value = property.getValue();
+      if(value!=null)
+        table.add(new Text(value,true,false,false),2,row);
+      row++;
+    }
+    /*
+    for (int i = 0; i < strings.length; i++) {
+      name = new Text(strings[i],true,false,false);
+      table.add(name,1,i+1);
+      localizedString = bundle.getProperty( strings[i] );
+      if (localizedString==null) localizedString = "";
+      table.add(localizedString ,2,i+1);
+    }
+*/
+    table.setColumnVerticalAlignment(1,"top");
+    table.setCellpadding(5);
+    table.setWidth(400);
+    table.setColor("#9FA9B3");
+
+    return table;
   }
 
   public static DropdownMenu getRegisteredBundlesDropdown(IWMainApplication iwma,String name){
