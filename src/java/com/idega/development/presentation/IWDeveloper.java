@@ -27,112 +27,59 @@ public class IWDeveloper extends com.idega.jmodule.object.app.IWApplication {
   private static final String bundlesPropertiesParameter = "iw_bundle_properties_setter";
   public static final String actionParameter = "iw_developer_action";
   public static final String dbPoolStatusViewerParameter = "iw_poolstatus_viewer";
+  public static final String frameName = "rightFrame";
 
 
   public IWDeveloper() {
     super("idegaWeb Developer");
     add(IWDeveloper.IWDevPage.class);
     super.setResizable(true);
+    super.setScrollbar(false);
+    super.setToolbar(true);
+    super.setScrolling(1,false);
     super.setWidth(800);
     super.setHeight(600);
   }
 
-
-  public static class IWDevPage extends Page{
+  public static class IWDevPage extends com.idega.idegaweb.presentation.IWAdminWindow{
 
     public IWDevPage(){
+      setMerged();
     }
 
     private Table mainTable;
-    private Table menuTable;
+    private Table objectTable;
+    private IFrame rightFrame;
     private int count = 1;
 
     public void main(ModuleInfo modinfo)throws Exception{
+      super.main(modinfo);
+
       mainTable = new Table(2,1);
-      add(mainTable);
-      menuTable = new Table();
-      mainTable.add(menuTable,1,1);
-      mainTable.setVerticalAlignment(1,1,"top");
-      mainTable.setColor(1,1,IWConstants.DEFAULT_LIGHT_INTERFACE_COLOR);
+        mainTable.setHeight("100%");
+        mainTable.setWidth("100%");
+        mainTable.setWidth(1,"200");
+        mainTable.setWidth(2,"100%");
+        mainTable.setCellpadding(3);
+        mainTable.setCellspacing(0);
+        mainTable.setAlignment(1,1,"center");
+        mainTable.setVerticalAlignment(1,1,"top");
+        mainTable.setVerticalAlignment(2,1,"top");
+        mainTable.setColor(IWConstants.DEFAULT_LIGHT_INTERFACE_COLOR);
+      addBottom(mainTable);
 
-      /*addToMenu("Localizer",localizerParameter);
-      addToMenu("Localeswitcher",localeswitcherParameter);
-      addToMenu("BundleCreator",bundleCreatorParameter);
-      addToMenu("BundlePropertySetter",bundlesPropertiesParameter);
-      addToMenu("BundleComponents",bundleComponentManagerParameter);
-      addToMenu("ApplicationPropertySetter",applicationPropertiesParameter);
-      addToMenu("DB PoolStatusViewer",dbPoolStatusViewerParameter);
-      */
+      IFrame menuFrame = new IFrame("menu",DeveloperList.class);
+        menuFrame.setWidth(200);
+        menuFrame.setHeight(150);
+        menuFrame.setScrolling(IFrame.SCROLLING_YES);
+      mainTable.add(menuFrame,1,1);
 
-      addToMenu(Localizer.class);
-      addToMenu(LocaleSwitcher.class);
-      addToMenu(BundleCreator.class);
-      addToMenu(BundlePropertySetter.class);
-      addToMenu(BundleComponentManager.class,"BundleComponents");
-      addToMenu(ComponentManager.class);
-      addToMenu(ApplicationPropertySetter.class);
-      addToMenu(DBPoolStatusViewer.class);
+      rightFrame = new IFrame(frameName);
+        rightFrame.setWidth("100%");
+        rightFrame.setHeight("100%");
+        rightFrame.setScrolling(IFrame.SCROLLING_YES);
+      mainTable.add(rightFrame,2,1);
 
-
-      String action = modinfo.getParameter(actionParameter);
-      if(action!=null){
-        useDeveloperModule(action);
-        /*
-        if(action.equals(localizerParameter)){
-          useDeveloperModule(new Localizer());
-        }
-        if(action.equals(localeswitcherParameter)){
-          useDeveloperModule(new LocaleSwitcher());
-        }
-        if(action.equals(bundleCreatorParameter)){
-          useDeveloperModule(new BundleCreator());
-        }
-        if(action.equals(bundlesPropertiesParameter)){
-          useDeveloperModule(new BundlePropertySetter());
-        }
-        if(action.equals(applicationPropertiesParameter)){
-          useDeveloperModule(new ApplicationPropertySetter());
-        }
-        if(action.equals(dbPoolStatusViewerParameter)){
-          useDeveloperModule(new DBPoolStatusViewer());
-        }
-        if(action.equals(bundleComponentManagerParameter)){
-          useDeveloperModule(new BundleComponentManager());
-        }
-        */
-      }
     }
-
-    private void useDeveloperModule(ModuleObject obj){
-      mainTable.add(obj,2,1);
-    }
-
-    private void useDeveloperModule(String className){
-      try{
-        ModuleObject obj = (ModuleObject)Class.forName(className).newInstance();
-        mainTable.add(obj,2,1);
-      }
-      catch(Exception e){
-      }
-    }
-
-    private void addToMenu(String displayName, String parameter){
-      Link link = new Link(displayName);
-      link.addParameter(actionParameter,parameter);
-      menuTable.add(link,1,count++);
-    }
-
-    private void addToMenu(Class component){
-      String className = component.getName();
-      addToMenu(component,className.substring(className.lastIndexOf(".")+1));
-    }
-
-    private void addToMenu(Class component,String displayName){
-      Link link = new Link(displayName);
-      link.addParameter(actionParameter,component.getName());
-      menuTable.add(link,1,count++);
-    }
-
   }
-
 }

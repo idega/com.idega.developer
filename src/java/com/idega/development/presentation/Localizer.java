@@ -177,21 +177,32 @@ public class Localizer extends ModuleObjectContainer {
     Iterator iter = locales.iterator();
     while (iter.hasNext()) {
       Locale item = (Locale)iter.next();
-      down.addMenuElement(item.toString(),item.getDisplayName());
+      down.addMenuElement(item.toString(),item.getDisplayLanguage());
     }
     return down;
   }
 
-  public static Form getAvailableLocalesDropdown(ModuleInfo modinfo) {
+  public static Form getAvailableLocalesForm(ModuleInfo modinfo) {
     IWMainApplication iwma = modinfo.getApplication();
 
     Form myForm = new Form();
+      myForm.setEventListener(com.idega.core.localisation.business.LocaleSwitcher.class.getName());
     DropdownMenu down = getAvailableLocalesDropdown(iwma,LocaleSwitcher.localesParameter);
       down.keepStatusOnAction();
       down.setToSubmit();
       myForm.add(down);
 
     return myForm;
+  }
+
+  public static DropdownMenu getAvailableLocalesDropdown(ModuleInfo modinfo) {
+    IWMainApplication iwma = modinfo.getApplication();
+
+    DropdownMenu down = getAvailableLocalesDropdown(iwma,com.idega.core.localisation.business.LocaleSwitcher.languageParameterString);
+      down.keepStatusOnAction();
+      down.setToSubmit();
+
+    return down;
   }
 
    public static Table getLocalizeableStringsTable(IWMainApplication iwma,String bundleIdentifier, IWResourceBundle iwrb,String parameterName,Link templateLink){
