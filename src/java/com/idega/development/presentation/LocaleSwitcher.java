@@ -27,6 +27,7 @@ import com.idega.core.localisation.business.ICLocaleBusiness;
 
 public class LocaleSwitcher extends com.idega.idegaweb.presentation.LocaleChanger {
 
+  public final static String IW_BUNDLE_IDENTIFIER="com.idega.developer";
 
 
 
@@ -69,8 +70,13 @@ public class LocaleSwitcher extends com.idega.idegaweb.presentation.LocaleChange
     if(localeValue!=null){
       Locale locale = LocaleUtil.getLocale(localeValue);
       if(locale!=null){
-        iwc.setCurrentLocale(locale);
+	iwc.setCurrentLocale(locale);
       }
     }
   }
+
+  public String getBundleIdentifier(){
+    return IW_BUNDLE_IDENTIFIER;
+  }
+
 }
