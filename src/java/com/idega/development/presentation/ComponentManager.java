@@ -225,6 +225,7 @@ public class ComponentManager extends Block {
 	private void doBusiness(IWBundle iwb, String selectedComponentKey, String selectedMethodIdentifier, String selectedMethodDesc, Map options) {
 		IBPropertyHandler handler = IBPropertyHandler.getInstance();
 		handler.setMethod(iwb, selectedComponentKey, selectedMethodIdentifier, selectedMethodDesc, options);
+		iwb.storeState();
 	}
 
 	public String getTypeParameter(String inputParameter) {
@@ -302,6 +303,9 @@ public class ComponentManager extends Block {
 	public void deleteMethods(IWBundle iwb, String selectedComponentKey, String[] methodIdentifiers) {
 		for (int i = 0; i < methodIdentifiers.length; i++) {
 			IBPropertyHandler.getInstance().removeMethod(iwb, selectedComponentKey, methodIdentifiers[i]);
+		}
+		if(methodIdentifiers.length>0){
+			iwb.storeState();
 		}
 
 	}

@@ -89,6 +89,9 @@ public class BundleCreator extends Block {
 				//bundleDir = iwma.getBundlesRealPath() + File.separator + bundleDir;
 			//}
 			iwma.registerBundle(bundleIdentifier, true);
+			IWBundle iwb = iwma.getBundle(bundleIdentifier);
+			iwb.storeState();
+			
 			add(IWDeveloper.getText("Creation Successful"));
 		}
 	}

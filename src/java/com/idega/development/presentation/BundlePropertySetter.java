@@ -96,14 +96,17 @@ public class BundlePropertySetter extends Block {
 				for (int a = 0; a < values.length; a++) {
 					bundle.removeProperty(values[a]);
 				}
+				bundle.storeState();
 			}
 		}
 
 		if ((bundleIdentifier != null) && (save != null)) {
 			String KeyName = iwc.getParameter(this.PROPERTY_KEY_NAME_PARAMETER);
 			String KeyValue = iwc.getParameter(this.PROPERTY_VALUE_PARAMETER);
-			if (KeyName != null && KeyName.length() > 0)
+			if (KeyName != null && KeyName.length() > 0){
 				bundle.setProperty(KeyName, KeyValue);
+				bundle.storeState();
+			}
 			bundle.storeState();
 			add(IWDeveloper.getText("Status: "));
 			add("Property set successfully and saved to files");

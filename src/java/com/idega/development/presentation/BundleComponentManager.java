@@ -149,6 +149,7 @@ public class BundleComponentManager extends Block {
 				for (int i = 0; i < deletes.length; i++) {
 					iwb.removeComponent(deletes[i]);
 				}
+				iwb.storeState();
 			}
 
 			String emptyString = StringHandler.EMPTY_STRING;
@@ -163,6 +164,7 @@ public class BundleComponentManager extends Block {
 						throw new Exception("Component needs to implement required interfaces ");
 				// 
 				iwb.addComponent(newComponentClass, newComponentType);
+				iwb.storeState();
 			}
 		}
 		else if ((iwb != null) && (save == null)) {
