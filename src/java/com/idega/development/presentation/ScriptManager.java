@@ -10,7 +10,7 @@ import com.idega.util.reflect.MethodInvoker;
 
 */
 public class ScriptManager extends Block {
-	public final static String IW_BUNDLE_IDENTIFIER = "com.idega.development.presentation";
+	public final static String IW_BUNDLE_IDENTIFIER = "com.idega.developer";
 		
 	public ScriptManager() {
 	}
