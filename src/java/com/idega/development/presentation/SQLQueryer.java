@@ -183,7 +183,13 @@ public class SQLQueryer extends Block {
 				//innerTable.setAlignment(1,3,innerTable.HORIZONTAL_ALIGN_RIGHT);
 				innerTable.add("Only to history:",1,3);
 				innerTable.add(new CheckBox("to_history","true"),1,3);
+				SubmitButton commit = new SubmitButton("Commit");
+				commit.setValueOnClick(PARAM_QUERY, "commit");
+				SubmitButton rollback = new SubmitButton("Rollback");
+				rollback.setValueOnClick(PARAM_QUERY, "rollback");
 				innerTable.add(new SubmitButton("Execute"), 3, 3);
+				innerTable.add(commit, 3, 3);
+				innerTable.add(rollback, 3, 3);
 				innerTable.mergeCells(1,3,2,3);
 				
 				innerTable.add("Dump file",1,4);
