@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.StringTokenizer;
-
+import com.idega.development.business.SQLSessionConnection;
 import com.idega.presentation.Block;
 import com.idega.presentation.IWContext;
 import com.idega.presentation.Table;
@@ -28,7 +28,6 @@ import com.idega.presentation.ui.SubmitButton;
 import com.idega.presentation.ui.TextArea;
 import com.idega.presentation.ui.TextInput;
 import com.idega.util.SQLDataDumper;
-import com.idega.util.database.ConnectionBroker;
 /**
 
 *@author <a href="mailto:tryggvi@idega.is">Tryggvi Larusson</a>
@@ -37,6 +36,7 @@ import com.idega.util.database.ConnectionBroker;
 
 */
 public class SQLQueryer extends Block {
+	
 	public final static String IW_BUNDLE_IDENTIFIER = "com.idega.developer";
 	private static String PARAM_QUERY = "sql_qry_str";
 	private static String PARAM_NUM_RECORDS = "sql_num_rec";
@@ -46,6 +46,8 @@ public class SQLQueryer extends Block {
 	private static String AREA_ROWS = "area_rows";
 	private static String DUMP_FILE = "dump_file";
 	private static String DUMP_TYPE = "dump_type";
+	
+	private static final String SESSION_ATTRIBUTE_CONNECTION = "session_connection";
 	
 	private FramePane queryPane;
 	private FramePane resultsPane;
@@ -214,10 +216,10 @@ public class SQLQueryer extends Block {
 					
 				}
 			}
-			Connection conn = getConnection(iwc);
-			
 			try {
 				if (queryString != null) {
+					Connection conn = getConnection(iwc);
+					
 					super.add(resultsPane);
 					if (displayForm) {
 						resultsPane.add("Your query was:");
@@ -270,7 +272,14 @@ public class SQLQueryer extends Block {
 								}
 							}
 							else if (queryString.trim().toLowerCase().startsWith("commit") ) {
-								resultsPane.add("AutoCommit is on");
+								conn.commit();
+								iwc.removeSessionAttribute(SESSION_ATTRIBUTE_CONNECTION);
+						    resultsPane.add("Changes commited.");
+							}
+							else if (queryString.trim().toLowerCase().startsWith("rollback") ) {
+								conn.rollback();
+								iwc.removeSessionAttribute(SESSION_ATTRIBUTE_CONNECTION);
+						    resultsPane.add("Changes rollbacked.");
 							}
 							else{
 								int i = stmt.executeUpdate(queryString);
@@ -303,10 +312,6 @@ public class SQLQueryer extends Block {
 					//out.println("");
 				}
 			}
-			finally {
-				this.freeConnection(iwc,conn);
-			}
-			
 		}
 		else {
 			add("Not logged on");
@@ -348,23 +353,15 @@ public class SQLQueryer extends Block {
 		return drop;
 	}
 	
-	protected Connection getConnection(IWContext iwc){
-		return getConnection();
+	public Connection getConnection(IWContext iwc) {
+		SQLSessionConnection conn = (SQLSessionConnection) iwc.getSessionAttribute(SESSION_ATTRIBUTE_CONNECTION);
+		if (conn == null) {
+			conn = new SQLSessionConnection();
+			iwc.setSessionAttribute(SESSION_ATTRIBUTE_CONNECTION, conn);
+		}
+		return conn.getConnection();
 	}
-	
-	protected void freeConnection(IWContext iwc,Connection conn){
-		this.freeConnection(conn);
-	}	
-	
-	public Connection getConnection()
-	{
-		return ConnectionBroker.getConnection();
-	}
-	public void freeConnection(Connection conn)
-	{
-		ConnectionBroker.freeConnection(conn);
-	}
-	
+
 	public Object clone() {
 		SQLQueryer obj = null;
 		try {
@@ -384,5 +381,5 @@ public class SQLQueryer extends Block {
 	}
 	public String getBundleIdentifier() {
 		return IW_BUNDLE_IDENTIFIER;
-	}
+	}	
 }
