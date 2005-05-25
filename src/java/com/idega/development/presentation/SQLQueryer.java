@@ -246,7 +246,9 @@ public class SQLQueryer extends Block {
 							    Table table = new Table();
 								table.setColor("white");
 								resultsPane.add(table);
+								long time = System.currentTimeMillis();
 								ResultSet rs = stmt.executeQuery(queryString);
+								long queryTime = System.currentTimeMillis() - time;
 								ResultSetMetaData rsMeta = rs.getMetaData();
 								// Get the N of Cols in the ResultSet
 								int noCols = rsMeta.getColumnCount();
@@ -276,6 +278,9 @@ public class SQLQueryer extends Block {
 									row++;
 									//out.println("</tr>");
 								}
+								table.setHeight(row++, 20);
+								table.mergeCells(1, row, table.getColumns(), row);
+								table.add(new Text("Query time: " + queryTime + " ms"), 1, row);
 							}
 							else if (queryString.trim().toLowerCase().startsWith("commit") ) {
 								conn.commit();
