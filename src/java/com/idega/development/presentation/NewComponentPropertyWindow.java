@@ -23,6 +23,7 @@ import com.idega.presentation.ui.Form;
 import com.idega.presentation.ui.SubmitButton;
 import com.idega.presentation.ui.TextInput;
 import com.idega.presentation.ui.Window;
+import com.idega.repository.data.RefactorClassRegistry;
 import com.idega.util.reflect.MethodFinder;
 
 /**
@@ -383,7 +384,7 @@ public class NewComponentPropertyWindow extends Window {
 		Method[] methods = null;
 		Map methodsMap = new HashMap();
 		try {
-			selectedClass = Class.forName(selectedComponentKey);
+			selectedClass = RefactorClassRegistry.forName(selectedComponentKey);
 			Class introspectionClass = selectedClass;
 
 			//		added by aron 21.june 2003

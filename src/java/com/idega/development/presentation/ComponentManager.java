@@ -25,6 +25,7 @@ import com.idega.presentation.ui.Form;
 import com.idega.presentation.ui.Parameter;
 import com.idega.presentation.ui.SubmitButton;
 import com.idega.presentation.ui.TextInput;
+import com.idega.repository.data.RefactorClassRegistry;
 import com.idega.util.reflect.MethodFinder;
 
 /**
@@ -183,7 +184,7 @@ public class ComponentManager extends Block {
 							String identifier = IBPropertyHandler.getInstance().getMethodIdentifier(prop);
 							String description = IBPropertyHandler.getInstance().getMethodDescription(prop, iwc);
 							Method method = null;
-							Class selectedClass = Class.forName(selectedComponentKey);
+							Class selectedClass = RefactorClassRegistry.forName(selectedComponentKey);
 							try {
 								//System.out.println("ComponentManager: "+identifier);
 								method = MethodFinder.getInstance().getMethod(identifier, selectedClass);

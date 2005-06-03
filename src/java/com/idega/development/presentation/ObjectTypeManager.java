@@ -25,6 +25,7 @@ import com.idega.presentation.ui.Form;
 import com.idega.presentation.ui.HiddenInput;
 import com.idega.presentation.ui.SubmitButton;
 import com.idega.presentation.ui.TextInput;
+import com.idega.repository.data.RefactorClassRegistry;
 
 /**
  * @author gimmi
@@ -101,7 +102,7 @@ public class ObjectTypeManager extends Block {
 		 			if (rSuper.equals("")) {
 		 				ot.setRequiredSuperClassName(null);
 		 			} else {
-						Class.forName(rSuper);
+						RefactorClassRegistry.forName(rSuper);
 		 				ot.setRequiredSuperClassName(rSuper);
 		 			}
 		 		}
@@ -115,7 +116,7 @@ public class ObjectTypeManager extends Block {
 							String className;
 							while (iter.hasNext()) {
 								className = (String) iter.next();
-								Class.forName(className);
+								RefactorClassRegistry.forName(className);
 							}
 						}
 			 			ot.setRequiredInterfacesString(rInter);
@@ -125,7 +126,7 @@ public class ObjectTypeManager extends Block {
 					if (refl.equals("")) {
 						ot.setFinalReflectionClassName(null);
 					} else {
-						Class.forName(refl);
+						RefactorClassRegistry.forName(refl);
 		 				ot.setFinalReflectionClassName(refl);
 					}
 				}

@@ -18,6 +18,7 @@ import com.idega.presentation.ui.DropdownMenu;
 import com.idega.presentation.ui.Form;
 import com.idega.presentation.ui.SubmitButton;
 import com.idega.presentation.ui.TextInput;
+import com.idega.repository.data.RefactorClassRegistry;
 import com.idega.util.StringHandler;
 
 /**
@@ -155,7 +156,7 @@ public class BundleComponentManager extends Block {
 			String emptyString = StringHandler.EMPTY_STRING;
 
 			if (!(emptyString.equals(newComponentClass) || emptyString.equals(newComponentType))) {
-				Class cls = Class.forName(newComponentClass);
+				Class cls = RefactorClassRegistry.forName(newComponentClass);
 				// Added by aron 21.june 2003 
 					BundleComponent comp = BundleComponentFactory.getInstance().getBundleComponent(newComponentType);
 					boolean valid = comp.validateInterfaces(cls);

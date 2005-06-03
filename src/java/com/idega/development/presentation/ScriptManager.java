@@ -2,6 +2,7 @@ package com.idega.development.presentation;
 import com.idega.idegaweb.IWResourceBundle;
 import com.idega.presentation.Block;
 import com.idega.presentation.IWContext;
+import com.idega.repository.data.RefactorClassRegistry;
 import com.idega.util.reflect.MethodInvoker;
 /**
  * This block manages a list of available Beanshell scripts (end with .bsh) within bundles and includes a simple script editor and the possibility to run the scripts.
@@ -24,7 +25,7 @@ public class ScriptManager extends Block {
 		if (iwc.isLoggedOn()) {
 		
 		try{
-			Block scriptEditor = (Block)Class.forName("com.idega.block.beanshell.presentation.BeanShellScript").newInstance();
+			Block scriptEditor = (Block) RefactorClassRegistry.forName("com.idega.block.beanshell.presentation.BeanShellScript").newInstance();
 			MethodInvoker invoker = MethodInvoker.getInstance();
 			
 			invoker.invokeMethodWithBooleanParameter(scriptEditor,"setToShowScriptEditor",true);
