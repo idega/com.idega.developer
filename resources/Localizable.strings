@@ -28,6 +28,7 @@ create_new_folder=Create new folder
 current_folder=Current folder
 date=Date
 do_you_want_to_remove_this_file=Do you really want to delete the file
+feature.beanshell.not.installed=You can not use this feature because you do not have the BeanShell module installed
 file=File
 file_already_exists=File already exists \!
 files=Files
