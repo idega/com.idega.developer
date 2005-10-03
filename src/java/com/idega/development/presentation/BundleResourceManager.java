@@ -89,7 +89,7 @@ public class BundleResourceManager extends Block {
 			fm.setTopLevelBrowseFolder(toplevel);
 			fm.setBundleIdentifier(getBundleIdentifier());
 			fm.setSkipFolders(new String[]{"CVS",".locale"});
-			fm.setSkipFiles(new String[]{"Localizable.strings","Localized.strings"});
+			//fm.setSkipFiles(new String[]{"Localizable.strings","Localized.strings"});
 			fm.addMaintainedParameter(IWDeveloper.actionParameter);
 			fm.addMaintainedParameter(IWDeveloper.PARAMETER_CLASS_NAME);
 			fm.addMaintainedParameter(LOCALE_PARAMETER);
