@@ -34,18 +34,19 @@ import com.idega.user.presentation.GroupChooser;
 import com.idega.util.text.TextSoap;
 /**
  * A manager for IdegaWeb's integrated LDAP server and replication services.
-*@author <a href="mailto:eiki@idega.is">Eirikur S. Hrafnsson</a>
-*@version 1.0
-
-*/
+ *@author <a href="mailto:eiki@idega.is">Eirikur S. Hrafnsson</a>
+ *@version 1.0
+ 
+ */
 public class LDAPManager extends Block implements LDAPReplicationConstants,EmbeddedLDAPServerConstants {
 	
 	public final static String IW_BUNDLE_IDENTIFIER = "com.idega.developer";
-
+	
 	private boolean isServerStarted = false;
 	private IWResourceBundle iwrb;
 	private IWBundle coreBundle;
 	
+	private static final String PARAM_SAVE_LDAP_PROPS_PATH = "save_lpad_props_path";
 	private static final String PARAM_SAVE_LDAP_SETTINGS = "save_lpad_settings";
 	private static final String PARAM_SAVE_BACKEND_SETTINGS = "save_backend";
 	private static final String PARAM_SAVE_REPLICATION_SETTINGS = "save_reps";	
@@ -71,12 +72,12 @@ public class LDAPManager extends Block implements LDAPReplicationConstants,Embed
 	
 	private static String darkColor = "#BCBCBC";
 	private static String lightColor = "#DEDEDE";
-
+	
 	private boolean justCreatedUUIDs = false;
 	private boolean justRemovedUUIDs = false;
-
+	
 	private GroupBusiness groupBiz = null;
-		
+	
 	public LDAPManager() {
 	}
 	
@@ -90,26 +91,26 @@ public class LDAPManager extends Block implements LDAPReplicationConstants,Embed
 		if (!iwc.isIE()) getParentPage().setBackgroundColor("#FFFFFF");
 		
 		if (iwc.isLoggedOn()) {
-		// maintain this parameter IWDeveloper.PARAMETER_CLASS_NAME
-		//add server start stop button
-		addBreak();
-		addServerStatus();
-		
-		//add ldap settings
-		addBreak();
-		addLDAPSettings(iwc);
-		
-		//add backend settings
-		addBreak();
-		addBackendSettings(iwc);
-		
-		//add replication settings
-		addBreak();
-		addReplicationSettings(iwc);
+			// maintain this parameter IWDeveloper.PARAMETER_CLASS_NAME
+			//add server start stop button
+			addBreak();
+			addServerStatus(iwc);
 			
-		//add the universal unique id util, to create or remove all unique id for users and groups
-		addBreak();
-		addUniqueIdUtil(iwc);
+			//add ldap settings
+			addBreak();
+			addLDAPSettings(iwc);
+			
+			//add backend settings
+			addBreak();
+			addBackendSettings(iwc);
+			
+			//add replication settings
+			addBreak();
+			addReplicationSettings(iwc);
+			
+			//add the universal unique id util, to create or remove all unique id for users and groups
+			addBreak();
+			addUniqueIdUtil(iwc);
 		}
 		else {
 			add(iwrb.getLocalizedString("not.logged.on","Not logged on"));
@@ -132,6 +133,9 @@ public class LDAPManager extends Block implements LDAPReplicationConstants,Embed
 			}
 			else if(iwc.isParameterSet(PARAM_SAVE_REPLICATION_SETTINGS)){
 				applyReplicationChanges(iwc);	
+			}
+			else if(iwc.isParameterSet(PARAM_SAVE_LDAP_PROPS_PATH)){
+				getEmbeddedLDAPServerBusiness(iwc).setPathToLDAPConfigFiles(iwc.getParameter(PROPS_JAVALDAP_PROPS_REAL_PATH));
 			}
 			else if(iwc.isParameterSet(PARAM_NEW_REPLICATION_SETTINGS)){
 				getLDAPReplicationBusiness(iwc).createNewReplicationSettings();
@@ -181,7 +185,7 @@ public class LDAPManager extends Block implements LDAPReplicationConstants,Embed
 			e.printStackTrace();
 		}
 	}
-
+	
 	/**
 	 * @param iwc
 	 * @throws RemoteException
@@ -195,7 +199,7 @@ public class LDAPManager extends Block implements LDAPReplicationConstants,Embed
 		}
 		isServerStarted = getEmbeddedLDAPServerBusiness(iwc).isServerStarted();
 	}
-
+	
 	/**
 	 * @param iwc
 	 * @throws IOException
@@ -203,10 +207,10 @@ public class LDAPManager extends Block implements LDAPReplicationConstants,Embed
 	private void applyBackendChanges(IWContext iwc) throws IOException {
 		Properties backendSettings = getEmbeddedLDAPServerBusiness(iwc).getBackendSettings();
 		backendSettings.setProperty(PROPS_BACKEND_ZERO_ROOT,iwc.getParameter(PROPS_BACKEND_ZERO_ROOT));
-
+		
 		getEmbeddedLDAPServerBusiness(iwc).storeBackendProperties();
 	}
-
+	
 	/**
 	 * @param iwc
 	 * @throws IOException
@@ -221,14 +225,14 @@ public class LDAPManager extends Block implements LDAPReplicationConstants,Embed
 		toggleBooleanProperty(ldapSettings,PROPS_JAVALDAP_AUTO_START,iwc);
 		getEmbeddedLDAPServerBusiness(iwc).storeLDAPProperties();
 	}
-
+	
 	/**
 	 * @param iwc
 	 * @throws IOException
 	 */
 	private void applyReplicationChanges(IWContext iwc) throws IOException {
 		Properties replicationSettings = getLDAPReplicationBusiness(iwc).getReplicationSettings();
-
+		
 		String num = replicationSettings.getProperty(PROPS_REPLICATION_NUM);
 		int numberOfReplicators = Integer.parseInt(num);
 		
@@ -272,9 +276,9 @@ public class LDAPManager extends Block implements LDAPReplicationConstants,Embed
 		
 		getLDAPReplicationBusiness(iwc).storeReplicationProperties();
 	}
-
-
-
+	
+	
+	
 	/**
 	 * @param iwc
 	 * @param replicationSettings
@@ -293,7 +297,7 @@ public class LDAPManager extends Block implements LDAPReplicationConstants,Embed
 			e.printStackTrace();
 		}
 	}
-
+	
 	/**
 	 * Adds a table of properties and values from the javaldap.prop properties file
 	 * @throws IOException
@@ -348,15 +352,19 @@ public class LDAPManager extends Block implements LDAPReplicationConstants,Embed
 		editable.add(PROPS_REPLICATOR_ROOT_USER);
 		editable.add(PROPS_REPLICATOR_ROOT_PASSWORD);
 		
+		editable.add(PROPS_REPLICATOR_ACTIVE_LISTENER);
+		editable.add(PROPS_REPLICATOR_IWLDAPWS_URI);
+		
 		List invisible = new ArrayList();
 		invisible.add(PROPS_REPLICATION_NUM);
-
+		
 		List checkBoxes = new ArrayList();
 		checkBoxes.add(PROPS_REPLICATOR_ACTIVE);
+		checkBoxes.add(PROPS_REPLICATOR_ACTIVE_LISTENER);
 		checkBoxes.add(PROPS_REPLICATOR_REPLICATE_BASE_RDN);
 		checkBoxes.add(PROPS_REPLICATOR_MATCH_BY_UNIQUE_ID);
 		checkBoxes.add(PROPS_REPLICATOR_REPEAT);
-
+		
 		List splitter = new ArrayList();
 		splitter.add(PROPS_REPLICATOR_SEARCH_TIMEOUT_MS);
 		
@@ -382,7 +390,7 @@ public class LDAPManager extends Block implements LDAPReplicationConstants,Embed
 		buttons.add(stopAll,4,1);
 		
 		Text text = new Text(iwrb.getLocalizedString("LDAPMANAGER.replication.scheduler.help.text","<b>Scheduler timer string format (-1 means every day/week/month/year...) :</b><br><i>\"minute (-1 or 0-59), hour (-1 or 0-23), day of month (-1 or 1-31), month (-1 or 0-11), day Of Week (-1 or 1-7) ,year (-1 or xxxx)\"</i>"));
-
+		
 		form.add(buttons);
 		add(form);
 		addBreak();
@@ -392,8 +400,8 @@ public class LDAPManager extends Block implements LDAPReplicationConstants,Embed
 		addSettings(iwc,PARAM_SAVE_REPLICATION_SETTINGS, repProps,null,editable,invisible,checkBoxes,splitter,specialIOMap,false);
 	}
 	
-
-
+	
+	
 	/**
 	 * Adds a table of properties and values from a properties file
 	 * @throws IOException
@@ -419,7 +427,7 @@ public class LDAPManager extends Block implements LDAPReplicationConstants,Embed
 		Iterator keys = serverProps.keySet().iterator();
 		
 		int row = 1;
-
+		
 		while (keys.hasNext()) {
 			String key = (String)keys.next();
 			//this is only for replication settings
@@ -429,7 +437,7 @@ public class LDAPManager extends Block implements LDAPReplicationConstants,Embed
 			if(index>0){
 				cleanPropertyKey = temp.substring(index);
 			}
-			 
+			
 			//ends
 			
 			if(!isInvisibleKey(invisibleKeys,key)){
@@ -532,7 +540,7 @@ public class LDAPManager extends Block implements LDAPReplicationConstants,Embed
 		headerText.setFontSize(Text.FONT_SIZE_10_HTML_2);
 		add(headerText);
 		add(new HorizontalRule());
-	
+		
 		RadioButton create = new RadioButton(PARAM_UUID_PROCESS,PARAM_VALUE_CREATE_ALL_UNIQUE_IDs);
 		RadioButton remove = new RadioButton(PARAM_UUID_PROCESS,PARAM_VALUE_REMOVE_ALL_UNIQUE_IDs);
 		
@@ -545,7 +553,7 @@ public class LDAPManager extends Block implements LDAPReplicationConstants,Embed
 		SubmitButton save = new SubmitButton(PARAM_RUN_UUID_PROCESS,iwrb.getLocalizedString("LDAPMANAGER.run.process","run process"));
 		save.setSubmitConfirm(iwrb.getLocalizedString("LDAPMANAGER.run.process.confirm","Are you sure you want to run the process? It could affect all users and groups in the database."));
 		
-
+		
 		settingsTable.add(iwrb.getLocalizedString("LDAPMANAGER.run.process.create","Create UUID for all users and groups"),1,1);
 		settingsTable.add(create,2,1);
 		settingsTable.add(iwrb.getLocalizedString("LDAPMANAGER.run.process.remove","Remove all UUID from all users and groups"),1,2);
@@ -582,7 +590,7 @@ public class LDAPManager extends Block implements LDAPReplicationConstants,Embed
 		settingsTable.setColor(2,row,rowColor);
 		settingsTable.setColor(3,row,rowColor);
 	}
-
+	
 	/**
 	 * @param settingsTable
 	 * @param row
@@ -601,7 +609,7 @@ public class LDAPManager extends Block implements LDAPReplicationConstants,Embed
 			return;
 		}
 	}
-
+	
 	/**
 	 * @param key
 	 * @return
@@ -611,7 +619,7 @@ public class LDAPManager extends Block implements LDAPReplicationConstants,Embed
 		int index2 = key.indexOf(".",index);
 		return key.substring(index,index2);
 	}
-
+	
 	/**
 	 * Checks if the key is editable
 	 * @param serverProps
@@ -672,7 +680,7 @@ public class LDAPManager extends Block implements LDAPReplicationConstants,Embed
 		}
 		else return false;
 	}
-
+	
 	/**
 	 * Needed because the replicator settings contain unknown numbers in them
 	 * @param key
@@ -731,10 +739,9 @@ public class LDAPManager extends Block implements LDAPReplicationConstants,Embed
 	/**
 	 * @param iwrb
 	 */
-	private void addServerStatus() {
-		//TODO add auto start checkbox
+	private void addServerStatus(IWContext iwc) {
 		Form serverStatusForm = new Form();
-		Table serverStarter = new Table(3,1);
+		Table serverStarter = new Table(3,2);
 		Text text = new Text(iwrb.getLocalizedString("LDAPMANAGER.embedded.server.status","Embedded LDAP server status : "));
 		text.setBold();
 		Text running = new Text(iwrb.getLocalizedString("LDAPMANAGER.embedded.server.status.running","Running"));
@@ -759,12 +766,31 @@ public class LDAPManager extends Block implements LDAPReplicationConstants,Embed
 		}
 		serverStarter.add(startStop,3,1);
 		
+		//add the realpath to the property files
+		try {
+			SubmitButton savePath = new SubmitButton(PARAM_SAVE_LDAP_PROPS_PATH,iwrb.getLocalizedString("LDAPMANAGER.save.changes","save changes"));
+			Text realPath = new Text(iwrb.getLocalizedString(PROPS_JAVALDAP_PROPS_REAL_PATH,"Path to property files : "));
+			realPath.setBold();
+			TextInput path = new TextInput(PROPS_JAVALDAP_PROPS_REAL_PATH,getEmbeddedLDAPServerBusiness(iwc).getPathToLDAPConfigFiles());
+			serverStarter.add(realPath,1,2);
+			serverStarter.add(path,2,2);
+			serverStarter.add(savePath,3,2);
+		}
+		catch (RemoteException e) {
+			e.printStackTrace();
+		}
+		
+		
+		
+		
+		
 		serverStatusForm.add(serverStarter);
 		serverStatusForm.maintainParameter(IWDeveloper.PARAMETER_CLASS_NAME);
 		add(serverStatusForm);
 	}
-
-
+	
+	
+	
 	public String getBundleIdentifier() {
 		return IW_BUNDLE_IDENTIFIER;
 	}
