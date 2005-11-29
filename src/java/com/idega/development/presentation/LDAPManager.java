@@ -238,17 +238,14 @@ public class LDAPManager extends Block implements LDAPReplicationConstants,Embed
 		
 		for(int i = 1; i<=numberOfReplicators; i++){
 			
-			
-			setReplicationProperty(iwc, PROPS_REPLICATOR_BASE_RDN, i);
-			setReplicationProperty(iwc, PROPS_REPLICATOR_BASE_UNIQUE_ID,i);
-			
-			//special case because we cannot have "." in javascript variables
+			//special cases because we cannot have "." in javascript variables
 			String underScoreKey = TextSoap.findAndReplace(PROPS_REPLICATOR_PREFIX +i+PROPS_REPLICATOR_BASE_GROUP_ID, ".", "_");
 			String baseGroupId = iwc.getParameter(underScoreKey);
 			if(baseGroupId!=null){
 				baseGroupId = baseGroupId.substring(baseGroupId.indexOf("_")+1);
 			}
 			replicationSettings.setProperty(PROPS_REPLICATOR_PREFIX +i+PROPS_REPLICATOR_BASE_GROUP_ID, baseGroupId);
+			
 			String underScoreKey2 = TextSoap.findAndReplace(PROPS_REPLICATOR_PREFIX +i+PROPS_REPLICATOR_PARENT_GROUP_ID, ".", "_");
 			String parentGroupId = iwc.getParameter(underScoreKey2);
 			if(parentGroupId!=null){
@@ -257,6 +254,9 @@ public class LDAPManager extends Block implements LDAPReplicationConstants,Embed
 			replicationSettings.setProperty(PROPS_REPLICATOR_PREFIX +i+PROPS_REPLICATOR_PARENT_GROUP_ID, parentGroupId);
 			//
 			
+			//text cases
+			setReplicationProperty(iwc, PROPS_REPLICATOR_BASE_RDN, i);
+			setReplicationProperty(iwc, PROPS_REPLICATOR_BASE_UNIQUE_ID,i);
 			setReplicationProperty(iwc, PROPS_REPLICATOR_HOST,i);
 			setReplicationProperty(iwc, PROPS_REPLICATOR_PORT,i);
 			setReplicationProperty(iwc, PROPS_REPLICATOR_INTERVAL_MINUTES,i);
@@ -265,10 +265,13 @@ public class LDAPManager extends Block implements LDAPReplicationConstants,Embed
 			setReplicationProperty(iwc, PROPS_REPLICATOR_SEARCH_ENTRY_LIMIT,i);
 			setReplicationProperty(iwc, PROPS_REPLICATOR_ROOT_USER,i);
 			setReplicationProperty(iwc, PROPS_REPLICATOR_ROOT_PASSWORD,i);
+			setReplicationProperty(iwc, PROPS_REPLICATOR_IWLDAPWS_URI,i);
 			
+			//booleans
 			toggleBooleanProperty(replicationSettings, PROPS_REPLICATOR_PREFIX +i+ PROPS_REPLICATOR_REPLICATE_BASE_RDN, iwc);
 			toggleBooleanProperty(replicationSettings, PROPS_REPLICATOR_PREFIX +i+ PROPS_REPLICATOR_MATCH_BY_UNIQUE_ID, iwc);
 			toggleBooleanProperty(replicationSettings, PROPS_REPLICATOR_PREFIX +i+ PROPS_REPLICATOR_ACTIVE, iwc);
+			toggleBooleanProperty(replicationSettings, PROPS_REPLICATOR_PREFIX +i+ PROPS_REPLICATOR_ACTIVE_LISTENER, iwc);
 			toggleBooleanProperty(replicationSettings, PROPS_REPLICATOR_PREFIX +i+ PROPS_REPLICATOR_REPEAT, iwc);
 			
 		}
