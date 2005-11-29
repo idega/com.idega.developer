@@ -167,7 +167,6 @@ public class ComponentManager extends Block {
 					IWPropertyListIterator methodsIter = methodsList.getIWPropertyListIterator();
 					if (methodsIter.hasNext()) {
 						form.add(propertyTable);
-						CheckBox deleteBox = new CheckBox(DELETE_CHECKBOX_NAME);
 
 						String methodName;
 						//yindex++;
@@ -205,7 +204,7 @@ public class ComponentManager extends Block {
 								methodName += " )";
 								propertyTable.add(getSmallText(methodName), 3, yindex);
 							}
-							CheckBox rowBox = (CheckBox) deleteBox.clone();
+							CheckBox rowBox = new CheckBox(DELETE_CHECKBOX_NAME);
 							rowBox.setContent(identifier);
 							propertyTable.add(rowBox, 1, yindex);
 

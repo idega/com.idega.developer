@@ -90,8 +90,6 @@ public class BundleComponentManager extends Block {
 			Collections.sort(componentTypes);
 			Iterator iter = componentTypes.iterator();
 
-			CheckBox deleteBox = new CheckBox(DELETE_CHECKBOX_NAME);
-
 			while (iter.hasNext()) {
 				String type = (String) iter.next();
 				typesDrop.addMenuElement(type);
@@ -116,7 +114,7 @@ public class BundleComponentManager extends Block {
 				table.add(getSmallText(className), 1, index);
 				table.add(getSmallText(type), 2, index);
 
-				CheckBox rowBox = (CheckBox) deleteBox.clone();
+				CheckBox rowBox = new CheckBox(DELETE_CHECKBOX_NAME);
 				rowBox.setContent(className);
 				table.add(rowBox, 3, index);
 
