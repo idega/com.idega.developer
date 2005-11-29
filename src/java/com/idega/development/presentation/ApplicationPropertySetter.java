@@ -2,9 +2,9 @@ package com.idega.development.presentation;
 
 import java.util.Iterator;
 import java.util.List;
-
 import com.idega.idegaweb.IWBundle;
 import com.idega.idegaweb.IWMainApplication;
+import com.idega.idegaweb.IWMainApplicationSettings;
 import com.idega.idegaweb.IWProperty;
 import com.idega.presentation.Block;
 import com.idega.presentation.IWContext;
@@ -122,11 +122,11 @@ public class ApplicationPropertySetter extends Block {
 		table.add(IWDeveloper.getText("Prepared statement:"), 1, 10);
 		table.add(box8, 2, 10);
 
-		DropdownMenu menu = new DropdownMenu(Page.MARKUP_LANGUAGE);
+		DropdownMenu menu = new DropdownMenu(IWMainApplicationSettings.DEFAULT_MARKUP_LANGUAGE_KEY);
 		menu.addMenuElement(Page.HTML, "HTML 4.01");
 		menu.addMenuElement(Page.XHTML, "XHTML 1.0");
 		menu.addMenuElement(Page.XHTML1_1, "XHTML 1.1 (Experimental)");
-		menu.setSelectedElement(iwc.getApplicationSettings().getProperty(Page.MARKUP_LANGUAGE, Page.HTML));
+		menu.setSelectedElement(iwc.getApplicationSettings().getDefaultMarkupLanguage());
 		table.add(IWDeveloper.getText("Markup Language:"), 1, 11);
 		table.add(menu, 2, 11);
 
@@ -154,7 +154,7 @@ public class ApplicationPropertySetter extends Block {
 			String debug = iwc.getParameter(DEBUG_PARAMETER);
 			String KeyName = iwc.getParameter(this.PROPERTY_KEY_NAME_PARAMETER);
 			String KeyValue = iwc.getParameter(this.PROPERTY_VALUE_PARAMETER);
-			String markup = iwc.getParameter(Page.MARKUP_LANGUAGE);
+			String markup = iwc.getParameter(IWMainApplicationSettings.DEFAULT_MARKUP_LANGUAGE_KEY);
 			if (KeyName != null && KeyName.length() > 0)
 				iwc.getIWMainApplication().getSettings().setProperty(KeyName, KeyValue);
 
@@ -200,7 +200,7 @@ public class ApplicationPropertySetter extends Block {
 			if (setterState.equalsIgnoreCase("store")) {
 				iwc.getIWMainApplication().storeStatus();
 			}
-			iwc.getApplicationSettings().setProperty(Page.MARKUP_LANGUAGE, markup);
+			iwc.getApplicationSettings().setProperty(IWMainApplicationSettings.DEFAULT_MARKUP_LANGUAGE_KEY, markup);
 
 			add(IWDeveloper.getText("Status: "));
 			add("Property set successfully");
