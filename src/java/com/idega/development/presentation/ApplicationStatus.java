@@ -1,5 +1,10 @@
 package com.idega.development.presentation;
 
+import com.idega.business.IBOLookup;
+import com.idega.business.IBOLookupException;
+import com.idega.business.IBORuntimeException;
+import com.idega.core.business.ICApplicationBindingBusiness;
+import com.idega.idegaweb.IWApplicationContext;
 import com.idega.presentation.Block;
 import com.idega.presentation.IWContext;
 import com.idega.presentation.Table;
@@ -21,9 +26,11 @@ public class ApplicationStatus extends Block {
 	private static final String RESTART_PARAMETER = "iw_app_re";
 
 	public ApplicationStatus() {
+		// empty
 	}
 
 	public void main(IWContext iwc) throws Exception {
+		ICApplicationBindingBusiness applicationBindingBusiness = getApplicationBindingBusiness(iwc);
 		add(IWDeveloper.getTitleTable(this.getClass()));
 		if (!iwc.isIE())
 			getParentPage().setBackgroundColor("#FFFFFF");
@@ -43,9 +50,9 @@ public class ApplicationStatus extends Block {
 
 		// Adding some fancy stuff :.
 
-		String shutdown = iwc.getApplicationSettings().getProperty("last_shutdown");
-		String startup = iwc.getApplicationSettings().getProperty("last_startup");
-		String reboot = iwc.getApplicationSettings().getProperty("last_restart");
+		String shutdown = applicationBindingBusiness.get("last_shutdown");
+		String startup = applicationBindingBusiness.get("last_startup");
+		String reboot = applicationBindingBusiness.get("last_restart");
 		IWTimestamp start = null, shut = null, rest = null;
 		if (shutdown != null && !shutdown.equals(""))
 			shut = new IWTimestamp(shutdown);
@@ -75,7 +82,7 @@ public class ApplicationStatus extends Block {
 		table.add(IWDeveloper.getText("Uptime"), 1, 7);
 		IWTimestamp now = IWTimestamp.RightNow();
 		int minutes = 0, maxmin = 0;
-		String MaxMinutes = iwc.getApplicationSettings().getProperty("max_minutes");
+		String MaxMinutes = applicationBindingBusiness.get("max_minutes");
 		if (MaxMinutes != null && !MaxMinutes.equals("")) {
 			maxmin = Integer.parseInt(MaxMinutes);
 		}
@@ -93,22 +100,31 @@ public class ApplicationStatus extends Block {
 
 		if (minutes > maxmin) {
 			maxmin = minutes;
-			iwc.getApplicationSettings().setProperty("max_minutes", maxmin);
+			applicationBindingBusiness.put("max_minutes", Integer.toString(maxmin));
 		}
 
 		table.add(IWDeveloper.getText("Max. uptime"), 1, 8);
 		if (start != null)
 			table.add(IWDeveloper.getText(maxmin + " Minutes"), 3, 8);
 
-		doBusiness(iwc);
+		doBusiness(iwc, applicationBindingBusiness);
 	}
 
-	private void doBusiness(IWContext iwc) throws Exception {
+	private void doBusiness(IWContext iwc, ICApplicationBindingBusiness applicationBindingBusiness) throws Exception {
 		String check = iwc.getParameter(RESTART_PARAMETER);
 		if (check != null) {
 			add(IWDeveloper.getText("Done Restarting!"));
-			iwc.getApplicationSettings().setProperty("last_restart", com.idega.util.IWTimestamp.RightNow().toString());
+			applicationBindingBusiness.put("last_restart", com.idega.util.IWTimestamp.RightNow().toString());
 			iwc.getIWMainApplication().restartApplication();
+		}
+	}
+
+	private ICApplicationBindingBusiness getApplicationBindingBusiness(IWApplicationContext iwac) {
+		try {
+			return (ICApplicationBindingBusiness) IBOLookup.getServiceInstance(iwac, ICApplicationBindingBusiness.class);
+		}
+		catch (IBOLookupException ibe) {
+			throw new IBORuntimeException(ibe);
 		}
 	}
 }
