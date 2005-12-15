@@ -1,11 +1,17 @@
 package com.idega.development.presentation;
 
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Logger;
+import com.idega.business.IBOLookup;
+import com.idega.business.IBOLookupException;
+import com.idega.business.IBORuntimeException;
+import com.idega.core.business.ICApplicationBindingBusiness;
+import com.idega.idegaweb.IWApplicationContext;
 import com.idega.idegaweb.IWBundle;
 import com.idega.idegaweb.IWMainApplication;
 import com.idega.idegaweb.IWMainApplicationSettings;
-import com.idega.idegaweb.IWProperty;
 import com.idega.presentation.Block;
 import com.idega.presentation.IWContext;
 import com.idega.presentation.Page;
@@ -40,6 +46,7 @@ public class ApplicationPropertySetter extends Block {
 	private static final String DEBUG_PARAMETER = "iw_d_p";
 
 	public ApplicationPropertySetter() {
+		// empty
 	}
 
 	public void main(IWContext iwc) {
@@ -63,8 +70,8 @@ public class ApplicationPropertySetter extends Block {
 		table.mergeCells(1, 12, 2, 12);
 		table.setAlignment(1, 12, "right");
 		form.add(table);
-		TextInput name = new TextInput(this.PROPERTY_KEY_NAME_PARAMETER);
-		TextInput value = new TextInput(this.PROPERTY_VALUE_PARAMETER);
+		TextInput name = new TextInput(PROPERTY_KEY_NAME_PARAMETER);
+		TextInput value = new TextInput(PROPERTY_VALUE_PARAMETER);
 
 		table.add(IWDeveloper.getText("Set ApplicationProperty"), 1, 1);
 
@@ -81,7 +88,7 @@ public class ApplicationPropertySetter extends Block {
 		table.add(box, 2, 4);
 
 		CheckBox box3 = new CheckBox(AUTOCREATE_STRINGS_PARAMETER);
-		if (iwma.getSettings().isAutoCreateStringsActive()) {
+		if (IWMainApplicationSettings.isAutoCreateStringsActive()) {
 			box3.setChecked(true);
 		}
 		table.add(IWDeveloper.getText("Autocreate Localized Strings:"), 1, 5);
@@ -137,10 +144,18 @@ public class ApplicationPropertySetter extends Block {
 	}
 
 	private void doBusiness(IWContext iwc) {
+		ICApplicationBindingBusiness applicationBindingBusiness = getApplicationBindingBusiness(iwc);
 		String[] values = iwc.getParameterValues("property");
 		if (values != null) {
 			for (int a = 0; a < values.length; a++) {
-				iwc.getIWMainApplication().getSettings().removeProperty(values[a]);
+				try {
+					applicationBindingBusiness.remove(values[a]);
+				}
+				catch (IOException ex) {
+					add(IWDeveloper.getText("Status: "));
+					add("Could not remove " + values[a]);
+					return;
+				}
 			}
 		}
 		String setterState = iwc.getParameter(APPLICATION_SETTER_PARAMETER);
@@ -148,15 +163,23 @@ public class ApplicationPropertySetter extends Block {
 			String entityAutoCreate = iwc.getParameter(ENTITY_AUTOCREATE_PARAMETER);
 			String autoCreateStrings = iwc.getParameter(AUTOCREATE_STRINGS_PARAMETER);
 			String autoCreateProperties = iwc.getParameter(AUTOCREATE_PROPERTIES_PARAMETER);
-			String entityBeanCache = iwc.getParameter(this.IDO_ENTITY_BEAN_CACHING_PARAMETER);
-			String entityQueryCache = iwc.getParameter(this.IDO_ENTITY_QUERY_CACHING_PARAMETER);
-			String usePreparedStatement = iwc.getParameter(this.IDO_USE_PREPARED_STATEMENT);
+			String entityBeanCache = iwc.getParameter(IDO_ENTITY_BEAN_CACHING_PARAMETER);
+			String entityQueryCache = iwc.getParameter(IDO_ENTITY_QUERY_CACHING_PARAMETER);
+			String usePreparedStatement = iwc.getParameter(IDO_USE_PREPARED_STATEMENT);
 			String debug = iwc.getParameter(DEBUG_PARAMETER);
-			String KeyName = iwc.getParameter(this.PROPERTY_KEY_NAME_PARAMETER);
-			String KeyValue = iwc.getParameter(this.PROPERTY_VALUE_PARAMETER);
+			String keyName = iwc.getParameter(PROPERTY_KEY_NAME_PARAMETER);
+			String keyValue = iwc.getParameter(PROPERTY_VALUE_PARAMETER);
 			String markup = iwc.getParameter(IWMainApplicationSettings.DEFAULT_MARKUP_LANGUAGE_KEY);
-			if (KeyName != null && KeyName.length() > 0)
-				iwc.getIWMainApplication().getSettings().setProperty(KeyName, KeyValue);
+			if (keyName != null && keyName.length() > 0) {
+				try {
+					applicationBindingBusiness.put(keyName, keyValue);
+				}
+				catch(IOException ex) {
+					add(IWDeveloper.getText("Status: "));
+					add("Could not save key " + keyName + " with value " + keyValue);
+					return;
+				}
+			}
 
 			if (entityAutoCreate != null)
 				iwc.getIWMainApplication().getSettings().setEntityAutoCreation(true);
@@ -200,51 +223,62 @@ public class ApplicationPropertySetter extends Block {
 			if (setterState.equalsIgnoreCase("store")) {
 				iwc.getIWMainApplication().storeStatus();
 			}
-			iwc.getApplicationSettings().setProperty(IWMainApplicationSettings.DEFAULT_MARKUP_LANGUAGE_KEY, markup);
-
+			try {
+				applicationBindingBusiness.put(IWMainApplicationSettings.DEFAULT_MARKUP_LANGUAGE_KEY, markup);
+			}
+			catch (IOException ex) {
+				getLogger().warning("[ApplicationPropertySetter] Could not get data from ICApplicationBinding");
+				add(IWDeveloper.getText("Status: "));
+				add("Could not save key " + IWMainApplicationSettings.DEFAULT_MARKUP_LANGUAGE_KEY + " with value " + markup);
+				return;
+			}
 			add(IWDeveloper.getText("Status: "));
 			add("Property set successfully");
 		}
 	}
 
 	public static Form getParametersTable(IWMainApplication iwma) {
-		java.util.Iterator iter = iwma.getSettings().getIWPropertyListIterator();
-
+		ICApplicationBindingBusiness applicationBindingBusiness = getApplicationBindingBusiness(iwma.getIWApplicationContext());
 		Form form = new Form();
 		form.maintainParameter(IWDeveloper.actionParameter);
 		form.maintainParameter(IWDeveloper.PARAMETER_CLASS_NAME);
 		Table table = new Table();
-
-		String value;
-		IWProperty property;
-		int row = 1;
-		while (iter.hasNext()) {
-			property = (IWProperty) iter.next();
-			table.add(new Text(property.getName(), true, false, false), 1, row);
-			value = property.getValue();
-			if (value != null)
-				table.add(new Text(value, true, false, false), 2, row);
-			table.add(new CheckBox("property", property.getName()), 3, row);
-			row++;
-		}
-		/*
-		for (int i = 0; i < strings.length; i++) {
-		  name = new Text(strings[i],true,false,false);
-		  table.add(name,1,i+1);
-		  localizedString = bundle.getProperty( strings[i] );
-		  if (localizedString==null) localizedString = "";
-		  table.add(localizedString ,2,i+1);
-		}
-		*/
-		table.setColumnVerticalAlignment(1, "top");
-		table.setCellpadding(5);
-		table.setCellspacing(0);
-		table.setWidth(400);
-		table.setColor("#9FA9B3");
-		table.setRowColor(table.getRows() + 1, "#FFFFFF");
-		table.add(new SubmitButton("Delete", "mode", "delete"), 3, table.getRows());
-		table.setColumnAlignment(3, "center");
+		try {
+			Iterator iter = applicationBindingBusiness.keySet().iterator();
+			String value;
+			int row = 1;
+			while (iter.hasNext()) {
+				String key = (String) iter.next();
+				table.add(new Text(key, true, false, false), 1, row);
+				value = applicationBindingBusiness.get(key);
+				if (value != null)
+					table.add(new Text(value, true, false, false), 2, row);
+				table.add(new CheckBox("property", key), 3, row);
+				row++;
+			}
+			/*
+			for (int i = 0; i < strings.length; i++) {
+			  name = new Text(strings[i],true,false,false);
+			  table.add(name,1,i+1);
+			  localizedString = bundle.getProperty( strings[i] );
+			  if (localizedString==null) localizedString = "";
+			  table.add(localizedString ,2,i+1);
+			}
+			*/
+			table.setColumnVerticalAlignment(1, "top");
+			table.setCellpadding(5);
+			table.setCellspacing(0);
+			table.setWidth(400);
+			table.setColor("#9FA9B3");
+			table.setRowColor(table.getRows() + 1, "#FFFFFF");
+			table.add(new SubmitButton("Delete", "mode", "delete"), 3, table.getRows());
+			table.setColumnAlignment(3, "center");
 		form.add(table);
+		}
+		catch(IOException ex) {
+			Logger.getLogger(ApplicationPropertySetter.class.getName()).warning("[ApplicationPropertySetter] Could not get data from ICApplicationBinding");
+			table.add("Could not fetch data from database");
+		}
 
 		return form;
 	}
@@ -258,5 +292,14 @@ public class ApplicationPropertySetter extends Block {
 			down.addMenuElement(item.getBundleIdentifier());
 		}
 		return down;
+	}
+	
+	private static ICApplicationBindingBusiness getApplicationBindingBusiness(IWApplicationContext iwac) {
+		try {
+			return (ICApplicationBindingBusiness) IBOLookup.getServiceInstance(iwac, ICApplicationBindingBusiness.class);
+		}
+		catch (IBOLookupException ibe) {
+			throw new IBORuntimeException(ibe);
+		}
 	}
 }
