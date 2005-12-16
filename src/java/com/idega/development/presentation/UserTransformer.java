@@ -8,6 +8,7 @@
  */
 package com.idega.development.presentation;
 
+import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,7 +19,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import com.idega.business.IBOLookup;
+import com.idega.business.IBOLookupException;
+import com.idega.business.IBORuntimeException;
 import com.idega.core.accesscontrol.business.AccessController;
+import com.idega.core.business.ICApplicationBindingBusiness;
 import com.idega.core.user.business.UserBusiness;
 import com.idega.data.DatastoreInterface;
 import com.idega.data.IDOLookup;
@@ -122,8 +126,19 @@ public class UserTransformer extends Block{
 	}
 	
 	public void createOldUser(IWContext iwc) {
-		Object objUserSysAtt = iwc.getApplicationSettings().getProperty("IW_USER_SYSTEM");
-		boolean isOldSystemUsed = objUserSysAtt != null && objUserSysAtt.toString().equals("OLD");
+		boolean isOldSystemUsed = false;
+        try {
+        	ICApplicationBindingBusiness applicationBindingBusiness = (ICApplicationBindingBusiness) IBOLookup.getServiceInstance(iwc, ICApplicationBindingBusiness.class);
+        	String objUserSysAtt =applicationBindingBusiness.get("IW_USER_SYSTEM");
+    		isOldSystemUsed = "OLD".equals(objUserSysAtt);
+        }
+        catch (IBOLookupException ex) {
+        	throw new IBORuntimeException(ex);
+        }
+        catch (IOException ex) {
+        	getLogger().warning("[UserTransformer] Could not look up parameter IW_USER_SYSTEMf");
+        	isOldSystemUsed = false;
+        }      
 		if(!isOldSystemUsed) {
 			addText("Creating an old user can only be done if the application property \"IW_USER_SYSTEM\" is set to \"OLD\"");
 			return;
