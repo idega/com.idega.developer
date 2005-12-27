@@ -1,14 +1,7 @@
 package com.idega.development.presentation;
 
-import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Logger;
-import com.idega.business.IBOLookup;
-import com.idega.business.IBOLookupException;
-import com.idega.business.IBORuntimeException;
-import com.idega.core.business.ICApplicationBindingBusiness;
-import com.idega.idegaweb.IWApplicationContext;
 import com.idega.idegaweb.IWBundle;
 import com.idega.idegaweb.IWMainApplication;
 import com.idega.idegaweb.IWMainApplicationSettings;
@@ -144,18 +137,10 @@ public class ApplicationPropertySetter extends Block {
 	}
 
 	private void doBusiness(IWContext iwc) {
-		ICApplicationBindingBusiness applicationBindingBusiness = getApplicationBindingBusiness(iwc);
 		String[] values = iwc.getParameterValues("property");
 		if (values != null) {
 			for (int a = 0; a < values.length; a++) {
-				try {
-					applicationBindingBusiness.remove(values[a]);
-				}
-				catch (IOException ex) {
-					add(IWDeveloper.getText("Status: "));
-					add("Could not remove " + values[a]);
-					return;
-				}
+				iwc.getApplicationSettings().removeProperty(values[a]);
 			}
 		}
 		String setterState = iwc.getParameter(APPLICATION_SETTER_PARAMETER);
@@ -167,19 +152,11 @@ public class ApplicationPropertySetter extends Block {
 			String entityQueryCache = iwc.getParameter(IDO_ENTITY_QUERY_CACHING_PARAMETER);
 			String usePreparedStatement = iwc.getParameter(IDO_USE_PREPARED_STATEMENT);
 			String debug = iwc.getParameter(DEBUG_PARAMETER);
-			String keyName = iwc.getParameter(PROPERTY_KEY_NAME_PARAMETER);
-			String keyValue = iwc.getParameter(PROPERTY_VALUE_PARAMETER);
+			String KeyName = iwc.getParameter(PROPERTY_KEY_NAME_PARAMETER);
+			String KeyValue = iwc.getParameter(PROPERTY_VALUE_PARAMETER);
 			String markup = iwc.getParameter(IWMainApplicationSettings.DEFAULT_MARKUP_LANGUAGE_KEY);
-			if (keyName != null && keyName.length() > 0) {
-				try {
-					applicationBindingBusiness.put(keyName, keyValue);
-				}
-				catch(IOException ex) {
-					add(IWDeveloper.getText("Status: "));
-					add("Could not save key " + keyName + " with value " + keyValue);
-					return;
-				}
-			}
+			if (KeyName != null && KeyName.length() > 0)
+				iwc.getIWMainApplication().getSettings().setProperty(KeyName, KeyValue);
 
 			if (entityAutoCreate != null)
 				iwc.getIWMainApplication().getSettings().setEntityAutoCreation(true);
@@ -223,62 +200,52 @@ public class ApplicationPropertySetter extends Block {
 			if (setterState.equalsIgnoreCase("store")) {
 				iwc.getIWMainApplication().storeStatus();
 			}
-			try {
-				applicationBindingBusiness.put(IWMainApplicationSettings.DEFAULT_MARKUP_LANGUAGE_KEY, markup);
-			}
-			catch (IOException ex) {
-				getLogger().warning("[ApplicationPropertySetter] Could not get data from ICApplicationBinding");
-				add(IWDeveloper.getText("Status: "));
-				add("Could not save key " + IWMainApplicationSettings.DEFAULT_MARKUP_LANGUAGE_KEY + " with value " + markup);
-				return;
-			}
+			iwc.getApplicationSettings().setProperty(IWMainApplicationSettings.DEFAULT_MARKUP_LANGUAGE_KEY, markup);
+
 			add(IWDeveloper.getText("Status: "));
 			add("Property set successfully");
 		}
 	}
 
 	public static Form getParametersTable(IWMainApplication iwma) {
-		ICApplicationBindingBusiness applicationBindingBusiness = getApplicationBindingBusiness(iwma.getIWApplicationContext());
+		IWMainApplicationSettings applicationSettings  = iwma.getSettings();
+		java.util.Iterator iter = applicationSettings.keySet().iterator();
+
 		Form form = new Form();
 		form.maintainParameter(IWDeveloper.actionParameter);
 		form.maintainParameter(IWDeveloper.PARAMETER_CLASS_NAME);
 		Table table = new Table();
-		try {
-			Iterator iter = applicationBindingBusiness.keySet().iterator();
-			String value;
-			int row = 1;
-			while (iter.hasNext()) {
-				String key = (String) iter.next();
-				table.add(new Text(key, true, false, false), 1, row);
-				value = applicationBindingBusiness.get(key);
-				if (value != null)
-					table.add(new Text(value, true, false, false), 2, row);
-				table.add(new CheckBox("property", key), 3, row);
-				row++;
-			}
-			/*
-			for (int i = 0; i < strings.length; i++) {
-			  name = new Text(strings[i],true,false,false);
-			  table.add(name,1,i+1);
-			  localizedString = bundle.getProperty( strings[i] );
-			  if (localizedString==null) localizedString = "";
-			  table.add(localizedString ,2,i+1);
-			}
-			*/
-			table.setColumnVerticalAlignment(1, "top");
-			table.setCellpadding(5);
-			table.setCellspacing(0);
-			table.setWidth(400);
-			table.setColor("#9FA9B3");
-			table.setRowColor(table.getRows() + 1, "#FFFFFF");
-			table.add(new SubmitButton("Delete", "mode", "delete"), 3, table.getRows());
-			table.setColumnAlignment(3, "center");
+
+		String value;
+		String key;
+		int row = 1;
+		while (iter.hasNext()) {
+			key = (String) iter.next();
+			table.add(new Text(key, true, false, false), 1, row);
+			value = applicationSettings.getProperty(key);
+			if (value != null)
+				table.add(new Text(value, true, false, false), 2, row);
+			table.add(new CheckBox("property", key), 3, row);
+			row++;
+		}
+		/*
+		for (int i = 0; i < strings.length; i++) {
+		  name = new Text(strings[i],true,false,false);
+		  table.add(name,1,i+1);
+		  localizedString = bundle.getProperty( strings[i] );
+		  if (localizedString==null) localizedString = "";
+		  table.add(localizedString ,2,i+1);
+		}
+		*/
+		table.setColumnVerticalAlignment(1, "top");
+		table.setCellpadding(5);
+		table.setCellspacing(0);
+		table.setWidth(400);
+		table.setColor("#9FA9B3");
+		table.setRowColor(table.getRows() + 1, "#FFFFFF");
+		table.add(new SubmitButton("Delete", "mode", "delete"), 3, table.getRows());
+		table.setColumnAlignment(3, "center");
 		form.add(table);
-		}
-		catch(IOException ex) {
-			Logger.getLogger(ApplicationPropertySetter.class.getName()).warning("[ApplicationPropertySetter] Could not get data from ICApplicationBinding");
-			table.add("Could not fetch data from database");
-		}
 
 		return form;
 	}
@@ -292,14 +259,5 @@ public class ApplicationPropertySetter extends Block {
 			down.addMenuElement(item.getBundleIdentifier());
 		}
 		return down;
-	}
-	
-	private static ICApplicationBindingBusiness getApplicationBindingBusiness(IWApplicationContext iwac) {
-		try {
-			return (ICApplicationBindingBusiness) IBOLookup.getServiceInstance(iwac, ICApplicationBindingBusiness.class);
-		}
-		catch (IBOLookupException ibe) {
-			throw new IBORuntimeException(ibe);
-		}
 	}
 }
