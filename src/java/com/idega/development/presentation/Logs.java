@@ -1,10 +1,6 @@
 package com.idega.development.presentation;
 
-import com.idega.business.IBOLookup;
-import com.idega.business.IBOLookupException;
-import com.idega.business.IBORuntimeException;
-import com.idega.core.business.ICApplicationBindingBusiness;
-import com.idega.idegaweb.IWApplicationContext;
+import com.idega.idegaweb.IWMainApplicationSettings;
 import com.idega.idegaweb.IWResourceBundle;
 import com.idega.presentation.Block;
 import com.idega.presentation.IWContext;
@@ -86,7 +82,7 @@ public class Logs extends Block {
 	}
 
 	private void processBusiness(IWContext iwc, Table table) throws Exception {
-		ICApplicationBindingBusiness applicationBindingBusiness = getApplicationBindingBusiness(iwc);
+		IWMainApplicationSettings settings = iwc.getApplicationSettings();
 		//this works only for the default tomcat setup but you can change the
 		// path in application properties
 		table.setColor(1,3,"#dddddd");
@@ -95,9 +91,9 @@ public class Logs extends Block {
 				+ FileUtil.getFileSeparator() + "logs" + FileUtil.getFileSeparator();
 		String defaultLogFileName = "catalina.out";
 		
-		String logDir = applicationBindingBusiness.put(LOG_FILE_FOLDER_PATH, defaultLogFolderPath);
-		String outLogName = applicationBindingBusiness.put(LOG_FILE_OUT_NAME, defaultLogFileName);
-		String errLogName = applicationBindingBusiness.put(LOG_FILE_ERROR_NAME, defaultLogFileName);
+		String logDir = settings.getProperty(LOG_FILE_FOLDER_PATH, defaultLogFolderPath);
+		String outLogName = settings.getProperty(LOG_FILE_OUT_NAME, defaultLogFileName);
+		String errLogName = settings.getProperty(LOG_FILE_ERROR_NAME, defaultLogFileName);
 		
 		if (iwc.isParameterSet(PARAM_VIEW_OUT_LOG)) {
 			if(outLogName.indexOf("/")>0 || outLogName.indexOf("\\")>0 ){
@@ -142,14 +138,4 @@ public class Logs extends Block {
 	public String getBundleIdentifier(){
 		return IW_BUNDLE_IDENTIFIER;
 	}
-	
-	private ICApplicationBindingBusiness getApplicationBindingBusiness(IWApplicationContext iwac) {
-		try {
-			return (ICApplicationBindingBusiness) IBOLookup.getServiceInstance(iwac, ICApplicationBindingBusiness.class);
-		}
-		catch (IBOLookupException ibe) {
-			throw new IBORuntimeException(ibe);
-		}
-	}
-
 }
