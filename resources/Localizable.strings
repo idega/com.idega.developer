@@ -1,5 +1,6 @@
 LDAPMANAGER.UUID.util.header=Universally Unique Identifier Utility
 LDAPMANAGER.backend.settings=Backend Settings
+LDAPMANAGER.delete.replicator=delete replicator and reorder
 LDAPMANAGER.embedded.server.action.start=start
 LDAPMANAGER.embedded.server.action.stop=stop
 LDAPMANAGER.embedded.server.status=Embedded LDAP server status \: 
