@@ -37,6 +37,7 @@ folder_name=Folder name
 iw.component.com.idega.development.presentation.LocaleSwitcher.name=LocaleSwitcher
 iw.component.com.idega.development.presentation.SQLQueryer.name=SQLQueryer
 iwapplication_name.idegaWeb\ Developer=idegaWeb Developer
+ldap.properties.real.path=Path to property files \: 
 not.logged.on=Not logged on
 overwrite_file=Overwrite file with same name if exists
 selected_file=Selected file
