@@ -311,6 +311,7 @@ public class LDAPManager extends Block implements LDAPReplicationConstants,Embed
 		editable.add(PROPS_JAVALDAP_ROOTPW);
 		editable.add(PROPS_JAVALDAP_SERVER_NAME);
 		editable.add(PROPS_JAVALDAP_SERVER_PORT);
+		editable.add(PROPS_JAVALDAP_WEBSERVICE_PORT);
 		editable.add(PROPS_JAVALDAP_AUTO_START);
 		editable.add(PROPS_JAVALDAP_ROOTUSER);
 		
