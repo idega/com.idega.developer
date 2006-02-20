@@ -163,7 +163,7 @@ public class SQLQueryer extends Block {
 				if(drp!=null){
 					innerTable.mergeCells(1,1,2,1);
 					innerTable.add(drp,1,1);
-					innerTable.setAlignment(3,1,innerTable.HORIZONTAL_ALIGN_RIGHT);
+					innerTable.setAlignment(3,1,Table.HORIZONTAL_ALIGN_RIGHT);
 					innerTable.add(new SubmitButton("clearhist","Clear history"),3,1);
 				}
 				

@@ -2,6 +2,7 @@ package com.idega.development.presentation;
 
 import com.idega.core.localisation.presentation.LocaleSwitcher;
 import com.idega.idegaweb.IWBundle;
+import com.idega.idegaweb.IWMainApplication;
 import com.idega.presentation.FrameList;
 import com.idega.presentation.IWContext;
 import com.idega.presentation.Image;
@@ -61,7 +62,7 @@ private static String styleName = "iwdClass";
   private Link getClassLink(IWContext iwc, Class linkClass, String linkName) {
   	Link link = new Link(linkName);
   	link.setStyleClass(styleName);
-  	link.addParameter(IWDeveloper.PARAMETER_CLASS_NAME, iwc.getIWMainApplication().getEncryptedClassName(linkClass));
+  	link.addParameter(IWDeveloper.PARAMETER_CLASS_NAME, IWMainApplication.getEncryptedClassName(linkClass));
   	return link;
   }
   

@@ -62,8 +62,8 @@ public class BundlePropertySetter extends Block {
 		table.setAlignment(2, 5, "right");
 		form.add(table);
 		//form.setMethod("GET");
-		TextInput name = new TextInput(this.PROPERTY_KEY_NAME_PARAMETER);
-		TextInput value = new TextInput(this.PROPERTY_VALUE_PARAMETER);
+		TextInput name = new TextInput(BundlePropertySetter.PROPERTY_KEY_NAME_PARAMETER);
+		TextInput value = new TextInput(BundlePropertySetter.PROPERTY_VALUE_PARAMETER);
 
 		table.add(IWDeveloper.getText("Set BundleProperty"), 1, 1);
 		table.add(IWDeveloper.getText("Bundle:"), 1, 2);
@@ -101,8 +101,8 @@ public class BundlePropertySetter extends Block {
 		}
 
 		if ((bundleIdentifier != null) && (save != null)) {
-			String KeyName = iwc.getParameter(this.PROPERTY_KEY_NAME_PARAMETER);
-			String KeyValue = iwc.getParameter(this.PROPERTY_VALUE_PARAMETER);
+			String KeyName = iwc.getParameter(BundlePropertySetter.PROPERTY_KEY_NAME_PARAMETER);
+			String KeyValue = iwc.getParameter(BundlePropertySetter.PROPERTY_VALUE_PARAMETER);
 			if (KeyName != null && KeyName.length() > 0){
 				bundle.setProperty(KeyName, KeyValue);
 				bundle.storeState();

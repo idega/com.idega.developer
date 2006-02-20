@@ -96,7 +96,7 @@ public class ComponentManager extends Block {
 				names.put(element.substring(element.lastIndexOf(".") + 1), element);
 			}
 
-			DropdownMenu componentsDrop = new DropdownMenu(this.CLASS_PARAMETER);
+			DropdownMenu componentsDrop = new DropdownMenu(ComponentManager.CLASS_PARAMETER);
 			componentsDrop.keepStatusOnAction();
 			componentsDrop.setToSubmit();
 
