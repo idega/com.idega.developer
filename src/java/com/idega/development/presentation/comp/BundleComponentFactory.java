@@ -41,7 +41,7 @@ public class BundleComponentFactory {
 	};
 	static Map lookup = null;
 	
-	private BundleComponentFactory(){
+	protected BundleComponentFactory(){
 		lookup = new HashMap();
 		createLookupTable();
 	}
