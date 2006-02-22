@@ -9,7 +9,6 @@ import com.idega.presentation.PresentationObject;
 import com.idega.presentation.Table;
 import com.idega.presentation.text.HorizontalRule;
 import com.idega.presentation.text.Text;
-import com.idega.presentation.ui.IFrame;
 import com.idega.repository.data.RefactorClassRegistry;
 /**
  * Title:        idega Framework
@@ -21,12 +20,6 @@ import com.idega.repository.data.RefactorClassRegistry;
  */
 public class IWDeveloper extends com.idega.presentation.app.IWApplication {
 
-	private static final String localizerParameter = "iw_localizer";
-	private static final String localeswitcherParameter = "iw_localeswitcher";
-	private static final String bundleCreatorParameter = "iw_bundlecreator";
-	private static final String bundleComponentManagerParameter = "iw_bundlecompmanager";
-	private static final String applicationPropertiesParameter = "iw_application_properties_setter";
-	private static final String bundlesPropertiesParameter = "iw_bundle_properties_setter";
 	public static final String actionParameter = "iw_developer_action";
 	public static final String dbPoolStatusViewerParameter = "iw_poolstatus_viewer";
 	public static final String updateManagerParameter = "iw_update_manager";
@@ -50,11 +43,6 @@ public class IWDeveloper extends com.idega.presentation.app.IWApplication {
 		public IWDevPage() {
 			this.setStatus(true);
 		}
-
-		private Table mainTable;
-		private Table objectTable;
-		private IFrame rightFrame;
-		private int count = 1;
 
 		public void main(IWContext iwc) throws Exception {
 			IWBundle iwbCore = getBundle(iwc);

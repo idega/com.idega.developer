@@ -32,12 +32,4 @@ public class DBPoolStatusViewer extends PresentationObjectContainer {
       add(poolMgr.getStats());
   }
 
-  private Text getText(String text) {
-    Text T = new Text(text);
-      T.setBold();
-      T.setFontFace(Text.FONT_FACE_VERDANA);
-      T.setFontSize(Text.FONT_SIZE_10_HTML_2);
-    return T;
-  }
-
 }

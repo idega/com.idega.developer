@@ -42,8 +42,6 @@ public class SQLQueryer extends Block {
 	private static String PARAM_NUM_RECORDS = "sql_num_rec";
 	private static String PARAM_QUERY_NAME = "sql_hist_qry_name";
 	private static String HISTORY_QUERIES = "sql_hist_queries";
-	private static String AREA_COLS = "area_cols";
-	private static String AREA_ROWS = "area_rows";
 	private static String DUMP_FILE = "dump_file";
 	private static String DUMP_TYPE = "dump_type";
 	
@@ -326,25 +324,6 @@ public class SQLQueryer extends Block {
 		}
 		else {
 			add("Not logged on");
-		}
-	}
-	
-	private void initSQLAreaSize(IWContext iwc){
-		if(iwc.isParameterSet(AREA_COLS)){
-			try {
-				aCols = Integer.parseInt(iwc.getParameter(AREA_COLS));
-			}
-			catch (NumberFormatException e) {
-				e.printStackTrace();
-			}
-		}
-		if(iwc.isParameterSet(AREA_ROWS)){
-			try {
-				aRows = Integer.parseInt(iwc.getParameter(AREA_ROWS));
-			}
-			catch (NumberFormatException e) {
-				e.printStackTrace();
-			}
 		}
 	}
 	

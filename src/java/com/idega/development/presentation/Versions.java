@@ -29,13 +29,11 @@ import java.util.List;
 public class Versions extends Block {
   private final static String IW_BUNDLE_IDENTIFIER="com.idega.core";
   private Table table;
-  private IWBundle iwb;
 
   public Versions() {
   }
 
   public void main(IWContext iwc){
-    iwb = getBundle(iwc);
     add(IWDeveloper.getTitleTable(this.getClass()));
 		if (!iwc.isIE())
 			getParentPage().setBackgroundColor("#FFFFFF");

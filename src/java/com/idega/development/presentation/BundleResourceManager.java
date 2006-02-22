@@ -26,10 +26,6 @@ public class BundleResourceManager extends Block {
 	
 	private static final String BUNDLE_PARAMETER = "iw_b_p_s";
 	private static final String LOCALE_PARAMETER = "iw_l_p_s";
-	private String[] skipFiles = {};
-	private String[] skipFolders ={};
-	
-	private IWBundle iwb;
 	
 	/*
 	 * (non-Javadoc)
@@ -41,7 +37,6 @@ public class BundleResourceManager extends Block {
 	}
 	
 	public void main(IWContext iwc) {
-		iwb = getBundle(iwc);
 		add(IWDeveloper.getTitleTable(this.getClass()));
 		Locale locale = null;
 		String folder = null;

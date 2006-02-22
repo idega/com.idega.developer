@@ -14,7 +14,6 @@ import com.idega.core.ldap.replication.business.LDAPReplicationConstants;
 import com.idega.core.ldap.server.business.EmbeddedLDAPServerBusiness;
 import com.idega.core.ldap.server.business.EmbeddedLDAPServerConstants;
 import com.idega.idegaweb.IWApplicationContext;
-import com.idega.idegaweb.IWBundle;
 import com.idega.idegaweb.IWResourceBundle;
 import com.idega.presentation.Block;
 import com.idega.presentation.IWContext;
@@ -44,8 +43,6 @@ public class LDAPManager extends Block implements LDAPReplicationConstants,Embed
 	
 	private boolean isServerStarted = false;
 	private IWResourceBundle iwrb;
-	private IWBundle coreBundle;
-	
 	private static final String PARAM_SAVE_LDAP_PROPS_PATH = "save_lpad_props_path";
 	private static final String PARAM_SAVE_LDAP_SETTINGS = "save_lpad_settings";
 	private static final String PARAM_SAVE_BACKEND_SETTINGS = "save_backend";
@@ -67,8 +64,6 @@ public class LDAPManager extends Block implements LDAPReplicationConstants,Embed
 	private EmbeddedLDAPServerBusiness embeddedLDAPServerBiz;
 	private LDAPReplicationBusiness ldapReplicationBiz;
 	private UUIDBusiness uuidBiz;
-	
-	private String pathToConfigFiles;
 	
 	private static String darkColor = "#BCBCBC";
 	private static String lightColor = "#DEDEDE";

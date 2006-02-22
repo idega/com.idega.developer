@@ -34,14 +34,11 @@ public class BundlePropertySetter extends Block {
 	private static final String PROPERTY_KEY_NAME_PARAMETER = "iw_b_p_s_k";
 	private static final String PROPERTY_VALUE_PARAMETER = "iw_b_p_s_v";
 	private Table table;
-	private IWBundle iwb;
 
 	public BundlePropertySetter() {
 	}
 
 	public void main(IWContext iwc) {
-		
-		iwb = getBundle(iwc);
 		add(IWDeveloper.getTitleTable(this.getClass()));
 		if (!iwc.isIE())
 			getParentPage().setBackgroundColor("#FFFFFF");

@@ -6,7 +6,6 @@ import java.util.Locale;
 
 import com.idega.core.localisation.business.ICLocaleBusiness;
 import com.idega.core.localisation.data.ICLocale;
-import com.idega.idegaweb.IWResourceBundle;
 import com.idega.presentation.IWContext;
 import com.idega.presentation.PresentationObjectContainer;
 import com.idega.presentation.Table;
@@ -28,9 +27,7 @@ import com.idega.presentation.ui.SubmitButton;
 public class LocaleSetter extends PresentationObjectContainer {
 
 	public static String localesParameter = "iw_localeswitcher_locale";
-	private static String action = "iw_localeswitcher_sub_action";
 	private int count = 0;
-	private IWResourceBundle iwrb = null;
 	private Locale _coreLocale = null;
 
 	public LocaleSetter() {
@@ -41,7 +38,6 @@ public class LocaleSetter extends PresentationObjectContainer {
 		if (!iwc.isIE())
 			getParentPage().setBackgroundColor("#FFFFFF");
 
-		iwrb = getResourceBundle(iwc);
 		_coreLocale = iwc.getIWMainApplication().getCoreLocale();
 
 		if (iwc.getParameter("save") != null)
