@@ -11,6 +11,8 @@
   </classpathentry>
   <classpathentry kind="src" path="/com.idega.user">
   </classpathentry>
+  <classpathentry kind="src" path="/com.idega.workspace">
+  </classpathentry>
   <classpathentry kind="var" path="MAVEN_REPO/jdom/jars/jdom-1.0.jar">
   </classpathentry>
   <classpathentry kind="var" path="MAVEN_REPO/jai/jars/jai-1.0.jar">
