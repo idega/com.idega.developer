@@ -27,7 +27,7 @@ public class ApplicationStatus extends Block {
 
 	public void main(IWContext iwc) throws Exception {
 		IWMainApplicationSettings settings = iwc.getApplicationSettings();
-		add(IWDeveloper.getTitleTable(this.getClass()));
+		//add(IWDeveloper.getTitleTable(this.getClass()));
 		if (!iwc.isIE())
 			getParentPage().setBackgroundColor("#FFFFFF");
 

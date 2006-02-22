@@ -43,7 +43,7 @@ public class ApplicationPropertySetter extends Block {
 	}
 
 	public void main(IWContext iwc) {
-		add(IWDeveloper.getTitleTable(this.getClass()));
+		//add(IWDeveloper.getTitleTable(this.getClass()));
 		if (!iwc.isIE())
 			getParentPage().setBackgroundColor("#FFFFFF");
 

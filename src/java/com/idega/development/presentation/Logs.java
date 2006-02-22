@@ -48,7 +48,7 @@ public class Logs extends Block {
 		String text = iwrb.getLocalizedString("Logs.tutorial_text",defaultText);
 		text = TextSoap.findAndReplace(text, "\n", "<br>");
 		
-		add(IWDeveloper.getTitleTable(this.getClass()));
+		//add(IWDeveloper.getTitleTable(this.getClass()));
 		if (!iwc.isIE())
 			getParentPage().setBackgroundColor("#FFFFFF");
 		Form form = new Form();

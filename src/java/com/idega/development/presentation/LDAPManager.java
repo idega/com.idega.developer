@@ -87,7 +87,7 @@ public class LDAPManager extends Block implements LDAPReplicationConstants,Embed
 		
 		handleActions(iwc);
 		
-		add(IWDeveloper.getTitleTable(this.getClass()));
+		//add(IWDeveloper.getTitleTable(this.getClass()));
 		if (!iwc.isIE()) getParentPage().setBackgroundColor("#FFFFFF");
 		
 		if (iwc.isLoggedOn()) {

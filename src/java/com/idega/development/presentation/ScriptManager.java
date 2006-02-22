@@ -19,7 +19,7 @@ public class ScriptManager extends Block {
 	
 	public void main(IWContext iwc) throws Exception {
 		IWResourceBundle iwrb = getResourceBundle(iwc);
-		add(IWDeveloper.getTitleTable(this.getClass()));
+		//add(IWDeveloper.getTitleTable(this.getClass()));
 		if (!iwc.isIE()) getParentPage().setBackgroundColor("#FFFFFF");
 		
 		if (iwc.isLoggedOn()) {
