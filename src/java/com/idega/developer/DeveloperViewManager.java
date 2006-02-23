@@ -8,16 +8,21 @@ import java.util.Collection;
 import com.idega.core.accesscontrol.business.StandardRoles;
 import com.idega.core.localisation.business.LocaleSwitcher;
 import com.idega.core.view.DefaultViewNode;
+import com.idega.core.view.FramedWindowClassViewNode;
+import com.idega.core.view.KeyboardShortcut;
 import com.idega.core.view.ViewManager;
 import com.idega.core.view.ViewNode;
 import com.idega.development.presentation.ApplicationPropertySetter;
 import com.idega.development.presentation.ApplicationStatus;
+import com.idega.development.presentation.BundleComponentManager;
 import com.idega.development.presentation.BundleCreator;
 import com.idega.development.presentation.BundlePropertySetter;
 import com.idega.development.presentation.BundleResourceManager;
 import com.idega.development.presentation.Caches;
+import com.idega.development.presentation.ComponentManager;
 import com.idega.development.presentation.DBPoolStatusViewer;
 import com.idega.development.presentation.HomePageGenerator;
+import com.idega.development.presentation.IWDeveloper;
 import com.idega.development.presentation.LDAPManager;
 import com.idega.development.presentation.LocaleSetter;
 import com.idega.development.presentation.Localizer;
@@ -26,6 +31,7 @@ import com.idega.development.presentation.ObjectTypeManager;
 import com.idega.development.presentation.PageObjects;
 import com.idega.development.presentation.SQLQueryer;
 import com.idega.development.presentation.ScriptManager;
+import com.idega.development.presentation.Versions;
 import com.idega.idegaweb.IWBundle;
 import com.idega.idegaweb.IWMainApplication;
 import com.idega.workspace.view.WorkspaceApplicationNode;
@@ -36,10 +42,10 @@ import com.idega.workspace.view.WorkspaceClassViewNode;
  * <p>
  * TODO tryggvil Describe Type SchoolViewManager
  * </p>
- *  Last modified: $Date: 2006/02/22 18:16:54 $ by $Author: tryggvil $
+ *  Last modified: $Date: 2006/02/23 15:32:16 $ by $Author: tryggvil $
  * 
  * @author <a href="mailto:tryggvil@idega.com">tryggvil</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class DeveloperViewManager {
 
@@ -91,8 +97,10 @@ public class DeveloperViewManager {
 		
 		DefaultViewNode devNode = new WorkspaceApplicationNode("developer",workspace,roles);
 		//devNode.setName("#{localizedStrings['com.idega.developer']['developer']}");
-
+		devNode.setKeyboardShortcut(new KeyboardShortcut("3"));
+		
 		WorkspaceClassViewNode localizerNode = new WorkspaceClassViewNode("localizer",devNode);
+		localizerNode.setName("Localizer");
 		localizerNode.setComponentClass(Localizer.class);
 		localizerNode.setMaximizeBlockVertically(true);
 		
@@ -126,6 +134,16 @@ public class DeveloperViewManager {
 		bundleresourcemanager.setComponentClass(BundleResourceManager.class);
 		bundleresourcemanager.setMaximizeBlockVertically(true);
 		
+		WorkspaceClassViewNode componentmanager = new WorkspaceClassViewNode("componentmanager",devNode);
+		componentmanager.setName("Component Manager");
+		componentmanager.setComponentClass(ComponentManager.class);
+		componentmanager.setMaximizeBlockVertically(true);
+
+		WorkspaceClassViewNode registercomponent = new WorkspaceClassViewNode("registercomponent",devNode);
+		registercomponent.setName("Register Component");
+		registercomponent.setComponentClass(BundleComponentManager.class);
+		registercomponent.setMaximizeBlockVertically(true);
+
 		WorkspaceClassViewNode dbpool = new WorkspaceClassViewNode("dbpool",devNode);
 		dbpool.setName("Database Pool");
 		dbpool.setComponentClass(DBPoolStatusViewer.class);
@@ -153,7 +171,7 @@ public class DeveloperViewManager {
 		
 		WorkspaceClassViewNode versions = new WorkspaceClassViewNode("versions",devNode);
 		versions.setName("Module Versions");
-		versions.setComponentClass(ApplicationPropertySetter.class);
+		versions.setComponentClass(Versions.class);
 		versions.setMaximizeBlockVertically(true);
 		
 		/*WorkspaceClassViewNode updateManager = new WorkspaceClassViewNode("updatemanager",devNode);
@@ -186,6 +204,12 @@ public class DeveloperViewManager {
 		appPropertiesNode.setComponentClass(ApplicationPropertySetter.class);
 		appPropertiesNode.setMaximizeBlockVertically(true);
 		
+		Class applicationClass = IWDeveloper.class;
+		FramedWindowClassViewNode oldDeveloperNode = new FramedWindowClassViewNode("olddeveloper",devNode);
+		oldDeveloperNode.setName("Old Developer");
+		oldDeveloperNode.setWindowClass(applicationClass);
+		oldDeveloperNode.setJspUri(workspace.getResourceURI());
+
 		return devNode;
 	}
 	
