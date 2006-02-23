@@ -42,10 +42,10 @@ import com.idega.workspace.view.WorkspaceClassViewNode;
  * <p>
  * TODO tryggvil Describe Type SchoolViewManager
  * </p>
- *  Last modified: $Date: 2006/02/23 15:32:16 $ by $Author: tryggvil $
+ *  Last modified: $Date: 2006/02/23 16:11:03 $ by $Author: tryggvil $
  * 
  * @author <a href="mailto:tryggvil@idega.com">tryggvil</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class DeveloperViewManager {
 
@@ -208,7 +208,11 @@ public class DeveloperViewManager {
 		FramedWindowClassViewNode oldDeveloperNode = new FramedWindowClassViewNode("olddeveloper",devNode);
 		oldDeveloperNode.setName("Old Developer");
 		oldDeveloperNode.setWindowClass(applicationClass);
-		oldDeveloperNode.setJspUri(workspace.getResourceURI());
+		
+		String jspPath = iwma.getBundle("com.idega.workspace").getJSPURI("workspace.jsp");
+		oldDeveloperNode.setJspUri(jspPath);
+		
+		//oldDeveloperNode.setJspUri(workspace.getResourceURI());
 
 		return devNode;
 	}
