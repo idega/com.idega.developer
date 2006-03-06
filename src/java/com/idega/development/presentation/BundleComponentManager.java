@@ -163,7 +163,7 @@ public class BundleComponentManager extends Block {
 						throw new Exception("Component needs to implement required interfaces ");
 				// 
 				iwb.addComponent(newComponentClass, newComponentType);
-				iwb.storeState();
+				//iwb.storeState();
 			}
 		}
 		else if ((iwb != null) && (save == null)) {
