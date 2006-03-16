@@ -1,6 +1,7 @@
 package com.idega.development.presentation;
 import com.idega.builder.business.BuilderLogic;
 import com.idega.business.IBOLookup;
+import com.idega.core.cache.IWCacheManager2;
 import com.idega.data.IDOContainer;
 import com.idega.idegaweb.IWCacheManager;
 import com.idega.presentation.Block;
@@ -75,7 +76,9 @@ public class Caches extends Block {
 		String iwcacheman = iwc.getParameter(PARAM_IWCACHEMANAGER);
 		if (iwcacheman != null) {
 			IWCacheManager.getInstance(iwc.getIWMainApplication()).clearAllCaches();
-			add(IWDeveloper.getText("Flushed all IWCachemanager cache!"));
+			IWCacheManager2 iwcm2 = IWCacheManager2.getInstance(iwc.getIWMainApplication());
+			iwcm2.reset();
+			add(IWDeveloper.getText("Flushed all IWCachemanager/IWCacheManager2 cache!"));
 		}
 
 	}
