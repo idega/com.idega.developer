@@ -1,5 +1,6 @@
 package com.idega.development.presentation;
 
+//import com.idega.block.ldap.manager.LDAPManager;
 import com.idega.core.localisation.presentation.LocaleSwitcher;
 import com.idega.idegaweb.IWBundle;
 import com.idega.idegaweb.IWMainApplication;
@@ -54,7 +55,12 @@ private static String styleName = "iwdClass";
 	addToList(getClassLink(iwc, HomePageGenerator.class,"Homepage Generator"),(Image) image.clone());
 	addToList(getClassLink(iwc, PageObjects.class,"Page Object Viewer"),(Image) image.clone());
 	addToList(getClassLink(iwc, ScriptManager.class,"Script Manager"),(Image) image.clone());
-	addToList(getClassLink(iwc, LDAPManager.class,"LDAP Manager"),(Image) image.clone());
+	try{
+		Class ldapManagerClass = Class.forName("com.idega.block.ldap.manager.LDAPManager");
+		addToList(getClassLink(iwc, ldapManagerClass,"LDAP Manager"),(Image) image.clone());
+	}
+	catch(ClassNotFoundException cnfe){
+	}
 	
     setZebraColors("#B0B29D","#B0B29D");
   }

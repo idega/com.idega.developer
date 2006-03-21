@@ -5,6 +5,7 @@ package com.idega.developer;
 
 import java.util.ArrayList;
 import java.util.Collection;
+//import com.idega.block.ldap.manager.LDAPManager;
 import com.idega.core.accesscontrol.business.StandardRoles;
 import com.idega.core.localisation.business.LocaleSwitcher;
 import com.idega.core.view.DefaultViewNode;
@@ -23,7 +24,6 @@ import com.idega.development.presentation.ComponentManager;
 import com.idega.development.presentation.DBPoolStatusViewer;
 import com.idega.development.presentation.HomePageGenerator;
 import com.idega.development.presentation.IWDeveloper;
-import com.idega.development.presentation.LDAPManager;
 import com.idega.development.presentation.LocaleSetter;
 import com.idega.development.presentation.Localizer;
 import com.idega.development.presentation.Logs;
@@ -42,10 +42,10 @@ import com.idega.workspace.view.WorkspaceClassViewNode;
  * <p>
  * TODO tryggvil Describe Type SchoolViewManager
  * </p>
- *  Last modified: $Date: 2006/02/23 16:11:03 $ by $Author: tryggvil $
+ *  Last modified: $Date: 2006/03/21 12:34:56 $ by $Author: tryggvil $
  * 
  * @author <a href="mailto:tryggvil@idega.com">tryggvil</a>
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class DeveloperViewManager {
 
@@ -194,10 +194,16 @@ public class DeveloperViewManager {
 		scriptmanager.setComponentClass(ScriptManager.class);
 		scriptmanager.setMaximizeBlockVertically(true);
 		
-		WorkspaceClassViewNode ldap = new WorkspaceClassViewNode("ldap",devNode);
-		ldap.setName("LDAP Manager");
-		ldap.setComponentClass(LDAPManager.class);
-		ldap.setMaximizeBlockVertically(true);
+		try{
+			WorkspaceClassViewNode ldap = new WorkspaceClassViewNode("ldap",devNode);
+			ldap.setName("LDAP Manager");
+			Class ldapmanagerClass = Class.forName("com.idega.block.ldap.manager.LDAPManager");
+			ldap.setComponentClass(ldapmanagerClass);
+			ldap.setMaximizeBlockVertically(true);
+		}
+		catch(ClassNotFoundException cnfe){
+			
+		}
 		
 		WorkspaceClassViewNode appPropertiesNode = new WorkspaceClassViewNode("applicationproperties",devNode);
 		appPropertiesNode.setName("Application Properties");
