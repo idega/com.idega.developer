@@ -45,8 +45,9 @@ public class BundleComponentManager extends Block {
 
 	public void main(IWContext iwc) {
 		add(IWDeveloper.getTitleTable(this.getClass()));
-		if (!iwc.isIE())
+		if (!iwc.isIE()) {
 			getParentPage().setBackgroundColor("#FFFFFF");
+		}
 
 		IWMainApplication iwma = iwc.getIWMainApplication();
 		DropdownMenu bundles = BundlePropertySetter.getRegisteredBundlesDropdown(iwma, BUNDLE_PARAMETER);
@@ -159,8 +160,9 @@ public class BundleComponentManager extends Block {
 					BundleComponent comp = BundleComponentFactory.getInstance().getBundleComponent(newComponentType);
 					boolean valid = comp.validateInterfaces(cls);
 					valid &= comp.validateSuperClasses(cls);
-					if(!valid)
+					if(!valid) {
 						throw new Exception("Component needs to implement required interfaces ");
+					}
 				// 
 				iwb.addComponent(newComponentClass, newComponentType);
 				//iwb.storeState();

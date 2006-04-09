@@ -59,12 +59,14 @@ public class IWBaseComponent implements BundleComponent {
 				//System.out.println("checking req "+requiredInterfaces[i].getName());
 				for (int j = 0; j < implementedInterfaces.length; j++) {
 					//System.out.println("checking imp"+implementedInterfaces[i].getName());
-					if (requiredInterfaces[i].getName().equals(implementedInterfaces[i].getName()))
+					if (requiredInterfaces[i].getName().equals(implementedInterfaces[i].getName())) {
 						returner = true;
+					}
 				}
 				// if we don't have a match after for this round we exit
-				if (!returner)
+				if (!returner) {
 					return returner;
+				}
 			}
 		}
 		else{

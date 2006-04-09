@@ -1,5 +1,5 @@
 /*
- * $Id: SQLSessionConnection.java,v 1.1 2005/05/04 11:35:32 laddi Exp $
+ * $Id: SQLSessionConnection.java,v 1.2 2006/04/09 11:53:57 laddi Exp $
  * Created on May 4, 2005
  *
  * Copyright (C) 2005 Idega Software hf. All Rights Reserved.
@@ -21,9 +21,9 @@ public class SQLSessionConnection implements HttpSessionBindingListener {
 	private Connection connection;
 	
 	public SQLSessionConnection() {
-		connection = ConnectionBroker.getConnection();
+		this.connection = ConnectionBroker.getConnection();
 		try {
-			connection.setAutoCommit(false);
+			this.connection.setAutoCommit(false);
 		}
 		catch (SQLException sql) {
 			sql.printStackTrace(System.err);
@@ -35,20 +35,20 @@ public class SQLSessionConnection implements HttpSessionBindingListener {
 	}
 
 	public void valueUnbound(HttpSessionBindingEvent arg0) {
-		if (connection != null) {
+		if (this.connection != null) {
 			try {
-				connection.rollback();
-				connection.setAutoCommit(true);
+				this.connection.rollback();
+				this.connection.setAutoCommit(true);
 			}
 			catch (SQLException sql) {
 				sql.printStackTrace(System.err);
 			}
-			ConnectionBroker.freeConnection(connection);
+			ConnectionBroker.freeConnection(this.connection);
 		}
 		System.out.println("[SQLSessionConnection] Connection freed successfully.");
 	}
 
 	public Connection getConnection() {
-		return connection;
+		return this.connection;
 	}
 }

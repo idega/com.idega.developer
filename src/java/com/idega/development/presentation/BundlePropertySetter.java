@@ -40,8 +40,9 @@ public class BundlePropertySetter extends Block {
 
 	public void main(IWContext iwc) {
 		add(IWDeveloper.getTitleTable(this.getClass()));
-		if (!iwc.isIE())
+		if (!iwc.isIE()) {
 			getParentPage().setBackgroundColor("#FFFFFF");
+		}
 
 		IWMainApplication iwma = iwc.getIWMainApplication();
 		DropdownMenu bundles = getRegisteredBundlesDropdown(iwma, BUNDLE_PARAMETER);
@@ -53,26 +54,26 @@ public class BundlePropertySetter extends Block {
 		form.maintainParameter(IWDeveloper.PARAMETER_CLASS_NAME);
 		//form.setTarget(IWDeveloper.frameName);
 		add(form);
-		table = new Table(2, 5);
-		table.setWidth(1, "160");
-		table.mergeCells(1, 1, 2, 1);
-		table.setAlignment(2, 5, "right");
-		form.add(table);
+		this.table = new Table(2, 5);
+		this.table.setWidth(1, "160");
+		this.table.mergeCells(1, 1, 2, 1);
+		this.table.setAlignment(2, 5, "right");
+		form.add(this.table);
 		//form.setMethod("GET");
 		TextInput name = new TextInput(BundlePropertySetter.PROPERTY_KEY_NAME_PARAMETER);
 		TextInput value = new TextInput(BundlePropertySetter.PROPERTY_VALUE_PARAMETER);
 
-		table.add(IWDeveloper.getText("Set BundleProperty"), 1, 1);
-		table.add(IWDeveloper.getText("Bundle:"), 1, 2);
-		table.add(bundles, 2, 2);
+		this.table.add(IWDeveloper.getText("Set BundleProperty"), 1, 1);
+		this.table.add(IWDeveloper.getText("Bundle:"), 1, 2);
+		this.table.add(bundles, 2, 2);
 
-		table.add(IWDeveloper.getText("Property Key Name:"), 1, 3);
-		table.add(name, 2, 3);
-		table.add(IWDeveloper.getText("Property Key Value:"), 1, 4);
-		table.add(value, 2, 4);
+		this.table.add(IWDeveloper.getText("Property Key Name:"), 1, 3);
+		this.table.add(name, 2, 3);
+		this.table.add(IWDeveloper.getText("Property Key Value:"), 1, 4);
+		this.table.add(value, 2, 4);
 
-		table.add(new SubmitButton("Save", "save"), 2, 5);
-		table.add(new SubmitButton("Reload", "reload"), 2, 5);
+		this.table.add(new SubmitButton("Save", "save"), 2, 5);
+		this.table.add(new SubmitButton("Reload", "reload"), 2, 5);
 
 		doBusiness(iwc);
 	}
@@ -84,8 +85,9 @@ public class BundlePropertySetter extends Block {
 		String delete = iwc.getParameter("Delete");
 		IWMainApplication iwma = iwc.getIWMainApplication();
 		IWBundle bundle = null;
-		if (bundleIdentifier != null)
+		if (bundleIdentifier != null) {
 			bundle = iwma.getBundle(bundleIdentifier);
+		}
 
 		if (delete != null) {
 			String[] values = iwc.getParameterValues("property");
@@ -160,8 +162,9 @@ public class BundlePropertySetter extends Block {
 			name = new Text((String)iter.next(), true, false, false);
 			table.add(name, 1, i + 1);
 			localizedString = bundle.getProperty(strings[i]);
-			if (localizedString == null)
+			if (localizedString == null) {
 				localizedString = "";
+			}
 			table.add(localizedString, 2, i + 1);
 			table.add(new CheckBox("property", strings[i]), 3, i + 1);
 			i++;

@@ -47,8 +47,9 @@ public class IWDeveloper extends com.idega.presentation.app.IWApplication {
 		public void main(IWContext iwc) throws Exception {
 			IWBundle iwbCore = getBundle(iwc);
 			
-			if (iwc.isIE())
+			if (iwc.isIE()) {
 				getParentPage().setBackgroundColor("#B0B29D");
+			}
 				
 			Layer topLayer = new Layer(Layer.DIV);
 			topLayer.setZIndex(3);
@@ -100,8 +101,9 @@ public class IWDeveloper extends com.idega.presentation.app.IWApplication {
 				rightLayer.setHeight(Table.HUNDRED_PERCENT);
 				rightLayer.setLeftPosition(180);
 			}
-			else
+			else {
 				rightLayer.setLeftPosition(190);
+			}
 			add(rightLayer);
 			
 			if (iwc.isParameterSet(PARAMETER_CLASS_NAME)) {

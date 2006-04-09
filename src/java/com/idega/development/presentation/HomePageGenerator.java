@@ -60,8 +60,9 @@ public class HomePageGenerator extends Block {
 	
 	public void main(IWContext iwc) throws Exception {
 		add(IWDeveloper.getTitleTable(this.getClass()));
-		if (!iwc.isIE())
+		if (!iwc.isIE()) {
 			getParentPage().setBackgroundColor("#FFFFFF");
+		}
 		
 		
 		String pDetachPageAndGroup = iwc.getParameter(_prmDetachPageAndGroup);
@@ -100,7 +101,7 @@ public class HomePageGenerator extends Block {
 		myForm.maintainParameter(IWDeveloper.PARAMETER_CLASS_NAME);
 		
 		Table myTable = new Table();
-		myTable.setWidth(_blockWidth);
+		myTable.setWidth(this._blockWidth);
 		//myTable.setBorder(1);
 		
 		Table dropdownTable = new Table();
@@ -130,7 +131,7 @@ public class HomePageGenerator extends Block {
 				groupListTable.setCellspacing(0);
 				groupListTable.setCellpadding(0);
 				//groupListTable.setBorder(1);
-				groupListTable.setWidth(_blockWidth);
+				groupListTable.setWidth(this._blockWidth);
 				groupListTable.setNoWrap();
 				
 				Collection groups = ((GroupHome)IDOLookup.getHome(Group.class)).findGroupsByType(pGroupType);

@@ -1,5 +1,5 @@
 /*
- * $Id: UpdateManager.java,v 1.6 2004/11/11 13:54:27 birna Exp $
+ * $Id: UpdateManager.java,v 1.7 2006/04/09 11:53:57 laddi Exp $
  *
  * Copyright (C) 2002 Idega hf. All Rights Reserved.
  *
@@ -46,12 +46,13 @@ private String PARAM_EXECUTE_UPDATE="iw_updateman_execupdate";
   }
 
   public void main(IWContext iwc)throws Exception{
-	iwb = getBundle(iwc);
+	this.iwb = getBundle(iwc);
   	handleAction(iwc);
-    IWResourceBundle iwrb = iwb.getResourceBundle(iwc);
+    IWResourceBundle iwrb = this.iwb.getResourceBundle(iwc);
     add(IWDeveloper.getTitleTable(this.getClass()));
-		if (!iwc.isIE())
+		if (!iwc.isIE()) {
 			getParentPage().setBackgroundColor("#FFFFFF");
+		}
 
     IWMainApplication iwma = iwc.getIWMainApplication();
     List bundles = getRegisteredBundles(iwma);
@@ -74,17 +75,17 @@ private String PARAM_EXECUTE_UPDATE="iw_updateman_execupdate";
 	Form form = new Form();
 	form.maintainParameter(IWDeveloper.PARAMETER_CLASS_NAME);
 	add(form);
-    table = new Table(2,bundles.size() + 1);
-    table.setWidth(1,"160");
-    table.add(blockHeader,1,1);
-    table.add(versionHeader,2,1);
+    this.table = new Table(2,bundles.size() + 1);
+    this.table.setWidth(1,"160");
+    this.table.add(blockHeader,1,1);
+    this.table.add(versionHeader,2,1);
     int row = 2;
     Iterator it = bundles.iterator();
     String bundleName = null;
     while (it.hasNext()) {
       IWBundle item = (IWBundle)it.next();
       bundleName = item.getBundleIdentifier();
-      table.add(bundleName,1,row);
+      this.table.add(bundleName,1,row);
 /*			pack = Package.getPackage(bundleName);
 			String version = null;
 			if (pack != null) {
@@ -97,12 +98,12 @@ private String PARAM_EXECUTE_UPDATE="iw_updateman_execupdate";
 			}
       
       table.add(version,2,row++);*/
-      CheckBox bundleCheck = new CheckBox(PARAM_UPDATE_BUNDLEIDENTIFIER,item.getBundleIdentifier());
+      CheckBox bundleCheck = new CheckBox(this.PARAM_UPDATE_BUNDLEIDENTIFIER,item.getBundleIdentifier());
       bundleCheck.setChecked(true);
-      table.add(bundleCheck,2,row++);
+      this.table.add(bundleCheck,2,row++);
     }
-    form.add(table);
-    form.add(new SubmitButton(PARAM_EXECUTE_UPDATE,iwrb.getLocalizedString(PARAM_EXECUTE_UPDATE,"Update")));
+    form.add(this.table);
+    form.add(new SubmitButton(this.PARAM_EXECUTE_UPDATE,iwrb.getLocalizedString(this.PARAM_EXECUTE_UPDATE,"Update")));
     form.add(new DeselectAllButton(iwrb.getLocalizedString("clear_all","Clear all")));
     form.add(new SelectAllButton(iwrb.getLocalizedString("select_all", "Select all")));
   }
@@ -112,7 +113,7 @@ private String PARAM_EXECUTE_UPDATE="iw_updateman_execupdate";
  */
 private void handleAction(IWContext iwc) throws Exception
 {
-	IWResourceBundle iwrb = iwb.getResourceBundle(iwc);
+	IWResourceBundle iwrb = this.iwb.getResourceBundle(iwc);
 	if(iwc.isParameterSet(this.PARAM_EXECUTE_UPDATE)){
 		executeUpdate(iwc);
 		add(iwrb.getLocalizedString("iw_updateman_updateex","Update Executed"));

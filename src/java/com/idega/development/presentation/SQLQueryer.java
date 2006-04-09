@@ -66,10 +66,12 @@ public class SQLQueryer extends Block {
 	//	resultsPane.add(obj);
 	//}
 	public void setWidth(int width) {
-		if (queryPane != null)
-			queryPane.setWidth(width);
-		if (resultsPane != null)
-			resultsPane.setWidth(width);
+		if (this.queryPane != null) {
+			this.queryPane.setWidth(width);
+		}
+		if (this.resultsPane != null) {
+			this.resultsPane.setWidth(width);
+		}
 	}
 	public void setSQLQuery(String query) {
 		this.query = query;
@@ -79,10 +81,11 @@ public class SQLQueryer extends Block {
 		this.resultName = resultName;
 	}
 	public void main(IWContext iwc) throws Exception {
-		if (!iwc.isIE())
+		if (!iwc.isIE()) {
 			getParentPage().setBackgroundColor("#FFFFFF");
+		}
 
-		resultsPane = new FramePane(resultName);
+		this.resultsPane = new FramePane(this.resultName);
 		/**
 		 * @todo: Improve security check
 		 */
@@ -93,25 +96,27 @@ public class SQLQueryer extends Block {
 				iwc.removeApplicationAttribute(HISTORY_QUERIES);
 				queryString = null;
 			}
-			historyQueryName = iwc.getParameter(PARAM_QUERY_NAME);
-			historyQueries = (Map) iwc.getApplicationAttribute(HISTORY_QUERIES);
-			if(historyQueries==null)
-				historyQueries = new HashMap();
+			this.historyQueryName = iwc.getParameter(PARAM_QUERY_NAME);
+			this.historyQueries = (Map) iwc.getApplicationAttribute(HISTORY_QUERIES);
+			if(this.historyQueries==null) {
+				this.historyQueries = new HashMap();
+			}
 			
-			if(historyQueryName!=null && !"".equals(historyQueryName) ){
-				historyQueries.put(historyQueryName,queryString);
-				iwc.setApplicationAttribute(HISTORY_QUERIES,historyQueries);
+			if(this.historyQueryName!=null && !"".equals(this.historyQueryName) ){
+				this.historyQueries.put(this.historyQueryName,queryString);
+				iwc.setApplicationAttribute(HISTORY_QUERIES,this.historyQueries);
 			}
 			// just adding  query to history list
 			if(iwc.isParameterSet("to_history")){
 				queryString = null;
 			}
 			
-			if(iwc.isParameterSet(DUMP_FILE))
-				dumpFileName = iwc.getParameter(DUMP_FILE);
+			if(iwc.isParameterSet(DUMP_FILE)) {
+				this.dumpFileName = iwc.getParameter(DUMP_FILE);
+			}
 			if(iwc.isParameterSet(DUMP_TYPE)){
 				try {
-					dumpFileType = Integer.valueOf(iwc.getParameter(DUMP_TYPE));
+					this.dumpFileType = Integer.valueOf(iwc.getParameter(DUMP_TYPE));
 				}
 				catch (NumberFormatException e) {
 					e.printStackTrace();
@@ -119,30 +124,31 @@ public class SQLQueryer extends Block {
 			}
 			
 			try{
-				numberOfViewedResults=Integer.parseInt(iwc.getParameter(PARAM_NUM_RECORDS));
+				this.numberOfViewedResults=Integer.parseInt(iwc.getParameter(PARAM_NUM_RECORDS));
 			}
 			catch(NumberFormatException nfe){
 			}
-			if (queryString == null && query!=null)
-					queryString = query;
+			if (queryString == null && this.query!=null) {
+				queryString = this.query;
+			}
 					
-			if (displayForm) {
-				queryPane = new FramePane("Query");
-				super.add(queryPane);
+			if (this.displayForm) {
+				this.queryPane = new FramePane("Query");
+				super.add(this.queryPane);
 				Form form = new Form();
 				form.maintainParameter(IWDeveloper.PARAMETER_CLASS_NAME);
 				//form.setTarget(IWDeveloper.frameName);
-				queryPane.add(form);
+				this.queryPane.add(form);
 				TextArea input = new TextArea(PARAM_QUERY);
-				input.setColumns(aCols);
-				input.setRows(aRows);
+				input.setColumns(this.aCols);
+				input.setRows(this.aRows);
 				if (queryString != null) {
 					input.setContent(queryString);
 				}
 				TextInput areaRows = new TextInput("area_rows");
 				TextInput areaCols = new TextInput("area_cols");
-				areaRows.setContent(String.valueOf(aRows));
-				areaCols.setContent(String.valueOf(aCols));
+				areaRows.setContent(String.valueOf(this.aRows));
+				areaCols.setContent(String.valueOf(this.aCols));
  				areaRows.setLength(3);
  				areaCols.setLength(3);
 				areaRows.keepStatusOnAction();
@@ -171,7 +177,7 @@ public class SQLQueryer extends Block {
 				innerTable.add("Max. number of results:",1,3);
 				TextInput maxNumInput = new TextInput(PARAM_NUM_RECORDS);
 				maxNumInput.setLength(6);
-				maxNumInput.setValue(numberOfViewedResults);
+				maxNumInput.setValue(this.numberOfViewedResults);
 				//innerTable.add(Text.getBreak(),2,1);
 				
 				innerTable.add(maxNumInput,1,3);
@@ -200,11 +206,11 @@ public class SQLQueryer extends Block {
 				innerTable.add(dumpFileNameInput,1,4);
 				innerTable.add(dumpTypes,1,4);
 				
-				if(dumpFileName!=null && dumpFileType!=null && queryString!=null){
+				if(this.dumpFileName!=null && this.dumpFileType!=null && queryString!=null){
 					SQLDataDumper dumper = new SQLDataDumper();
 					dumper.setQuery(queryString);
-					dumper.setDumpFile(dumpFileName);
-					dumper.setType(dumpFileType.intValue());
+					dumper.setDumpFile(this.dumpFileName);
+					dumper.setType(this.dumpFileType.intValue());
 					String virtualFolderPath = iwc.getIWMainApplication().getCacheDirectoryURI();
 					dumper.setDumpFolder(iwc.getIWMainApplication().getRealPath(virtualFolderPath));
 					java.io.File file = dumper.dump();
@@ -224,14 +230,14 @@ public class SQLQueryer extends Block {
 				if (queryString != null) {
 					Connection conn = getConnection(iwc);
 					
-					super.add(resultsPane);
-					if (displayForm) {
-						resultsPane.add("Your query was:");
-						resultsPane.add(Text.getBreak());
+					super.add(this.resultsPane);
+					if (this.displayForm) {
+						this.resultsPane.add("Your query was:");
+						this.resultsPane.add(Text.getBreak());
 						Text text = new Text(queryString);
 						text.setBold();
-						resultsPane.add(text);
-						resultsPane.addBreak();
+						this.resultsPane.add(text);
+						this.resultsPane.addBreak();
 					}
 					
 					Statement stmt = conn.createStatement();
@@ -243,7 +249,7 @@ public class SQLQueryer extends Block {
 							if (queryString.trim().toLowerCase().startsWith("select") ) {
 							    Table table = new Table();
 								table.setColor("white");
-								resultsPane.add(table);
+								this.resultsPane.add(table);
 								long time = System.currentTimeMillis();
 								ResultSet rs = stmt.executeQuery(queryString);
 								long queryTime = System.currentTimeMillis() - time;
@@ -263,7 +269,7 @@ public class SQLQueryer extends Block {
 								row++;
 								table.setRowColor(1, "#D0D0D0");
 								int counter=0;
-								while (rs.next()&&(counter<numberOfViewedResults)) {
+								while (rs.next()&&(counter<this.numberOfViewedResults)) {
 									//out.println("<tr>");
 									col = 1;
 									for (int c = 1; c <= noCols; c++) {
@@ -283,12 +289,12 @@ public class SQLQueryer extends Block {
 							else if (queryString.trim().toLowerCase().startsWith("commit") ) {
 								conn.commit();
 								iwc.removeSessionAttribute(SESSION_ATTRIBUTE_CONNECTION);
-						    resultsPane.add("Changes commited.");
+						    this.resultsPane.add("Changes commited.");
 							}
 							else if (queryString.trim().toLowerCase().startsWith("rollback") ) {
 								conn.rollback();
 								iwc.removeSessionAttribute(SESSION_ATTRIBUTE_CONNECTION);
-						    resultsPane.add("Changes rollbacked.");
+						    this.resultsPane.add("Changes rollbacked.");
 							}
 							else{
 								int i = stmt.executeUpdate(queryString);
@@ -301,9 +307,10 @@ public class SQLQueryer extends Block {
 							}
 					    }
 					}
-					if(alterCount>0)
-					    resultsPane.add(alterCount + " rows altered");
-					//out.println("</table>");
+					if(alterCount>0) {
+						this.resultsPane.add(alterCount + " rows altered");
+//out.println("</table>");
+					}
 					
 					
 				} //end if querystring
@@ -311,11 +318,11 @@ public class SQLQueryer extends Block {
 			} //end of try
 			catch (SQLException ex) {
 				while (ex != null) {
-					resultsPane.add("Message:   " + ex.getMessage());
+					this.resultsPane.add("Message:   " + ex.getMessage());
 					this.addBreak();
-					resultsPane.add("SQLState:  " + ex.getSQLState());
+					this.resultsPane.add("SQLState:  " + ex.getSQLState());
 					this.addBreak();
-					resultsPane.add("ErrorCode: " + ex.getErrorCode());
+					this.resultsPane.add("ErrorCode: " + ex.getErrorCode());
 					this.addBreak();
 					ex = ex.getNextException();
 					//out.println("");
@@ -332,8 +339,8 @@ public class SQLQueryer extends Block {
 		DropdownMenu drop = new DropdownMenu("sql_sess_qry_drp");
 		drop.addMenuElement(" ","History");
 		drop.addMenuElement("select * from","Select * from");
-		if(historyQueries!=null && !historyQueries.isEmpty() ){
-			Iterator iter = historyQueries.entrySet().iterator();
+		if(this.historyQueries!=null && !this.historyQueries.isEmpty() ){
+			Iterator iter = this.historyQueries.entrySet().iterator();
 			while(iter.hasNext()){
 				Map.Entry entry = (Map.Entry) iter.next();
 				drop.addMenuElement((String)entry.getValue(),(String)entry.getKey());
@@ -356,10 +363,12 @@ public class SQLQueryer extends Block {
 		SQLQueryer obj = null;
 		try {
 			obj = (SQLQueryer) super.clone();
-			if(queryPane!=null)
+			if(this.queryPane!=null) {
 				obj.queryPane = (FramePane)this.queryPane.clone();
-			if(queryPane!=null)
+			}
+			if(this.queryPane!=null) {
 				obj.resultsPane = (FramePane)this.resultsPane.clone();
+			}
 			obj.query = this.query;
 			obj.displayForm = this.displayForm;
 			obj.resultName = this.resultName;

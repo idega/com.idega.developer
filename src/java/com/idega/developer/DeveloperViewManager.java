@@ -42,10 +42,10 @@ import com.idega.workspace.view.WorkspaceClassViewNode;
  * <p>
  * TODO tryggvil Describe Type SchoolViewManager
  * </p>
- *  Last modified: $Date: 2006/03/21 12:34:56 $ by $Author: tryggvil $
+ *  Last modified: $Date: 2006/04/09 11:53:57 $ by $Author: laddi $
  * 
  * @author <a href="mailto:tryggvil@idega.com">tryggvil</a>
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class DeveloperViewManager {
 
@@ -69,16 +69,16 @@ public class DeveloperViewManager {
 	}
 	
 	public ViewManager getViewManager(){
-		return ViewManager.getInstance(iwma);
+		return ViewManager.getInstance(this.iwma);
 	}
 	
 	
 	public ViewNode getDeveloperViewNode(){
-		IWBundle iwb = iwma.getBundle("com.idega.developer");
-		if(developerNode==null){
-			developerNode = initalizeDeveloperNode(iwb);
+		IWBundle iwb = this.iwma.getBundle("com.idega.developer");
+		if(this.developerNode==null){
+			this.developerNode = initalizeDeveloperNode(iwb);
 		}
-		return developerNode;
+		return this.developerNode;
 	}
 
 	/**
@@ -89,7 +89,7 @@ public class DeveloperViewManager {
 	 * @return
 	 */
 	private ViewNode initalizeDeveloperNode(IWBundle iwb) {
-		ViewManager viewManager = ViewManager.getInstance(iwma);
+		ViewManager viewManager = ViewManager.getInstance(this.iwma);
 		ViewNode workspace = viewManager.getWorkspaceRoot();
 		
 		Collection roles = new ArrayList();
@@ -215,7 +215,7 @@ public class DeveloperViewManager {
 		oldDeveloperNode.setName("Old Developer");
 		oldDeveloperNode.setWindowClass(applicationClass);
 		
-		String jspPath = iwma.getBundle("com.idega.workspace").getJSPURI("workspace.jsp");
+		String jspPath = this.iwma.getBundle("com.idega.workspace").getJSPURI("workspace.jsp");
 		oldDeveloperNode.setJspUri(jspPath);
 		
 		//oldDeveloperNode.setJspUri(workspace.getResourceURI());

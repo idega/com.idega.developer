@@ -51,8 +51,9 @@ public class ComponentManager extends Block {
 
 	public void main(IWContext iwc) throws Exception {
 		add(IWDeveloper.getTitleTable(this.getClass()));
-		if (!iwc.isIE())
+		if (!iwc.isIE()) {
 			getParentPage().setBackgroundColor("#FFFFFF");
+		}
 
 		IWMainApplication iwma = iwc.getIWMainApplication();
 		DropdownMenu bundles = BundlePropertySetter.getRegisteredBundlesDropdown(iwma, BUNDLE_PARAMETER);
@@ -197,8 +198,9 @@ public class ComponentManager extends Block {
 							if (method != null) {
 								methodName = method.getName() + "( ";
 								for (int i = 0; i < method.getParameterTypes().length; i++) {
-									if (i != 0)
+									if (i != 0) {
 										methodName += " , ";
+									}
 									methodName += method.getParameterTypes()[i].getName();
 								}
 								methodName += " )";

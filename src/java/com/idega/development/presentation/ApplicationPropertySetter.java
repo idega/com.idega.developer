@@ -44,8 +44,9 @@ public class ApplicationPropertySetter extends Block {
 
 	public void main(IWContext iwc) {
 		//add(IWDeveloper.getTitleTable(this.getClass()));
-		if (!iwc.isIE())
+		if (!iwc.isIE()) {
 			getParentPage().setBackgroundColor("#FFFFFF");
+		}
 
 		doBusiness(iwc);
 
@@ -155,40 +156,51 @@ public class ApplicationPropertySetter extends Block {
 			String KeyName = iwc.getParameter(PROPERTY_KEY_NAME_PARAMETER);
 			String KeyValue = iwc.getParameter(PROPERTY_VALUE_PARAMETER);
 			String markup = iwc.getParameter(IWMainApplicationSettings.DEFAULT_MARKUP_LANGUAGE_KEY);
-			if (KeyName != null && KeyName.length() > 0)
+			if (KeyName != null && KeyName.length() > 0) {
 				iwc.getIWMainApplication().getSettings().setProperty(KeyName, KeyValue);
+			}
 
-			if (entityAutoCreate != null)
+			if (entityAutoCreate != null) {
 				iwc.getIWMainApplication().getSettings().setEntityAutoCreation(true);
-			else
+			}
+			else {
 				iwc.getIWMainApplication().getSettings().setEntityAutoCreation(false);
+			}
 
-			if (entityBeanCache != null)
+			if (entityBeanCache != null) {
 				iwc.getIWMainApplication().getSettings().setEntityBeanCaching(true);
-			else
+			}
+			else {
 				iwc.getIWMainApplication().getSettings().setEntityBeanCaching(false);
+			}
 
-			if (entityQueryCache != null)
+			if (entityQueryCache != null) {
 				iwc.getIWMainApplication().getSettings().setEntityQueryCaching(true);
-			else
+			}
+			else {
 				iwc.getIWMainApplication().getSettings().setEntityQueryCaching(false);
+			}
 			
-			if (usePreparedStatement != null)
+			if (usePreparedStatement != null) {
 				iwc.getIWMainApplication().getSettings().setUsePreparedStatement(true);
-			else
+			}
+			else {
 				iwc.getIWMainApplication().getSettings().setUsePreparedStatement(false);
+			}
 
 			if (autoCreateStrings != null) {
 				iwc.getIWMainApplication().getSettings().setAutoCreateStrings(true);
 			}
-			else
+			else {
 				iwc.getIWMainApplication().getSettings().setAutoCreateStrings(false);
+			}
 
 			if (autoCreateProperties != null) {
 				iwc.getIWMainApplication().getSettings().setAutoCreateProperties(true);
 			}
-			else
+			else {
 				iwc.getIWMainApplication().getSettings().setAutoCreateProperties(false);
+			}
 
 			if (debug != null) {
 				iwc.getIWMainApplication().getSettings().setDebug(true);
@@ -223,8 +235,9 @@ public class ApplicationPropertySetter extends Block {
 			key = (String) iter.next();
 			table.add(new Text(key, true, false, false), 1, row);
 			value = applicationSettings.getProperty(key);
-			if (value != null)
+			if (value != null) {
 				table.add(new Text(value, true, false, false), 2, row);
+			}
 			table.add(new CheckBox("property", key), 3, row);
 			row++;
 		}

@@ -28,8 +28,9 @@ public class Caches extends Block {
 	}
 	public void main(IWContext iwc) throws Exception {
 		add(IWDeveloper.getTitleTable(this.getClass()));
-		if (!iwc.isIE())
+		if (!iwc.isIE()) {
 			getParentPage().setBackgroundColor("#FFFFFF");
+		}
 
 		Form form = new Form();
 		form.maintainParameter(IWDeveloper.actionParameter);

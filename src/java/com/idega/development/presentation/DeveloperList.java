@@ -28,12 +28,12 @@ private static String styleName = "iwdClass";
   }
 
   public void main(IWContext iwc) {
-    iwb = getBundle(iwc);
+    this.iwb = getBundle(iwc);
     setLinkStyle("font-family: Verdana, Arial, sans-serif; font-weight: bold; font-size: 11px; text-decoration: none;color:#000000;");
 		getParentPage().setStyleDefinition("."+styleName, "font-family: Verdana, Arial, sans-serif; font-weight: bold; font-size: 10px; text-decoration: none;color:#000000;");
 		getParentPage().setStyleDefinition("."+styleName+":hover", "font-family: Verdana, Arial, sans-serif; font-weight: bold; font-size: 10px; text-decoration: none;color:#999999;");
 
-    Image image = iwb.getImage("/developer/listbutton.gif","",13,13);
+    Image image = this.iwb.getImage("/developer/listbutton.gif","",13,13);
 
     addToList(getClassLink(iwc, Localizer.class,"Localizer"),(Image) image.clone());
     addToList(getClassLink(iwc, LocaleSwitcher.class,"Locale Switcher"),(Image) image.clone());

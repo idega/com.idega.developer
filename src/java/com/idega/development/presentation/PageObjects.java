@@ -48,8 +48,9 @@ public class PageObjects extends Block {
 	 */
 	public void main(IWContext iwc) throws Exception {
 		add(IWDeveloper.getTitleTable(this.getClass()));
-		if (!iwc.isIE())
+		if (!iwc.isIE()) {
 			getParentPage().setBackgroundColor("#FFFFFF");
+		}
 		
 		//String bundleIdentifier = iwc.getParameter(BUNDLE_PARAMETER);
 		IWMainApplication iwma = iwc.getIWMainApplication();
@@ -93,46 +94,56 @@ public class PageObjects extends Block {
 		//boolean showInstanceCount = false;
 		boolean isObjectTypeSet = iwc.isParameterSet(PRM_TYPE);
 		String objectType = null;
-		if(isObjectTypeSet)
+		if(isObjectTypeSet) {
 			objectType = iwc.getParameter(PRM_TYPE);
-		pageObjects = null;
+		}
+		this.pageObjects = null;
 		if(iwc.isParameterSet(PRM_PAGEID)){
 			String pageId = iwc.getParameter(PRM_PAGEID);
-			if(isObjectTypeSet)
-				pageObjects = instanceHome.findByPageAndObjectType(Integer.valueOf(pageId),objectType);
-			else
-				pageObjects = instanceHome.findByPage(Integer.valueOf(pageId));
+			if(isObjectTypeSet) {
+				this.pageObjects = instanceHome.findByPageAndObjectType(Integer.valueOf(pageId),objectType);
+			}
+			else {
+				this.pageObjects = instanceHome.findByPage(Integer.valueOf(pageId));
+			}
 			presentatePageIdObjects(iwc);
 		}
 		else if(iwc.isParameterSet(PRM_PAGENAME)){
 			String pageName = iwc.getParameter(PRM_PAGENAME);
-			if(isObjectTypeSet)
-				pageObjects = instanceHome.findByPageNameAndObjectType(pageName,objectType);
-			else
-				pageObjects = instanceHome.findByPageName(pageName);
+			if(isObjectTypeSet) {
+				this.pageObjects = instanceHome.findByPageNameAndObjectType(pageName,objectType);
+			}
+			else {
+				this.pageObjects = instanceHome.findByPageName(pageName);
+			}
 			presentatePageNameObjects(iwc);
 		}
 		else if(iwc.isParameterSet(PRM_CLASSNAME)){
 			String className = iwc.getParameter(PRM_CLASSNAME);
-			if(isObjectTypeSet)
-				pageObjects = instanceHome.findByClassNameAndObjectType(className,objectType);
-			else
-				pageObjects = instanceHome.findByClassName(className);
+			if(isObjectTypeSet) {
+				this.pageObjects = instanceHome.findByClassNameAndObjectType(className,objectType);
+			}
+			else {
+				this.pageObjects = instanceHome.findByClassName(className);
+			}
 			presentateClassNameObjects(iwc);
 		}
 		else if(iwc.isParameterSet(BUNDLE_PARAMETER)){
 			String bundle = iwc.getParameter(BUNDLE_PARAMETER);
-			if(isObjectTypeSet)
-				pageObjects = instanceHome.findByBundleAndObjectType(bundle,objectType);
-			else;
-				pageObjects = instanceHome.findByBundle(bundle);
+			if(isObjectTypeSet) {
+				this.pageObjects = instanceHome.findByBundleAndObjectType(bundle,objectType);
+			}
+			else {
+				this.pageObjects = instanceHome.findByBundle(bundle);
+			}
+			
 			presentateBundleObjects(iwc);
 		}
 		
 	}
 	
 	private void presentatePageIdObjects(IWContext iwc){
-		if(pageObjects!=null && !pageObjects.isEmpty()){
+		if(this.pageObjects!=null && !this.pageObjects.isEmpty()){
 			Table T = new Table();
 			T.setColumns(6);
 			
@@ -147,7 +158,7 @@ public class PageObjects extends Block {
 			T.add(getHeader("Class"),6,row);
 			row++;
 			
-			for (Iterator iter = pageObjects.iterator(); iter.hasNext();) {
+			for (Iterator iter = this.pageObjects.iterator(); iter.hasNext();) {
 				IBPageObjectView pageObject = (IBPageObjectView) iter.next();
 				int currentPageId = pageObject.getPageId().intValue();
 				if(lastPageId!=currentPageId){

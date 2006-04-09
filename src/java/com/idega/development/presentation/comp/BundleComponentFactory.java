@@ -54,10 +54,12 @@ public class BundleComponentFactory {
 	}
 	
 	public  BundleComponent getBundleComponent(String identifier)throws IllegalArgumentException{
-		if(getLookupTable().containsKey(identifier))
+		if(getLookupTable().containsKey(identifier)) {
 			return (BundleComponent) getLookupTable().get(identifier);
-		else
+		}
+		else {
 			throw new IllegalArgumentException("Argument "+identifier+" not recognized");
+		}
 	}
 	
 	public BundleComponent getBundleComponent(ICObject icobject)throws IllegalArgumentException{

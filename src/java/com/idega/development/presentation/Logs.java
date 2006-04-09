@@ -49,8 +49,9 @@ public class Logs extends Block {
 		text = TextSoap.findAndReplace(text, "\n", "<br>");
 		
 		//add(IWDeveloper.getTitleTable(this.getClass()));
-		if (!iwc.isIE())
+		if (!iwc.isIE()) {
 			getParentPage().setBackgroundColor("#FFFFFF");
+		}
 		Form form = new Form();
 		form.maintainParameter(IWDeveloper.PARAMETER_CLASS_NAME);
 		form.maintainParameter(IWDeveloper.actionParameter);

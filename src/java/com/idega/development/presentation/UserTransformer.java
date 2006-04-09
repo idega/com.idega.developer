@@ -56,8 +56,8 @@ public class UserTransformer extends Block{
 	String currentDate = null;
 	
 	public void main(IWContext iwc)throws Exception{
-		df = DateFormat.getDateTimeInstance(DateFormat.SHORT,DateFormat.SHORT,iwc.getCurrentLocale());
-		gBus = (GroupBusiness) IBOLookup.getServiceInstance(iwc, GroupBusiness.class);
+		this.df = DateFormat.getDateTimeInstance(DateFormat.SHORT,DateFormat.SHORT,iwc.getCurrentLocale());
+		this.gBus = (GroupBusiness) IBOLookup.getServiceInstance(iwc, GroupBusiness.class);
 		String sql = iwc.getParameter("user_select_sql");
 		
 		
@@ -211,7 +211,7 @@ public class UserTransformer extends Block{
 		String deleteUserGroupRelationSQL = " delete from ic_group_tree where child_ic_group_id = ?";
 		String deleteUserGroupRelationSQL2 = " delete from ic_group_relation where related_ic_group_id = ?";
 		String deleteUserGroupSQL = "delete from ic_group where ic_group_id = ?";
-		String insertGroupSQL = "insert into ic_group (ic_group_id,group_type,name,extra_info) values (?,'ic_user_representative',?,'Fixed "+df.format(new Date())+"')";
+		String insertGroupSQL = "insert into ic_group (ic_group_id,group_type,name,extra_info) values (?,'ic_user_representative',?,'Fixed "+this.df.format(new Date())+"')";
 		String insertGroupRelationSQL = "insert into ic_group_relation(IC_GROUP_ID,RELATIONSHIP_TYPE,INITIATION_DATE ,RELATED_IC_GROUP_ID ,GROUP_RELATION_STATUS ,INIT_MODIFICATION_DATE) values (?,'GROUP_PARENT', '"+com.idega.util.IWTimestamp.RightNow().toSQLString()+"',?,'ST_ACTIVE','"+com.idega.util.IWTimestamp.RightNow().toSQLString()+"')";
 		if (sap) {
 			insertGroupRelationSQL = "insert into ic_group_relation(IC_GROUP_ID,RELATIONSHIP_TYPE,INITIATION_DATE ,RELATED_IC_GROUP_ID ,GROUP_RELATION_STATUS ,INIT_MODIFICATION_DATE,IC_GROUP_RELATION_ID) values (?,'GROUP_PARENT', '"+com.idega.util.IWTimestamp.RightNow().toSQLString()+"',?,'ST_ACTIVE','"+com.idega.util.IWTimestamp.RightNow().toSQLString()+"', ?)";
@@ -284,7 +284,7 @@ public class UserTransformer extends Block{
 				// Group Tree Domain fixer
 				if (topNodesToDomain) {
 					try {
-						gBus.addGroupUnderDomainRoot(this.getIWApplicationContext().getDomain(),g);
+						this.gBus.addGroupUnderDomainRoot(this.getIWApplicationContext().getDomain(),g);
 						System.out.println("  adding to domain = "+this.getIWApplicationContext().getDomain().getDomainName());
 					} catch(Exception e) {
 						e.printStackTrace();
@@ -439,7 +439,7 @@ public class UserTransformer extends Block{
 
 						group.setGroupType("ic_user_representative");
 						group.setName(firstName+" "+lastName);
-						group.setExtraInfo(group.getExtraInfo()+"UserTransformer, old group is now id = "+newGroupPK+", "+df.format(new Date()));
+						group.setExtraInfo(group.getExtraInfo()+"UserTransformer, old group is now id = "+newGroupPK+", "+this.df.format(new Date()));
 						group.store();
 
 						changedGroups.put(newGroupPK, oldGroupPK);

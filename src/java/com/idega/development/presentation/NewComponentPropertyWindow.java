@@ -67,11 +67,11 @@ public class NewComponentPropertyWindow extends Window {
 		Form form = new Form();
 		form.maintainParameter(PARAMETER_BUNDLE);
 		form.maintainParameter(PARAMETER_COMPONENT);
-		selectedBundle = getSelectedBundle(iwc);
+		this.selectedBundle = getSelectedBundle(iwc);
 		add(form);
 		Table t = new Table();
 		form.add(t);
-		component = getSelectedComponent(iwc);
+		this.component = getSelectedComponent(iwc);
 		String method = getSelectedMethod(iwc);
 		boolean methodSelected = false;
 		boolean propertySave = false;
@@ -83,7 +83,7 @@ public class NewComponentPropertyWindow extends Window {
 		}
 		propertySave = iwc.isParameterSet(PARAMETER_SAVE);
 
-		t.add(getMethodsDropdown(component), 1, 1);
+		t.add(getMethodsDropdown(this.component), 1, 1);
 		t.add(new SubmitButton("Select"), 2, 1);
 
 		if (propertySave) {
@@ -134,8 +134,9 @@ public class NewComponentPropertyWindow extends Window {
 		Class[] parameterClasses = null;
 		try {
 			parameterClasses = MethodFinder.getInstance().getArgumentClasses(methodIdentifier);
-			if (parameterClasses.length == 1)
+			if (parameterClasses.length == 1) {
 				hasOnlyOneParameter = true;
+			}
 		}
 		catch (Exception e) {
 			t.add("Error " + e.getMessage());
@@ -144,7 +145,7 @@ public class NewComponentPropertyWindow extends Window {
 		boolean update = false;
 		IWPropertyList parameterOptions = null;
 		IWPropertyList parameter = null;
-		IWPropertyList componentList = selectedBundle.getComponentPropertyList(component);
+		IWPropertyList componentList = this.selectedBundle.getComponentPropertyList(this.component);
 		IWPropertyList methodList = componentList.getIWPropertyList(IBPropertyHandler.METHODS_KEY);
 		IWPropertyList method = methodList.getIWPropertyList(methodIdentifier);
 		if (method != null) {
@@ -382,9 +383,9 @@ public class NewComponentPropertyWindow extends Window {
 			Class introspectionClass = selectedClass;
 
 			//		added by aron 21.june 2003
-			if (selectedBundle != null) {
+			if (this.selectedBundle != null) {
 
-				String selectedCompType = selectedBundle.getComponentType(selectedComponentKey);
+				String selectedCompType = this.selectedBundle.getComponentType(selectedComponentKey);
 				BundleComponent comp = BundleComponentFactory.getInstance().getBundleComponent(selectedCompType);
 				Class stopClass = comp.getFinalReflectionClass();
 

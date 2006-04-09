@@ -23,9 +23,9 @@ import com.idega.user.data.GroupHome;
  */
 public class OwnerGroupInformationLink extends DPTCrawlableLink {
 
-	public final int SHOW_NAME = 0;
-	public final int SHOW_SHROT_NAME = 1;
-	public final int SHOW_ABBREVATION = 3;
+	public static final int SHOW_NAME = 0;
+	public static final int SHOW_SHROT_NAME = 1;
+	public static final int SHOW_ABBREVATION = 3;
 	
 	
 	private String textBefore = "";
@@ -38,7 +38,7 @@ public class OwnerGroupInformationLink extends DPTCrawlableLink {
 	
 	
 	public void setInformationToShow(int showConstant) {
-		informationToShow = showConstant;
+		this.informationToShow = showConstant;
 	}
 	
 	public void main(IWContext iwc) throws Exception {
@@ -50,18 +50,18 @@ public class OwnerGroupInformationLink extends DPTCrawlableLink {
 				try {
 					Group gr = ((GroupHome)IDOLookup.getHome(Group.class)).findByHomePageID(rootPageID);
 					
-					switch (informationToShow) {
+					switch (this.informationToShow) {
 						case SHOW_NAME:
-							this.setText(textBefore+" "+gr.getName()+" "+textAfter);
+							this.setText(this.textBefore+" "+gr.getName()+" "+this.textAfter);
 							break;
 						case SHOW_SHROT_NAME:
-							this.setText(textBefore+" "+gr.getShortName()+" "+textAfter);
+							this.setText(this.textBefore+" "+gr.getShortName()+" "+this.textAfter);
 							break;
 						case SHOW_ABBREVATION:
-							this.setText(textBefore+" "+gr.getAbbrevation()+" "+textAfter);
+							this.setText(this.textBefore+" "+gr.getAbbrevation()+" "+this.textAfter);
 							break;
 						default:
-							this.setText(textBefore+" "+gr.getName()+" "+textAfter);
+							this.setText(this.textBefore+" "+gr.getName()+" "+this.textAfter);
 							break;
 					}
 					
@@ -69,11 +69,11 @@ public class OwnerGroupInformationLink extends DPTCrawlableLink {
 					// No Group found
 					System.out.println("["+this.getClassName()+"]: no Group has this page("+rootPageID+") as homepage");
 				}
-				if(setPageAsDPTRootpage) {
+				if(this.setPageAsDPTRootpage) {
 					this.setPage(rootPageID);
 				}
 			} else {
-				this.setText(textBefore+"-"+textAfter);
+				this.setText(this.textBefore+"-"+this.textAfter);
 			}
 		}
 		
@@ -82,7 +82,7 @@ public class OwnerGroupInformationLink extends DPTCrawlableLink {
 	}
 	
 	public void setPageAsDPTRootPage(boolean value) {
-		setPageAsDPTRootpage = value;
+		this.setPageAsDPTRootpage = value;
 	}
 
 	/**

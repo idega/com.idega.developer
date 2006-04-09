@@ -35,8 +35,9 @@ public class Versions extends Block {
 
   public void main(IWContext iwc){
     add(IWDeveloper.getTitleTable(this.getClass()));
-		if (!iwc.isIE())
+		if (!iwc.isIE()) {
 			getParentPage().setBackgroundColor("#FFFFFF");
+		}
 
     IWMainApplication iwma = iwc.getIWMainApplication();
     List bundles = getRegisteredBundles(iwma);
@@ -50,40 +51,42 @@ public class Versions extends Block {
 		String defaultVersion = null;
 		if (pack != null) {
 			defaultVersion = pack.getImplementationVersion();
-			if (defaultVersion == null)
-				defaultVersion = "No Implementation-Version definition for package com.idega.core in Manifest";	
+			if (defaultVersion == null) {
+				defaultVersion = "No Implementation-Version definition for package com.idega.core in Manifest";
+			}	
 		}
 		else {
 			defaultVersion = "No Implementation-Version definition for package com.idega.core in Manifest";	
 		}
 
-    table = new Table(2,bundles.size() + 1);
-    table.setWidth(1,"160");
-    table.add(blockHeader,1,1);
-    table.add(versionHeader,2,1);
+    this.table = new Table(2,bundles.size() + 1);
+    this.table.setWidth(1,"160");
+    this.table.add(blockHeader,1,1);
+    this.table.add(versionHeader,2,1);
     int row = 2;
     Iterator it = bundles.iterator();
     String bundleName = null;
     while (it.hasNext()) {
       IWBundle item = (IWBundle)it.next();
       bundleName = item.getBundleIdentifier();
-      table.add(bundleName,1,row);
+      this.table.add(bundleName,1,row);
 			pack = Package.getPackage(bundleName);
 			String version = defaultVersion;
 			if (pack != null) {
 				version = pack.getImplementationVersion();
-				if (version == null)
+				if (version == null) {
 					version = defaultVersion;
+				}
 			}
 			else {
 				version = defaultVersion;
 			}
       
-      table.add(version,2,row++);
+      this.table.add(version,2,row++);
       //table.add(defaultVersion,2,row++);
     }
     
-    add(table);
+    add(this.table);
     
 //    Package packages[] = Package.getPackages();
 //    for (int i = 0; i < packages.length; i++) {

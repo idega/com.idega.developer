@@ -49,41 +49,42 @@ public class ObjectTypeManager extends Block {
 
 	public void main(IWContext iwc) {
 		add(IWDeveloper.getTitleTable(this.getClass()));
-		String otPk = iwc.getParameter(PARAMETER_OBJECT_TYPE_ID);
+		String otPk = iwc.getParameter(this.PARAMETER_OBJECT_TYPE_ID);
 		if (otPk != null) {
 			try {
 				ICObjectTypeHome otHome = (ICObjectTypeHome) IDOLookup.getHome(ICObjectType.class);
-				objectTypeToEdit = otHome.findByPrimaryKey(otPk);
+				this.objectTypeToEdit = otHome.findByPrimaryKey(otPk);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
 
-		if (!iwc.isIE())
+		if (!iwc.isIE()) {
 			getParentPage().setBackgroundColor("#FFFFFF");
+		}
 			
-		if (iwc.isParameterSet(PARAMETER_DELETE_OBJECT_TYPE_ID)) {
+		if (iwc.isParameterSet(this.PARAMETER_DELETE_OBJECT_TYPE_ID)) {
 			handleDelete(iwc);			
 		}
 			
-		if (iwc.isParameterSet(PARAMETER_TYPE)) {
+		if (iwc.isParameterSet(this.PARAMETER_TYPE)) {
 			handleInsert(iwc);	
 		}
 		
-		if (iwc.isParameterSet(PARAMETER_CHECK_IC_OBJECT)) {
-			listObjectUsingType(iwc, iwc.getParameter(PARAMETER_CHECK_IC_OBJECT));
+		if (iwc.isParameterSet(this.PARAMETER_CHECK_IC_OBJECT)) {
+			listObjectUsingType(iwc, iwc.getParameter(this.PARAMETER_CHECK_IC_OBJECT));
 		} else {
 			drawMenu(iwc);
 		}
  	}
  	
  	private void handleInsert(IWContext iwc){
- 		String name = iwc.getParameter(PARAMETER_NAME);
- 		String type = iwc.getParameter(PARAMETER_TYPE);
- 		String rSuper = iwc.getParameter(PARAMETER_REQUIRED_SUPER_CLASS);
- 		String rInter = iwc.getParameter(PARAMETER_REQ_INTERFACES);
- 		String refl = iwc.getParameter(PARAMETER_FINAL_REFLECTION_CLASS);
- 		String filters = iwc.getParameter(PARAMETER_METHOD_START_FILERS);
+ 		String name = iwc.getParameter(this.PARAMETER_NAME);
+ 		String type = iwc.getParameter(this.PARAMETER_TYPE);
+ 		String rSuper = iwc.getParameter(this.PARAMETER_REQUIRED_SUPER_CLASS);
+ 		String rInter = iwc.getParameter(this.PARAMETER_REQ_INTERFACES);
+ 		String refl = iwc.getParameter(this.PARAMETER_FINAL_REFLECTION_CLASS);
+ 		String filters = iwc.getParameter(this.PARAMETER_METHOD_START_FILERS);
  		
  		if (!name.equals("") && !name.equals("")) { 
  		
@@ -91,10 +92,10 @@ public class ObjectTypeManager extends Block {
 			try {
 				otHome = (ICObjectTypeHome) IDOLookup.getHome(ICObjectType.class);
 		 		ICObjectType ot = null;
-		 		if (objectTypeToEdit == null) {
+		 		if (this.objectTypeToEdit == null) {
 		 			ot = otHome.create();
 		 		} else {
-		 			ot = objectTypeToEdit;
+		 			ot = this.objectTypeToEdit;
 		 		}
 		 		ot.setName(name);
 		 		ot.setType(type);
@@ -134,7 +135,7 @@ public class ObjectTypeManager extends Block {
 		 			ot.setMethodStartFiltersString(filters);
 				}
 		 		ot.store();
-		 		objectTypeToEdit = null;
+		 		this.objectTypeToEdit = null;
 			} catch (IDOLookupException e) {
 				add(IWDeveloper.getText("ObjectType was not created ("+e.getMessage()+")"));
 				e.printStackTrace();
@@ -154,7 +155,7 @@ public class ObjectTypeManager extends Block {
  	}
  	
  	private void handleDelete(IWContext iwc) {
- 		String[] idsToDelete = iwc.getParameterValues(PARAMETER_DELETE_OBJECT_TYPE_ID);
+ 		String[] idsToDelete = iwc.getParameterValues(this.PARAMETER_DELETE_OBJECT_TYPE_ID);
  		if (idsToDelete != null && idsToDelete.length > 0) {
  			try {
 				ICObjectHome idoHome = (ICObjectHome) IDOLookup.getHome(ICObject.class);
@@ -173,7 +174,7 @@ public class ObjectTypeManager extends Block {
 						}
 					} else {
 						link = new Link(IWDeveloper.getText("these"));
-						link.addParameter(PARAMETER_CHECK_IC_OBJECT, idsToDelete[i]);
+						link.addParameter(this.PARAMETER_CHECK_IC_OBJECT, idsToDelete[i]);
 						link.maintainParameter(IWDeveloper.actionParameter, iwc);
 						link.maintainParameter(IWDeveloper.PARAMETER_CLASS_NAME, iwc);
 						
@@ -253,20 +254,24 @@ public class ObjectTypeManager extends Block {
 			while (iter.hasNext()) {
 				objectType = otHome.findByPrimaryKey(iter.next().toString());
 				link = new Link(objectType.getName());
-				link.addParameter(PARAMETER_OBJECT_TYPE_ID, objectType.getPrimaryKey().toString());
+				link.addParameter(this.PARAMETER_OBJECT_TYPE_ID, objectType.getPrimaryKey().toString());
 				link.maintainParameter(IWDeveloper.actionParameter, iwc);
 				link.maintainParameter(IWDeveloper.PARAMETER_CLASS_NAME, iwc);
-				delete = new CheckBox(PARAMETER_DELETE_OBJECT_TYPE_ID, objectType.getPrimaryKey().toString());
+				delete = new CheckBox(this.PARAMETER_DELETE_OBJECT_TYPE_ID, objectType.getPrimaryKey().toString());
 				table.add(link, 1, ++row);
 				table.add(objectType.getType(), 2, row);
-				if (objectType.getRequiredSuperClassName() != null)
-				table.add(objectType.getRequiredSuperClassName(), 3, row);
-				if (objectType.getRequiredInterfacesString() != null)
-				table.add(objectType.getRequiredInterfacesString(), 4, row);
-				if (objectType.getFinalReflectionClassName() != null)
-				table.add(objectType.getFinalReflectionClassName(), 5, row);
-				if (objectType.getMethodStartFiltersString() != null)
-				table.add(objectType.getMethodStartFiltersString(), 6, row);
+				if (objectType.getRequiredSuperClassName() != null) {
+					table.add(objectType.getRequiredSuperClassName(), 3, row);
+				}
+				if (objectType.getRequiredInterfacesString() != null) {
+					table.add(objectType.getRequiredInterfacesString(), 4, row);
+				}
+				if (objectType.getFinalReflectionClassName() != null) {
+					table.add(objectType.getFinalReflectionClassName(), 5, row);
+				}
+				if (objectType.getMethodStartFiltersString() != null) {
+					table.add(objectType.getMethodStartFiltersString(), 6, row);
+				}
 				/*
 				String[] filt = objectType.getMethodStartFilters();
 				if (filt == null) {
@@ -281,27 +286,31 @@ public class ObjectTypeManager extends Block {
 				table.add(delete, 7, row);
 			}
 			
-			TextInput name = new TextInput(PARAMETER_NAME);
-			TextInput type = new TextInput(PARAMETER_TYPE);
-			TextInput rSuper = new TextInput(PARAMETER_REQUIRED_SUPER_CLASS);
-			TextInput rInterf = new TextInput(PARAMETER_REQ_INTERFACES);
-			TextInput refl = new TextInput(PARAMETER_FINAL_REFLECTION_CLASS);
-			TextInput filters = new TextInput(PARAMETER_METHOD_START_FILERS);
+			TextInput name = new TextInput(this.PARAMETER_NAME);
+			TextInput type = new TextInput(this.PARAMETER_TYPE);
+			TextInput rSuper = new TextInput(this.PARAMETER_REQUIRED_SUPER_CLASS);
+			TextInput rInterf = new TextInput(this.PARAMETER_REQ_INTERFACES);
+			TextInput refl = new TextInput(this.PARAMETER_FINAL_REFLECTION_CLASS);
+			TextInput filters = new TextInput(this.PARAMETER_METHOD_START_FILERS);
 			SubmitButton submit = new SubmitButton("Save");
 
-			if (objectTypeToEdit != null) {
-				name.setContent(objectTypeToEdit.getName());
-				type.setContent(objectTypeToEdit.getType());
-				if (objectTypeToEdit.getRequiredSuperClassName() != null)
-				rSuper.setContent(objectTypeToEdit.getRequiredSuperClassName());
-				if (objectTypeToEdit.getRequiredInterfacesString() != null)
-				rInterf.setContent(objectTypeToEdit.getRequiredInterfacesString());
-				if (objectTypeToEdit.getFinalReflectionClassName() != null)
-				refl.setContent(objectTypeToEdit.getFinalReflectionClassName());
-				if (objectTypeToEdit.getMethodStartFiltersString() != null)
-				filters.setContent(objectTypeToEdit.getMethodStartFiltersString());
+			if (this.objectTypeToEdit != null) {
+				name.setContent(this.objectTypeToEdit.getName());
+				type.setContent(this.objectTypeToEdit.getType());
+				if (this.objectTypeToEdit.getRequiredSuperClassName() != null) {
+					rSuper.setContent(this.objectTypeToEdit.getRequiredSuperClassName());
+				}
+				if (this.objectTypeToEdit.getRequiredInterfacesString() != null) {
+					rInterf.setContent(this.objectTypeToEdit.getRequiredInterfacesString());
+				}
+				if (this.objectTypeToEdit.getFinalReflectionClassName() != null) {
+					refl.setContent(this.objectTypeToEdit.getFinalReflectionClassName());
+				}
+				if (this.objectTypeToEdit.getMethodStartFiltersString() != null) {
+					filters.setContent(this.objectTypeToEdit.getMethodStartFiltersString());
+				}
 				
-				table.add(new HiddenInput(PARAMETER_OBJECT_TYPE_ID, objectTypeToEdit.getPrimaryKey().toString()));
+				table.add(new HiddenInput(this.PARAMETER_OBJECT_TYPE_ID, this.objectTypeToEdit.getPrimaryKey().toString()));
 				submit = new SubmitButton("Update");
 			}
 			
