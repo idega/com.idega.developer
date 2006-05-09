@@ -182,7 +182,7 @@ public class ComponentManager extends Block {
 							IWProperty prop = methodsIter.nextProperty();
 
 							String identifier = IBPropertyHandler.getInstance().getMethodIdentifier(prop);
-							String description = IBPropertyHandler.getInstance().getMethodDescription(prop, iwc);
+							String description = IBPropertyHandler.getInstance().getMethodDescription(prop, iwc.getCurrentLocale());
 							Method method = null;
 							Class selectedClass = RefactorClassRegistry.forName(selectedComponentKey);
 							try {
