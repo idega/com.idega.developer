@@ -9,6 +9,7 @@
     <project>com.idega.builder</project>
     <project>com.idega.user</project>
     <project>com.idega.workspace</project>
+    <project>com.idega.block.web2.0</project>
   </projects>
   <buildSpec>
     <buildCommand>
