@@ -3,17 +3,19 @@ package com.idega.development.presentation;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-
 import com.idega.core.localisation.business.ICLocaleBusiness;
 import com.idega.core.localisation.data.ICLocale;
+import com.idega.idegaweb.IWBundle;
+import com.idega.presentation.Block;
 import com.idega.presentation.IWContext;
-import com.idega.presentation.PresentationObjectContainer;
 import com.idega.presentation.Table;
+import com.idega.presentation.text.Text;
 import com.idega.presentation.ui.CheckBox;
 import com.idega.presentation.ui.Form;
 import com.idega.presentation.ui.HiddenInput;
 import com.idega.presentation.ui.RadioButton;
 import com.idega.presentation.ui.SubmitButton;
+import com.idega.presentation.ui.TextInput;
 
 /**
  * Title:        idega Framework
@@ -24,20 +26,21 @@ import com.idega.presentation.ui.SubmitButton;
  * @version 1.0
  */
 
-public class LocaleSetter extends PresentationObjectContainer {
+public class LocaleSetter extends Block {
 
 	public static String localesParameter = "iw_localeswitcher_locale";
 	private int count = 0;
 	private Locale _coreLocale = null;
 
 	public LocaleSetter() {
+		//setResetGoneThroughMainInRestore(true);
 	}
 
 	public void main(IWContext iwc) {
-		add(IWDeveloper.getTitleTable(this.getClass()));
+		/*add(IWDeveloper.getTitleTable(this.getClass()));
 		if (!iwc.isIE()) {
 			getParentPage().setBackgroundColor("#FFFFFF");
-		}
+		}*/
 
 		this._coreLocale = iwc.getIWMainApplication().getCoreLocale();
 
@@ -57,9 +60,21 @@ public class LocaleSetter extends PresentationObjectContainer {
 		T.add(IWDeveloper.getText("Language"), 3, 1);
 		T.add(IWDeveloper.getText("Region"), 4, 1);
 		T.add(IWDeveloper.getText("Default"), 5, 1);
+		
 
 		this.count = 1;
 		addToTable(T, ICLocaleBusiness.listOfLocales(true), icDefLocale);
+		
+		Text localeVariant = new Text("Locale Variant:");
+		String setLocaleVariant = iwc.getApplicationSettings().getProperty("com.idega.core.localevariant");
+		if(setLocaleVariant==null){
+			setLocaleVariant="";
+		}
+		TextInput localeVariantInput = new TextInput("com.idega.core.localevariant",setLocaleVariant);
+		this.count++;
+		T.add(localeVariant, 1, this.count);
+		T.add(localeVariantInput, 2, this.count);
+		
 		SubmitButton save = new SubmitButton("save", "Save");
 		this.count++;
 		T.add(save, 1, this.count);
@@ -122,6 +137,28 @@ public class LocaleSetter extends PresentationObjectContainer {
 			String sDefLocale = iwc.getParameter("default_locale");
 			if (sDefLocale != null) {
 				iwc.getApplicationSettings().setDefaultLocale(ICLocaleBusiness.getLocaleFromLocaleString(sDefLocale));
+			}
+			
+			String localeVariant = iwc.getParameter("com.idega.core.localevariant");
+			String setLocaleVariant = iwc.getApplicationSettings().getProperty("com.idega.core.localevariant");
+			if(setLocaleVariant==null){
+				setLocaleVariant="";
+			}
+			if(localeVariant!=null){
+				if(localeVariant.equals("")){
+					iwc.getApplicationSettings().removeProperty("com.idega.core.localevariant");
+				}
+				else{
+					iwc.getApplicationSettings().setProperty("com.idega.core.localevariant", localeVariant);
+				}
+				boolean update = !localeVariant.equals(setLocaleVariant);
+				if(update){
+					List bundleList = iwc.getIWMainApplication().getRegisteredBundles();
+					for (Iterator iter = bundleList.iterator(); iter.hasNext();) {
+						IWBundle bundle = (IWBundle) iter.next();
+						bundle.reloadBundle();
+					}
+				}
 			}
 		}
 	}
