@@ -37,7 +37,7 @@ public class BundleResourceManager extends Block {
 	}
 	
 	public void main(IWContext iwc) {
-		add(IWDeveloper.getTitleTable(this.getClass()));
+		//add(IWDeveloper.getTitleTable(this.getClass()));
 		Locale locale = null;
 		String folder = null;
 		if (iwc.isParameterSet(LOCALE_PARAMETER)) {

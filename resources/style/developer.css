@@ -1,0 +1,144 @@
+div.developer fieldset {
+	border: 0;
+	margin: 0;
+	padding: 8px;
+	border-bottom: 1px #D7D7D7 solid;
+}
+
+div.developer fieldset legend {
+	display: none;
+}
+
+div.developer fieldset.querySet {
+	border: 0;
+	margin: 0;
+	padding: 8px;
+	border-bottom: 1px #D7D7D7 solid;
+}
+
+div.developer fieldset.querySet legend {
+	display: none;
+}
+
+div.developer fieldSet.resultSet, div.developer fieldSet.keySet {
+	border: 0;
+	padding: 0;
+	margin: 0;
+	border-top: 1px #fff solid;
+}
+
+div.developer fieldset.resultSet legend {
+	display: none;
+}
+
+div.developer fieldset.resultSet p, div.developer fieldset.keySet p {
+	margin: 8px;
+	padding-top: 8px;
+}
+
+div.developer fieldset.resultSet p span.query {
+	font-weight: bold;
+}
+
+div.developer div.formItem {
+	overflow: hidden;
+	margin-bottom: 8px;
+}
+
+div.developer div.formItem label {
+	float: left;
+	width: 120px;
+}
+
+div.developer div.formItem textarea, div.formItem input, div.formItem select {
+	float: left;
+	padding: 0;
+	margin: 0;
+}
+
+div.developer div.bigFormItem textarea {
+	clear: both;
+	width: 98%;
+	height: 120px;
+}
+
+div.developer div.buttonLayer {
+	margin-top: 10px;
+	clear: both;
+	overflow: hidden;
+}
+
+div.developer div.buttonLayer input.button {
+	float: right;
+	margin: 0;
+	margin-left: 8px;
+	display: block;
+	border: 1px #999 solid;
+	padding: 2px 3px;
+	text-transform: capitalize;
+}
+
+div.developer div.buttonLayer input#execute, div.developer div.buttonLayer input#save, div.developer div.buttonLayer input#delete {
+	float: left;
+	margin: 0;
+}
+
+div.developer div.buttonLayer input#delete {
+	margin-left: 8px;
+}
+
+div.developer div.statusLayer {
+	margin: 8px;
+	padding: 8px;
+	border: 1px #ccc solid;
+	background-color: #ffc;
+	font-weight: bold;
+}
+
+.wf_blockmainarea {
+	padding: 0;
+}
+
+table.developerTable {
+	width: 100%;
+}
+
+table.developerTable thead tr th {
+	text-align: left;
+	padding: 2px 5px;
+	border-top: 1px #999 solid;
+	border-bottom: 1px #999 solid;
+	background-color: #fff;
+}
+
+table.developerTable tbody tr td {
+	text-align: left;
+	padding: 2px 5px;
+	border-bottom: 1px #ccc solid;
+	background-color: #fff;
+}
+
+table.developerTable tbody tr.evenRow td {
+	background-color: #dfdfdf;
+}
+
+table.developerTable tbody tr.ruled td {
+	background-color: #a0a0a0;
+}
+
+table.developerTable tfoot tr td {
+	text-align: left;
+	padding: 2px 5px;
+	background-color: #fff;
+	font-weight: bold;
+	border-bottom: 1px #D7D7D7 solid;
+}
+
+table.developerTable tbody tr td a {
+	color: #000;
+	text-decoration: underline;
+}
+
+table.developerTable tr td.number {
+	text-align: right;
+}

@@ -1,10 +1,8 @@
 package com.idega.development.presentation;
 
-import com.idega.presentation.PresentationObjectContainer;
 import com.idega.presentation.IWContext;
-
+import com.idega.presentation.PresentationObjectContainer;
 import com.idega.util.database.PoolManager;
-import com.idega.presentation.text.*;
 
 /**
  * Title:        idegaclasses
@@ -22,13 +20,6 @@ public class DBPoolStatusViewer extends PresentationObjectContainer {
 
 
   public void main(IWContext iwc){
-      add(IWDeveloper.getTitleTable(this.getClass()));
-			if (!iwc.isIE()) {
-				getParentPage().setBackgroundColor("#FFFFFF");
-			}
-      add(Text.getBreak());
-      add(Text.getBreak());
-
       PoolManager poolMgr = PoolManager.getInstance();
       add(poolMgr.getStats());
   }

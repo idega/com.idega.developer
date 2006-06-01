@@ -47,7 +47,6 @@ public class PageObjects extends Block {
 	 * @see com.idega.presentation.PresentationObject#main(com.idega.presentation.IWContext)
 	 */
 	public void main(IWContext iwc) throws Exception {
-		add(IWDeveloper.getTitleTable(this.getClass()));
 		if (!iwc.isIE()) {
 			getParentPage().setBackgroundColor("#FFFFFF");
 		}

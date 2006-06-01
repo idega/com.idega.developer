@@ -33,7 +33,7 @@ public class BundleCreator extends Block {
 	}
 
 	public void main(IWContext iwc) throws Exception {
-		add(IWDeveloper.getTitleTable(this.getClass()));
+		//add(IWDeveloper.getTitleTable(this.getClass()));
 		if (!iwc.isIE()) {
 			getParentPage().setBackgroundColor("#FFFFFF");
 		}
