@@ -5,11 +5,10 @@ package com.idega.developer;
 
 import java.util.ArrayList;
 import java.util.Collection;
-//import com.idega.block.ldap.manager.LDAPManager;
+
 import com.idega.core.accesscontrol.business.StandardRoles;
 import com.idega.core.localisation.business.LocaleSwitcher;
 import com.idega.core.view.DefaultViewNode;
-import com.idega.core.view.FramedWindowClassViewNode;
 import com.idega.core.view.KeyboardShortcut;
 import com.idega.core.view.ViewManager;
 import com.idega.core.view.ViewNode;
@@ -23,7 +22,6 @@ import com.idega.development.presentation.Caches;
 import com.idega.development.presentation.ComponentManager;
 import com.idega.development.presentation.DBPoolStatusViewer;
 import com.idega.development.presentation.HomePageGenerator;
-import com.idega.development.presentation.IWDeveloper;
 import com.idega.development.presentation.LocaleSetter;
 import com.idega.development.presentation.Localizer;
 import com.idega.development.presentation.Logs;
@@ -42,10 +40,10 @@ import com.idega.workspace.view.WorkspaceClassViewNode;
  * <p>
  * TODO tryggvil Describe Type SchoolViewManager
  * </p>
- *  Last modified: $Date: 2006/04/09 11:53:57 $ by $Author: laddi $
+ *  Last modified: $Date: 2006/06/02 15:16:26 $ by $Author: laddi $
  * 
  * @author <a href="mailto:tryggvil@idega.com">tryggvil</a>
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class DeveloperViewManager {
 
@@ -209,14 +207,6 @@ public class DeveloperViewManager {
 		appPropertiesNode.setName("Application Properties");
 		appPropertiesNode.setComponentClass(ApplicationPropertySetter.class);
 		appPropertiesNode.setMaximizeBlockVertically(true);
-		
-		Class applicationClass = IWDeveloper.class;
-		FramedWindowClassViewNode oldDeveloperNode = new FramedWindowClassViewNode("olddeveloper",devNode);
-		oldDeveloperNode.setName("Old Developer");
-		oldDeveloperNode.setWindowClass(applicationClass);
-		
-		String jspPath = this.iwma.getBundle("com.idega.workspace").getJSPURI("workspace.jsp");
-		oldDeveloperNode.setJspUri(jspPath);
 		
 		//oldDeveloperNode.setJspUri(workspace.getResourceURI());
 
