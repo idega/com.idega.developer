@@ -109,6 +109,7 @@ table.developerTable thead tr th {
 	border-top: 1px #999 solid;
 	border-bottom: 1px #999 solid;
 	background-color: #fff;
+	border-left: 1px #999 solid;
 }
 
 table.developerTable tbody tr td {
@@ -116,6 +117,11 @@ table.developerTable tbody tr td {
 	padding: 2px 5px;
 	border-bottom: 1px #ccc solid;
 	background-color: #fff;
+	border-left: 1px #999 solid;
+}
+
+table.developerTable tbody tr td.firstColumn, table.developerTable thead tr th.firstColumn {
+	border-left: 0;
 }
 
 table.developerTable tbody tr.evenRow td {
