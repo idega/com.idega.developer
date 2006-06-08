@@ -2,17 +2,27 @@ package com.idega.development.presentation;
 
 import java.util.Iterator;
 import java.util.List;
+
 import com.idega.idegaweb.IWBundle;
 import com.idega.idegaweb.IWMainApplication;
 import com.idega.idegaweb.IWMainApplicationSettings;
 import com.idega.presentation.Block;
 import com.idega.presentation.IWContext;
+import com.idega.presentation.Layer;
 import com.idega.presentation.Page;
-import com.idega.presentation.Table;
+import com.idega.presentation.Table2;
+import com.idega.presentation.TableCell2;
+import com.idega.presentation.TableRow;
+import com.idega.presentation.TableRowGroup;
+import com.idega.presentation.text.Link;
+import com.idega.presentation.text.Paragraph;
 import com.idega.presentation.text.Text;
 import com.idega.presentation.ui.CheckBox;
 import com.idega.presentation.ui.DropdownMenu;
+import com.idega.presentation.ui.FieldSet;
 import com.idega.presentation.ui.Form;
+import com.idega.presentation.ui.Label;
+import com.idega.presentation.ui.Legend;
 import com.idega.presentation.ui.SubmitButton;
 import com.idega.presentation.ui.TextInput;
 
@@ -43,101 +53,183 @@ public class ApplicationPropertySetter extends Block {
 	}
 
 	public void main(IWContext iwc) {
-		//add(IWDeveloper.getTitleTable(this.getClass()));
-		if (!iwc.isIE()) {
-			getParentPage().setBackgroundColor("#FFFFFF");
-		}
+		IWBundle iwb = iwc.getIWMainApplication().getBundle("com.idega.developer");
+		getParentPage().addStyleSheetURL(iwb.getVirtualPathWithFileNameString("style/developer.css"));
 
-		doBusiness(iwc);
+		Layer topLayer = new Layer(Layer.DIV);
+		topLayer.setStyleClass("developer");
+		topLayer.setID("applicationPropertySetter");
+		add(topLayer);
 
+		doBusiness(iwc, topLayer);
+		
 		IWMainApplication iwma = iwc.getIWMainApplication();
-		//DropdownMenu bundles = getRegisteredBundlesDropdown(iwma, APPLICATION_SETTER_PARAMETER);
 
+		FieldSet fieldSet = new FieldSet("Create application property");
+		topLayer.add(fieldSet);
+		
 		Form form = new Form();
 		form.maintainParameter(IWDeveloper.actionParameter);
 		form.maintainParameter(IWDeveloper.PARAMETER_CLASS_NAME);
-		//form.setTarget(IWDeveloper.frameName);
-		add(form);
-		Table table = new Table(2, 12);
-		table.setCellpadding(5);
-		table.mergeCells(1, 1, 2, 1);
-		table.mergeCells(1, 12, 2, 12);
-		table.setAlignment(1, 12, "right");
-		form.add(table);
+		fieldSet.add(form);
+
+		boolean keepValues = true;
+		if (iwc.isParameterSet(APPLICATION_SETTER_PARAMETER)) {
+			if (iwc.getParameter(APPLICATION_SETTER_PARAMETER).equals("store")) {
+				keepValues = false;
+			}
+		}
+
 		TextInput name = new TextInput(PROPERTY_KEY_NAME_PARAMETER);
+		name.keepStatusOnAction(keepValues);
+
 		TextInput value = new TextInput(PROPERTY_VALUE_PARAMETER);
+		value.keepStatusOnAction(keepValues);
 
-		table.add(IWDeveloper.getText("Set ApplicationProperty"), 1, 1);
+		Layer formItem = new Layer(Layer.DIV);
+		formItem.setStyleClass("formItem");
+		Label label = new Label("Property Key Name", name);
+		formItem.add(label);
+		formItem.add(name);
+		form.add(formItem);
 
-		table.add(IWDeveloper.getText("Property Key Name:"), 1, 2);
-		table.add(name, 2, 2);
-		table.add(IWDeveloper.getText("Property Key Value:"), 1, 3);
-		table.add(value, 2, 3);
-
-		CheckBox box = new CheckBox(ENTITY_AUTOCREATE_PARAMETER);
-		if (iwma.getSettings().getIfEntityAutoCreate()) {
-			box.setChecked(true);
-		}
-		table.add(IWDeveloper.getText("Autocreate Data Entities:"), 1, 4);
-		table.add(box, 2, 4);
-
-		CheckBox box3 = new CheckBox(AUTOCREATE_STRINGS_PARAMETER);
-		if (IWMainApplicationSettings.isAutoCreateStringsActive()) {
-			box3.setChecked(true);
-		}
-		table.add(IWDeveloper.getText("Autocreate Localized Strings:"), 1, 5);
-		table.add(box3, 2, 5);
-
-		CheckBox box4 = new CheckBox(AUTOCREATE_PROPERTIES_PARAMETER);
-		if (iwma.getSettings().isAutoCreatePropertiesActive()) {
-			box4.setChecked(true);
-		}
-		table.add(IWDeveloper.getText("Autocreate Properties:"), 1, 6);
-		table.add(box4, 2, 6);
-
-		CheckBox box2 = new CheckBox(DEBUG_PARAMETER);
-		if (iwma.getSettings().getIfDebug()) {
-			box2.setChecked(true);
-		}
-		table.add(IWDeveloper.getText("Debug:"), 1, 7);
-		table.add(box2, 2, 7);
-
-		CheckBox box6 = new CheckBox(IDO_ENTITY_BEAN_CACHING_PARAMETER);
-		if (iwma.getSettings().getIfEntityBeanCaching()) {
-			box6.setChecked(true);
-		}
-		table.add(IWDeveloper.getText("Entity Bean caching:"), 1, 8);
-		table.add(box6, 2, 8);
-
-		CheckBox box7 = new CheckBox(IDO_ENTITY_QUERY_CACHING_PARAMETER);
-		if (iwma.getSettings().getIfEntityQueryCaching()) {
-			box7.setChecked(true);
-		}
-		table.add(IWDeveloper.getText("Entity Query caching:"), 1, 9);
-		table.add(box7, 2, 9);
-		
-		CheckBox box8 = new CheckBox(IDO_USE_PREPARED_STATEMENT);
-		if (iwma.getSettings().getIfUsePreparedStatement()) {
-			box8.setChecked(true);
-		}
-		table.add(IWDeveloper.getText("Prepared statement:"), 1, 10);
-		table.add(box8, 2, 10);
+		formItem = new Layer(Layer.DIV);
+		formItem.setStyleClass("formItem");
+		label = new Label("Property Key Value", value);
+		formItem.add(label);
+		formItem.add(value);
+		form.add(formItem);
 
 		DropdownMenu menu = new DropdownMenu(IWMainApplicationSettings.DEFAULT_MARKUP_LANGUAGE_KEY);
 		menu.addMenuElement(Page.HTML, "HTML 4.01");
 		menu.addMenuElement(Page.XHTML, "XHTML 1.0");
 		menu.addMenuElement(Page.XHTML1_1, "XHTML 1.1 (Experimental)");
 		menu.setSelectedElement(iwc.getApplicationSettings().getDefaultMarkupLanguage());
-		table.add(IWDeveloper.getText("Markup Language:"), 1, 11);
-		table.add(menu, 2, 11);
 
-		table.add(new SubmitButton("Save", APPLICATION_SETTER_PARAMETER, "save"), 1, 12);
-		table.add(new SubmitButton("Store Application state", APPLICATION_SETTER_PARAMETER, "store"), 1, 12);
+		formItem = new Layer(Layer.DIV);
+		formItem.setStyleClass("formItem");
+		label = new Label("Markup Language", menu);
+		formItem.add(label);
+		formItem.add(menu);
+		form.add(formItem);
 
-		add(getParametersTable(iwma));
+		CheckBox box = new CheckBox(ENTITY_AUTOCREATE_PARAMETER);
+		if (iwma.getSettings().getIfEntityAutoCreate()) {
+			box.setChecked(true);
+		}
+
+		formItem = new Layer(Layer.DIV);
+		formItem.setStyleClass("formItem");
+		formItem.setStyleClass("checkBoxItem");
+		label = new Label("Autocreate Data Entities", box);
+		formItem.add(box);
+		formItem.add(label);
+		form.add(formItem);
+
+		CheckBox box3 = new CheckBox(AUTOCREATE_STRINGS_PARAMETER);
+		if (IWMainApplicationSettings.isAutoCreateStringsActive()) {
+			box3.setChecked(true);
+		}
+
+		formItem = new Layer(Layer.DIV);
+		formItem.setStyleClass("formItem");
+		formItem.setStyleClass("checkBoxItem");
+		label = new Label("Autocreate Localized Strings", box3);
+		formItem.add(box3);
+		formItem.add(label);
+		form.add(formItem);
+
+		CheckBox box4 = new CheckBox(AUTOCREATE_PROPERTIES_PARAMETER);
+		if (iwma.getSettings().isAutoCreatePropertiesActive()) {
+			box4.setChecked(true);
+		}
+
+		formItem = new Layer(Layer.DIV);
+		formItem.setStyleClass("formItem");
+		formItem.setStyleClass("checkBoxItem");
+		label = new Label("Autocreate Properties", box4);
+		formItem.add(box4);
+		formItem.add(label);
+		form.add(formItem);
+
+		CheckBox box2 = new CheckBox(DEBUG_PARAMETER);
+		if (iwma.getSettings().getIfDebug()) {
+			box2.setChecked(true);
+		}
+
+		formItem = new Layer(Layer.DIV);
+		formItem.setStyleClass("formItem");
+		formItem.setStyleClass("checkBoxItem");
+		label = new Label("Debug", box2);
+		formItem.add(box2);
+		formItem.add(label);
+		form.add(formItem);
+
+		CheckBox box6 = new CheckBox(IDO_ENTITY_BEAN_CACHING_PARAMETER);
+		if (iwma.getSettings().getIfEntityBeanCaching()) {
+			box6.setChecked(true);
+		}
+
+		formItem = new Layer(Layer.DIV);
+		formItem.setStyleClass("formItem");
+		formItem.setStyleClass("checkBoxItem");
+		label = new Label("Entity Bean caching", box6);
+		formItem.add(box6);
+		formItem.add(label);
+		form.add(formItem);
+
+		CheckBox box7 = new CheckBox(IDO_ENTITY_QUERY_CACHING_PARAMETER);
+		if (iwma.getSettings().getIfEntityQueryCaching()) {
+			box7.setChecked(true);
+		}
+		
+		formItem = new Layer(Layer.DIV);
+		formItem.setStyleClass("formItem");
+		formItem.setStyleClass("checkBoxItem");
+		label = new Label("Entity Query caching", box7);
+		formItem.add(box7);
+		formItem.add(label);
+		form.add(formItem);
+
+		CheckBox box8 = new CheckBox(IDO_USE_PREPARED_STATEMENT);
+		if (iwma.getSettings().getIfUsePreparedStatement()) {
+			box8.setChecked(true);
+		}
+
+		formItem = new Layer(Layer.DIV);
+		formItem.setStyleClass("formItem");
+		formItem.setStyleClass("checkBoxItem");
+		label = new Label("Prepared statement", box8);
+		formItem.add(box8);
+		formItem.add(label);
+		form.add(formItem);
+
+		Layer buttonLayer = new Layer(Layer.DIV);
+		buttonLayer.setStyleClass("buttonLayer");
+		form.add(buttonLayer);
+
+		SubmitButton save = new SubmitButton("Save", APPLICATION_SETTER_PARAMETER, "save");
+		save.setStyleClass("button");
+		save.setID("save");
+
+		SubmitButton reload = new SubmitButton("Store Application state", APPLICATION_SETTER_PARAMETER, "store");
+		reload.setStyleClass("button");
+		reload.setID("reload");
+
+		buttonLayer.add(save);
+		buttonLayer.add(reload);
+
+		FieldSet keySet = new FieldSet(new Legend("Available keys"));
+		keySet.setStyleClass("keySet");
+		topLayer.add(keySet);
+
+		Paragraph paragraph = new Paragraph();
+		paragraph.add(new Text("Available Keys"));
+		keySet.add(paragraph);
+		keySet.add(getParametersTable(iwma));
 	}
 
-	private void doBusiness(IWContext iwc) {
+	private void doBusiness(IWContext iwc, Layer topLayer) {
 		String[] values = iwc.getParameterValues("property");
 		if (values != null) {
 			for (int a = 0; a < values.length; a++) {
@@ -214,8 +306,11 @@ public class ApplicationPropertySetter extends Block {
 			}
 			iwc.getApplicationSettings().setProperty(IWMainApplicationSettings.DEFAULT_MARKUP_LANGUAGE_KEY, markup);
 
-			add(IWDeveloper.getText("Status: "));
-			add("Property set successfully");
+			Layer layer = new Layer(Layer.DIV);
+			layer.setStyleClass("statusLayer");
+			topLayer.add(layer);
+			
+			layer.add(new Text("Property set successfully"));
 		}
 	}
 
@@ -226,39 +321,73 @@ public class ApplicationPropertySetter extends Block {
 		Form form = new Form();
 		form.maintainParameter(IWDeveloper.actionParameter);
 		form.maintainParameter(IWDeveloper.PARAMETER_CLASS_NAME);
-		Table table = new Table();
 
-		String value;
-		String key;
-		int row = 1;
-		while (iter.hasNext()) {
-			key = (String) iter.next();
-			table.add(new Text(key, true, false, false), 1, row);
-			value = applicationSettings.getProperty(key);
-			if (value != null) {
-				table.add(new Text(value, true, false, false), 2, row);
-			}
-			table.add(new CheckBox("property", key), 3, row);
-			row++;
-		}
-		/*
-		for (int i = 0; i < strings.length; i++) {
-		  name = new Text(strings[i],true,false,false);
-		  table.add(name,1,i+1);
-		  localizedString = bundle.getProperty( strings[i] );
-		  if (localizedString==null) localizedString = "";
-		  table.add(localizedString ,2,i+1);
-		}
-		*/
-		table.setColumnVerticalAlignment(1, "top");
-		table.setCellpadding(5);
+		Table2 table = new Table2();
+		table.setCellpadding(0);
 		table.setCellspacing(0);
-		table.setWidth(400);
-		table.setColor("#9FA9B3");
-		table.setRowColor(table.getRows() + 1, "#FFFFFF");
-		table.add(new SubmitButton("Delete", "mode", "delete"), 3, table.getRows());
-		table.setColumnAlignment(3, "center");
+		table.setStyleClass("developerTable");
+		table.setStyleClass("ruler");
 		form.add(table);
+		
+		TableRowGroup group = table.createHeaderRowGroup();
+		TableRow row = group.createRow();
+		
+		TableCell2 cell = row.createHeaderCell();
+		cell.setStyleClass("firstColumn");
+		cell.add(new Text("Property key"));
+
+		cell = row.createHeaderCell();
+		cell.add(new Text("Property value"));
+
+		cell = row.createHeaderCell();
+		cell.setStyleClass("lastColumn");
+		cell.add(new Text("Delete"));
+
+		group = table.createBodyRowGroup();
+		
+		int i = 0;
+		while (iter.hasNext()) {
+			row = group.createRow();
+
+			String key = (String) iter.next();
+			String value = applicationSettings.getProperty(key);
+			if (value == null) {
+				value = Text.NON_BREAKING_SPACE;
+			}
+
+			Link link = new Link(key);
+			link.addParameter(PROPERTY_KEY_NAME_PARAMETER, key);
+			link.addParameter(PROPERTY_VALUE_PARAMETER, value);
+			cell = row.createCell();
+			cell.setStyleClass("firstColumn");
+			cell.add(link);
+
+			cell = row.createCell();
+			cell.add(new Text(value));
+
+			cell = row.createCell();
+			cell.setStyleClass("lastColumn");
+			cell.add(new CheckBox("property", key));
+
+			i++;
+
+			if (i % 2 == 0) {
+				row.setStyleClass("evenRow");
+			}
+			else {
+				row.setStyleClass("oddRow");
+			}
+		}
+
+		Layer buttonLayer = new Layer(Layer.DIV);
+		buttonLayer.setStyleClass("buttonLayer");
+		form.add(buttonLayer);
+
+		SubmitButton delete = new SubmitButton("Delete", "delete");
+		delete.setStyleClass("button");
+		delete.setID("delete");
+
+		buttonLayer.add(delete);
 
 		return form;
 	}

@@ -27,6 +27,10 @@ div.developer fieldSet.resultSet, div.developer fieldSet.keySet {
 	border-top: 1px #fff solid;
 }
 
+div.developer fieldset.versions {
+	padding: 0;
+}
+
 div.developer fieldset.resultSet legend {
 	display: none;
 }
@@ -34,6 +38,10 @@ div.developer fieldset.resultSet legend {
 div.developer fieldset.resultSet p, div.developer fieldset.keySet p {
 	margin: 8px;
 	padding-top: 8px;
+}
+
+div.developer fieldset.keySet {
+	margin-bottom: 8px;
 }
 
 div.developer fieldset.resultSet p span.query {
@@ -62,8 +70,26 @@ div.developer div.bigFormItem textarea {
 	height: 120px;
 }
 
+div.developer div.checkBoxItem {
+	overflow: hidden;
+	margin-bottom: 6px;
+}
+
+div.developer div.checkBoxItem label {
+	float: left;
+	width: auto;
+}
+
+div.developer div.checkBoxItem input {
+	float: left;
+	margin-right: 8px;
+	width: 12px;
+	height: 12px;
+	border: 0;
+}
+
 div.developer div.buttonLayer {
-	margin-top: 10px;
+	padding-top: 10px;
 	clear: both;
 	overflow: hidden;
 }
