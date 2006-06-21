@@ -15,7 +15,6 @@ import com.idega.presentation.TableCell2;
 import com.idega.presentation.TableRow;
 import com.idega.presentation.TableRowGroup;
 import com.idega.presentation.text.Link;
-import com.idega.presentation.text.Paragraph;
 import com.idega.presentation.text.Text;
 import com.idega.presentation.ui.CheckBox;
 import com.idega.presentation.ui.DropdownMenu;
@@ -223,9 +222,6 @@ public class ApplicationPropertySetter extends Block {
 		keySet.setStyleClass("keySet");
 		topLayer.add(keySet);
 
-		Paragraph paragraph = new Paragraph();
-		paragraph.add(new Text("Available Keys"));
-		keySet.add(paragraph);
 		keySet.add(getParametersTable(iwma));
 	}
 
