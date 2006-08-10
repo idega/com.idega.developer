@@ -5,13 +5,13 @@
   <parent>
   	<groupId>com.idega.block.platform</groupId>
   	<artifactId>com.idega.block.base</artifactId>
-  	<version>3.1.0</version>
+  	<version>3.5.0</version>
   </parent>
   <packaging>jar</packaging>
   <groupId>com.idega.block.platform</groupId>
   <name>idegaWeb Developer</name>
   <artifactId>com.idega.developer</artifactId>
-  <version>3.1.0</version>
+  <version>3.5.0</version>
   <inceptionYear>2000</inceptionYear>
   <description>Developer Application contains tools for developing, debugging and managing within an idegaWeb Application</description>
   <developers>
@@ -48,25 +48,25 @@
     <dependency>
       <groupId>com.idega.block.platform</groupId>
       <artifactId>com.idega.core</artifactId>
-      <version>3.1.0</version>
+      <version>3.5.0</version>
       <type>jar</type>
     </dependency>
     <dependency>
       <groupId>com.idega.block.platform</groupId>
       <artifactId>com.idega.builder</artifactId>
-      <version>3.1.0</version>
+      <version>3.5.0</version>
       <type>jar</type>
     </dependency>
     <dependency>
       <groupId>com.idega.block.platform</groupId>
       <artifactId>com.idega.user</artifactId>
-      <version>3.1.0</version>
+      <version>3.5.0</version>
       <type>jar</type>
     </dependency>
     <dependency>
       <groupId>com.idega.block.platform</groupId>
       <artifactId>com.idega.workspace</artifactId>
-      <version>3.1.0</version>
+      <version>3.5.0</version>
       <type>jar</type>
     </dependency>
   </dependencies>
