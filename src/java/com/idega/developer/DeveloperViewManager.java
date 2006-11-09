@@ -40,10 +40,10 @@ import com.idega.workspace.view.WorkspaceClassViewNode;
  * <p>
  * TODO tryggvil Describe Type SchoolViewManager
  * </p>
- *  Last modified: $Date: 2006/06/02 15:16:26 $ by $Author: laddi $
+ *  Last modified: $Date: 2006/11/09 07:55:37 $ by $Author: valdas $
  * 
  * @author <a href="mailto:tryggvil@idega.com">tryggvil</a>
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class DeveloperViewManager {
 
@@ -198,6 +198,17 @@ public class DeveloperViewManager {
 			Class ldapmanagerClass = Class.forName("com.idega.block.ldap.manager.LDAPManager");
 			ldap.setComponentClass(ldapmanagerClass);
 			ldap.setMaximizeBlockVertically(true);
+		}
+		catch(ClassNotFoundException cnfe){
+			
+		}
+		
+		try{
+			WorkspaceClassViewNode siteInfo = new WorkspaceClassViewNode("siteinfo",devNode);
+			siteInfo.setName("Site Info");
+			Class siteInfoClass = Class.forName("com.idega.content.themes.block.SiteInfo");
+			siteInfo.setComponentClass(siteInfoClass);
+			siteInfo.setMaximizeBlockVertically(true);
 		}
 		catch(ClassNotFoundException cnfe){
 			
