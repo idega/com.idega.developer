@@ -9,22 +9,16 @@
  */
 package com.idega.development.presentation;
 
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-
 import com.idega.idegaweb.IWBundle;
 import com.idega.idegaweb.IWMainApplication;
 import com.idega.presentation.Block;
 import com.idega.presentation.IWContext;
-import com.idega.presentation.Layer;
-import com.idega.presentation.Table2;
-import com.idega.presentation.TableCell2;
-import com.idega.presentation.TableRow;
-import com.idega.presentation.TableRowGroup;
+import com.idega.presentation.Table;
 import com.idega.presentation.text.Text;
-import com.idega.presentation.ui.FieldSet;
-import com.idega.presentation.ui.Legend;
+
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * A class to get versions for all the bundles installed on the system.
@@ -33,18 +27,27 @@ import com.idega.presentation.ui.Legend;
  * @version 1.0
  */
 public class Versions extends Block {
-
-	private final static String IW_BUNDLE_IDENTIFIER="com.idega.core";
+  private final static String IW_BUNDLE_IDENTIFIER="com.idega.core";
+  private Table table;
+  private IWBundle iwb;
 
   public Versions() {
   }
 
   public void main(IWContext iwc){
-		IWBundle iwb = iwc.getIWMainApplication().getBundle("com.idega.developer");
-		getParentPage().addStyleSheetURL(iwb.getVirtualPathWithFileNameString("style/developer.css"));
+    this.iwb = getBundle(iwc);
+    add(IWDeveloper.getTitleTable(this.getClass()));
+		if (!iwc.isIE()) {
+			getParentPage().setBackgroundColor("#FFFFFF");
+		}
 
     IWMainApplication iwma = iwc.getIWMainApplication();
     List bundles = getRegisteredBundles(iwma);
+
+		Text blockHeader = IWDeveloper.getText("Block");
+		blockHeader.setFontColor("#0E2456");
+		Text versionHeader = IWDeveloper.getText("Version");
+		versionHeader.setFontColor("#0E2456");
 
 		Package pack = Package.getPackage("com.idega.core");
 		String defaultVersion = null;
@@ -58,46 +61,18 @@ public class Versions extends Block {
 			defaultVersion = "No Implementation-Version definition for package com.idega.core in Manifest";	
 		}
 
-		Layer topLayer = new Layer(Layer.DIV);
-		topLayer.setStyleClass("developer");
-		topLayer.setID("versions");
-		add(topLayer);
-
-		FieldSet set = new FieldSet(new Legend("Versions"));
-		set.setStyleClass("versions");
-		topLayer.add(set);
-
-		Table2 table = new Table2();
-		table.setCellpadding(0);
-		table.setCellspacing(0);
-		table.setStyleClass("developerTable");
-		table.setStyleClass("ruler");
-		set.add(table);
-		
-		TableRowGroup group = table.createHeaderRowGroup();
-		TableRow row = group.createRow();
-		
-		TableCell2 cell = row.createHeaderCell();
-		cell.setStyleClass("firstColumn");
-		cell.add(new Text("Block"));
-
-		cell = row.createHeaderCell();
-		cell.setStyleClass("lastColumn");
-		cell.add(new Text("Version"));
-
-		group = table.createBodyRowGroup();
-		
-		int i = 0;
-
+    this.table = new Table(2,bundles.size() + 1);
+    this.table.setWidth(1,"160");
+    this.table.add(blockHeader,1,1);
+    this.table.add(versionHeader,2,1);
+    int row = 2;
     Iterator it = bundles.iterator();
     String bundleName = null;
     while (it.hasNext()) {
-			row = group.createRow();
-			
       IWBundle item = (IWBundle)it.next();
       bundleName = item.getBundleIdentifier();
+      this.table.add(bundleName,1,row);
 			pack = Package.getPackage(bundleName);
-
 			String version = defaultVersion;
 			if (pack != null) {
 				version = pack.getImplementationVersion();
@@ -108,24 +83,18 @@ public class Versions extends Block {
 			else {
 				version = defaultVersion;
 			}
-
-			cell = row.createCell();
-			cell.setStyleClass("firstColumn");
-			cell.add(new Text(bundleName));
-
-			cell = row.createCell();
-			cell.setStyleClass("lastColumn");
-			cell.add(new Text(version));
-
-			i++;
-
-			if (i % 2 == 0) {
-				row.setStyleClass("evenRow");
-			}
-			else {
-				row.setStyleClass("oddRow");
-			}
-		}
+      
+      this.table.add(version,2,row++);
+      //table.add(defaultVersion,2,row++);
+    }
+    
+    add(this.table);
+    
+//    Package packages[] = Package.getPackages();
+//    for (int i = 0; i < packages.length; i++) {
+//    	Package p = packages[i];
+//    	System.out.println("Name : " + p.getName());	
+//    }
   }
 
 	/**

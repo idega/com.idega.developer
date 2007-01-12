@@ -9,21 +9,12 @@ import com.idega.idegaweb.IWBundle;
 import com.idega.idegaweb.IWMainApplication;
 import com.idega.presentation.Block;
 import com.idega.presentation.IWContext;
-import com.idega.presentation.Layer;
-import com.idega.presentation.Table2;
-import com.idega.presentation.TableCell2;
-import com.idega.presentation.TableRow;
-import com.idega.presentation.TableRowGroup;
-import com.idega.presentation.text.Link;
-import com.idega.presentation.text.Paragraph;
+import com.idega.presentation.Table;
 import com.idega.presentation.text.Text;
 import com.idega.presentation.ui.CheckBox;
 import com.idega.presentation.ui.DropdownMenu;
-import com.idega.presentation.ui.FieldSet;
 import com.idega.presentation.ui.Form;
 import com.idega.presentation.ui.HiddenInput;
-import com.idega.presentation.ui.Label;
-import com.idega.presentation.ui.Legend;
 import com.idega.presentation.ui.SubmitButton;
 import com.idega.presentation.ui.TextInput;
 
@@ -42,134 +33,100 @@ public class BundlePropertySetter extends Block {
 	private static final String BUNDLE_PARAMETER = "iw_b_p_s";
 	private static final String PROPERTY_KEY_NAME_PARAMETER = "iw_b_p_s_k";
 	private static final String PROPERTY_VALUE_PARAMETER = "iw_b_p_s_v";
+	private Table table;
+	private IWBundle iwb;
 
 	public BundlePropertySetter() {
 	}
 
 	public void main(IWContext iwc) {
-		IWBundle iwb = iwc.getIWMainApplication().getBundle("com.idega.developer");
-		getParentPage().addStyleSheetURL(iwb.getVirtualPathWithFileNameString("style/developer.css"));
-
-		Layer topLayer = new Layer(Layer.DIV);
-		topLayer.setStyleClass("developer");
-		topLayer.setID("bundlePropertySetter");
-		add(topLayer);
 		
-		IWMainApplication iwma = iwc.getIWMainApplication();
+		this.iwb = getBundle(iwc);
+		add(IWDeveloper.getTitleTable(this.getClass()));
+		if (!iwc.isIE()) {
+			getParentPage().setBackgroundColor("#FFFFFF");
+		}
 
+		IWMainApplication iwma = iwc.getIWMainApplication();
+		DropdownMenu bundles = getRegisteredBundlesDropdown(iwma, BUNDLE_PARAMETER);
+		bundles.keepStatusOnAction();
+		bundles.setToSubmit();
+
+		Form form = new Form();
+		form.maintainParameter(IWDeveloper.actionParameter);
+		form.maintainParameter(IWDeveloper.PARAMETER_CLASS_NAME);
+		//form.setTarget(IWDeveloper.frameName);
+		add(form);
+		this.table = new Table(2, 5);
+		this.table.setWidth(1, "160");
+		this.table.mergeCells(1, 1, 2, 1);
+		this.table.setAlignment(2, 5, "right");
+		form.add(this.table);
+		//form.setMethod("GET");
+		TextInput name = new TextInput(BundlePropertySetter.PROPERTY_KEY_NAME_PARAMETER);
+		TextInput value = new TextInput(BundlePropertySetter.PROPERTY_VALUE_PARAMETER);
+
+		this.table.add(IWDeveloper.getText("Set BundleProperty"), 1, 1);
+		this.table.add(IWDeveloper.getText("Bundle:"), 1, 2);
+		this.table.add(bundles, 2, 2);
+
+		this.table.add(IWDeveloper.getText("Property Key Name:"), 1, 3);
+		this.table.add(name, 2, 3);
+		this.table.add(IWDeveloper.getText("Property Key Value:"), 1, 4);
+		this.table.add(value, 2, 4);
+
+		this.table.add(new SubmitButton("Save", "save"), 2, 5);
+		this.table.add(new SubmitButton("Reload", "reload"), 2, 5);
+
+		doBusiness(iwc);
+	}
+
+	private void doBusiness(IWContext iwc) {
 		String bundleIdentifier = iwc.getParameter(BUNDLE_PARAMETER);
+		String save = iwc.getParameter("Save");
+		String reload = iwc.getParameter("Reload");
+		String delete = iwc.getParameter("Delete");
+		IWMainApplication iwma = iwc.getIWMainApplication();
 		IWBundle bundle = null;
 		if (bundleIdentifier != null) {
 			bundle = iwma.getBundle(bundleIdentifier);
 		}
 
-		boolean saved = false;
-		boolean deleted = false;
-		if (iwc.isParameterSet("Delete")) {
+		if (delete != null) {
 			String[] values = iwc.getParameterValues("property");
 			if (values != null && bundle != null) {
 				for (int a = 0; a < values.length; a++) {
 					bundle.removeProperty(values[a]);
 				}
 				bundle.storeState();
-				deleted = true;
 			}
 		}
-		if ((bundleIdentifier != null) && iwc.isParameterSet("Save")) {
+
+		if ((bundleIdentifier != null) && (save != null)) {
 			String KeyName = iwc.getParameter(BundlePropertySetter.PROPERTY_KEY_NAME_PARAMETER);
 			String KeyValue = iwc.getParameter(BundlePropertySetter.PROPERTY_VALUE_PARAMETER);
 			if (KeyName != null && KeyName.length() > 0){
 				bundle.setProperty(KeyName, KeyValue);
 				bundle.storeState();
-				saved = true;
 			}
 			bundle.storeState();
-			
-			Layer layer = new Layer(Layer.DIV);
-			layer.setStyleClass("statusLayer");
-			topLayer.add(layer);
-			
-			layer.add(new Text("Property set successfully and saved to files"));
+			add(IWDeveloper.getText("Status: "));
+			add("Property set successfully and saved to files");
+			add(Text.getBreak());
+			add(Text.getBreak());
+			add(IWDeveloper.getText("Available Keys:"));
+			add(getParametersTable(bundle, bundleIdentifier));
 		}
-		else if ((bundleIdentifier != null) && !iwc.isParameterSet("Save")) {
-			if (iwc.isParameterSet("Reload")) {
+		else if ((bundleIdentifier != null) && (save == null)) {
+			if (reload != null) {
 				iwma.getBundle(bundleIdentifier).reloadBundle();
-
-				Layer layer = new Layer(Layer.DIV);
-				layer.setStyleClass("statusLayer");
-				topLayer.add(layer);
-				
-				layer.add(new Text("Bundle reloaded from files"));
+				add(IWDeveloper.getText("Status: "));
+				add("Bundle reloaded from files");
+				add(Text.getBreak());
+				add(Text.getBreak());
 			}
-		}
-
-		FieldSet fieldSet = new FieldSet("Create bundle property");
-		topLayer.add(fieldSet);
-		
-		Form form = new Form();
-		form.maintainParameter(IWDeveloper.actionParameter);
-		form.maintainParameter(IWDeveloper.PARAMETER_CLASS_NAME);
-		fieldSet.add(form);
-
-		DropdownMenu bundles = getRegisteredBundlesDropdown(iwma, BUNDLE_PARAMETER);
-		bundles.keepStatusOnAction();
-		bundles.setToSubmit();
-
-		TextInput name = new TextInput(BundlePropertySetter.PROPERTY_KEY_NAME_PARAMETER);
-		if (!saved && !deleted) {
-			name.keepStatusOnAction(true);
-		}
-		
-		TextInput value = new TextInput(BundlePropertySetter.PROPERTY_VALUE_PARAMETER);
-		if (!saved && !deleted) {
-			value.keepStatusOnAction(true);
-		}
-
-		Layer formItem = new Layer(Layer.DIV);
-		formItem.setStyleClass("formItem");
-		Label label = new Label("Bundle", bundles);
-		formItem.add(label);
-		formItem.add(bundles);
-		form.add(formItem);
-
-		formItem = new Layer(Layer.DIV);
-		formItem.setStyleClass("formItem");
-		label = new Label("Property Key Name", name);
-		formItem.add(label);
-		formItem.add(name);
-		form.add(formItem);
-
-		formItem = new Layer(Layer.DIV);
-		formItem.setStyleClass("formItem");
-		label = new Label("Property Key Value", value);
-		formItem.add(label);
-		formItem.add(value);
-		form.add(formItem);
-
-		Layer buttonLayer = new Layer(Layer.DIV);
-		buttonLayer.setStyleClass("buttonLayer");
-		form.add(buttonLayer);
-
-		SubmitButton save = new SubmitButton("Save", "save");
-		save.setStyleClass("button");
-		save.setID("save");
-
-		SubmitButton reload = new SubmitButton("Reload", "reload");
-		reload.setStyleClass("button");
-		reload.setID("reload");
-
-		buttonLayer.add(save);
-		buttonLayer.add(reload);
-
-		if (bundleIdentifier != null) {
-			FieldSet keySet = new FieldSet(new Legend("Available keys"));
-			keySet.setStyleClass("keySet");
-			topLayer.add(keySet);
-
-			Paragraph paragraph = new Paragraph();
-			paragraph.add(new Text("Available Keys"));
-			keySet.add(paragraph);
-			keySet.add(getParametersTable(bundle, bundleIdentifier));
+			add(IWDeveloper.getText("Available BundleProperties:"));
+			add(getParametersTable(bundle, bundleIdentifier));
 		}
 	}
 
@@ -191,79 +148,36 @@ public class BundlePropertySetter extends Block {
 		Collections.sort(list);
 
 		Form form = new Form();
+		form.setMethod("get");
 		form.add(new HiddenInput(BUNDLE_PARAMETER, bundleIdentifier));
 		form.maintainParameter(IWDeveloper.actionParameter);
 		form.maintainParameter(IWDeveloper.PARAMETER_CLASS_NAME);
-		
-		Table2 table = new Table2();
-		table.setCellpadding(0);
+		Table table = new Table(3, strings.length + 1);
+		table.setColumnVerticalAlignment(1, "top");
+		table.setCellpadding(5);
 		table.setCellspacing(0);
-		table.setStyleClass("developerTable");
-		table.setStyleClass("ruler");
-		form.add(table);
-		
-		TableRowGroup group = table.createHeaderRowGroup();
-		TableRow row = group.createRow();
-		
-		TableCell2 cell = row.createHeaderCell();
-		cell.setStyleClass("firstColumn");
-		cell.add(new Text("Property key"));
-
-		cell = row.createHeaderCell();
-		cell.add(new Text("Property value"));
-
-		cell = row.createHeaderCell();
-		cell.setStyleClass("lastColumn");
-		cell.add(new Text("Delete"));
-
-		group = table.createBodyRowGroup();
-		
-		int i = 0;
-
+		table.setColumnAlignment(3, "center");
+		String localizedString;
+		Text name;
 		Iterator iter = list.iterator();
+		int i = 0;
 		while (iter.hasNext()) {
-			row = group.createRow();
-			
-			String name = (String) iter.next();
-			String localizedString = bundle.getProperty(strings[i]);
+			name = new Text((String)iter.next(), true, false, false);
+			table.add(name, 1, i + 1);
+			localizedString = bundle.getProperty(strings[i]);
 			if (localizedString == null) {
 				localizedString = "";
 			}
-
-			Link link = new Link(name);
-			link.addParameter(BundlePropertySetter.PROPERTY_KEY_NAME_PARAMETER, name);
-			link.addParameter(BundlePropertySetter.PROPERTY_VALUE_PARAMETER, localizedString);
-			link.addParameter(BUNDLE_PARAMETER, bundleIdentifier);
-			cell = row.createCell();
-			cell.setStyleClass("firstColumn");
-			cell.add(link);
-
-			cell = row.createCell();
-			cell.add(new Text(localizedString));
-
-			cell = row.createCell();
-			cell.setStyleClass("lastColumn");
-			cell.add(new CheckBox("property", strings[i]));
-
+			table.add(localizedString, 2, i + 1);
+			table.add(new CheckBox("property", strings[i]), 3, i + 1);
 			i++;
-
-			if (i % 2 == 0) {
-				row.setStyleClass("evenRow");
-			}
-			else {
-				row.setStyleClass("oddRow");
-			}
 		}
 
-		Layer buttonLayer = new Layer(Layer.DIV);
-		buttonLayer.setStyleClass("buttonLayer");
-		form.add(buttonLayer);
-
-		SubmitButton delete = new SubmitButton("Delete", "delete");
-		delete.setStyleClass("button");
-		delete.setID("delete");
-
-		buttonLayer.add(delete);
+		table.setWidth(400);
+		table.setColor("#9FA9B3");
+		table.setRowColor(strings.length + 1, "#FFFFFF");
+		table.add(new SubmitButton("Delete", "delete"), 3, strings.length + 1);
+		form.add(table);
 
 		return form;
 	}

@@ -48,6 +48,7 @@ public class ObjectTypeManager extends Block {
 	}
 
 	public void main(IWContext iwc) {
+		add(IWDeveloper.getTitleTable(this.getClass()));
 		String otPk = iwc.getParameter(this.PARAMETER_OBJECT_TYPE_ID);
 		if (otPk != null) {
 			try {

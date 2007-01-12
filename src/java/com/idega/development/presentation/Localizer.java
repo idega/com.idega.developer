@@ -7,9 +7,9 @@ import com.idega.idegaweb.IWBundle;
 import com.idega.idegaweb.IWMainApplication;
 import com.idega.idegaweb.IWResourceBundle;
 import com.idega.idegaweb.presentation.LocaleChanger;
-import com.idega.presentation.Block;
 import com.idega.presentation.IWContext;
 import com.idega.presentation.PresentationObject;
+import com.idega.presentation.PresentationObjectContainer;
 import com.idega.presentation.Table;
 import com.idega.presentation.text.Link;
 import com.idega.presentation.text.Text;
@@ -32,7 +32,7 @@ import com.idega.versioncontrol.business.UpdateService;
  * @version 1.0
  */
 
-public class Localizer extends Block {
+public class Localizer extends PresentationObjectContainer {
 
 	private static String bundlesParameter = "iw_availablebundles";
 	private static String localesParameter = "iw_locales";
@@ -48,10 +48,10 @@ public class Localizer extends Block {
 	}
 
 	public void main(IWContext iwc) {
-		//add(IWDeveloper.getTitleTable(this.getClass()));
-		//if (!iwc.isIE()) {
-		//	getParentPage().setBackgroundColor("#FFFFFF");
-		//}
+		add(IWDeveloper.getTitleTable(this.getClass()));
+		if (!iwc.isIE()) {
+			getParentPage().setBackgroundColor("#FFFFFF");
+		}
 
 		IWMainApplication iwma = iwc.getIWMainApplication();
 		DropdownMenu bundlesDrop = getRegisteredDropdown(iwma, bundlesParameter);

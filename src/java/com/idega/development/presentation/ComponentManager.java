@@ -50,6 +50,7 @@ public class ComponentManager extends Block {
 	}
 
 	public void main(IWContext iwc) throws Exception {
+		add(IWDeveloper.getTitleTable(this.getClass()));
 		if (!iwc.isIE()) {
 			getParentPage().setBackgroundColor("#FFFFFF");
 		}
@@ -167,6 +168,7 @@ public class ComponentManager extends Block {
 					IWPropertyListIterator methodsIter = methodsList.getIWPropertyListIterator();
 					if (methodsIter.hasNext()) {
 						form.add(propertyTable);
+						CheckBox deleteBox = new CheckBox(DELETE_CHECKBOX_NAME);
 
 						String methodName;
 						//yindex++;
@@ -181,7 +183,7 @@ public class ComponentManager extends Block {
 							IWProperty prop = methodsIter.nextProperty();
 
 							String identifier = IBPropertyHandler.getInstance().getMethodIdentifier(prop);
-							String description = IBPropertyHandler.getInstance().getMethodDescription(prop, iwc.getCurrentLocale());
+							String description = IBPropertyHandler.getInstance().getMethodDescription(prop, iwc);
 							Method method = null;
 							Class selectedClass = RefactorClassRegistry.forName(selectedComponentKey);
 							try {
@@ -205,7 +207,7 @@ public class ComponentManager extends Block {
 								methodName += " )";
 								propertyTable.add(getSmallText(methodName), 3, yindex);
 							}
-							CheckBox rowBox = new CheckBox(DELETE_CHECKBOX_NAME);
+							CheckBox rowBox = (CheckBox) deleteBox.clone();
 							rowBox.setContent(identifier);
 							propertyTable.add(rowBox, 1, yindex);
 

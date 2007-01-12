@@ -59,6 +59,7 @@ public class HomePageGenerator extends Block {
 	
 	
 	public void main(IWContext iwc) throws Exception {
+		add(IWDeveloper.getTitleTable(this.getClass()));
 		if (!iwc.isIE()) {
 			getParentPage().setBackgroundColor("#FFFFFF");
 		}

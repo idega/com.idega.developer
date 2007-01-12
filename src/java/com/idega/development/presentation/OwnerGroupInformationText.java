@@ -23,15 +23,15 @@ import com.idega.user.data.GroupHome;
  */
 public class OwnerGroupInformationText extends Text {
 	
-	public static final int SHOW_NAME = 0;
-	public static final int SHOW_SHROT_NAME = 1;
-	public static final int SHOW_ABBREVATION = 3;
+	public final int SHOW_NAME = 0;
+	public final int SHOW_SHROT_NAME = 1;
+	public final int SHOW_ABBREVATION = 3;
 	
 	
 	private String textBefore = "";
 	private String textAfter = "";
 	
-	private int informationToShow = SHOW_NAME;
+	private int informationToShow = this.SHOW_NAME;
 	
 	
 	/**
@@ -69,7 +69,7 @@ public class OwnerGroupInformationText extends Text {
 		
 		Page page = this.getParentPage();
 		if(page != null) {
-			int rootPageID = page.getDynamicPageTrigger().getRootPage();
+			int rootPageID = page.getDynamicPageTrigger().getRootPage();;
 			if(rootPageID != -1) {
 				try {
 					Group gr = ((GroupHome)IDOLookup.getHome(Group.class)).findByHomePageID(rootPageID);

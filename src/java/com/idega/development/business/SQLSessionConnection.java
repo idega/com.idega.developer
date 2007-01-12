@@ -1,5 +1,5 @@
 /*
- * $Id: SQLSessionConnection.java,v 1.2 2006/04/09 11:53:57 laddi Exp $
+ * $Id: SQLSessionConnection.java,v 1.1.2.1 2007/01/12 19:33:00 idegaweb Exp $
  * Created on May 4, 2005
  *
  * Copyright (C) 2005 Idega Software hf. All Rights Reserved.

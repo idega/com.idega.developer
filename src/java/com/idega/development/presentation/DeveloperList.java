@@ -1,6 +1,5 @@
 package com.idega.development.presentation;
 
-//import com.idega.block.ldap.manager.LDAPManager;
 import com.idega.core.localisation.presentation.LocaleSwitcher;
 import com.idega.idegaweb.IWBundle;
 import com.idega.idegaweb.IWMainApplication;
@@ -35,38 +34,27 @@ private static String styleName = "iwdClass";
 
     Image image = this.iwb.getImage("/developer/listbutton.gif","",13,13);
 
-    addToList(getClassLink(iwc, Localizer.class,"Localizer"),(Image) image.clone());
-    addToList(getClassLink(iwc, LocaleSwitcher.class,"Locale Switcher"),(Image) image.clone());
-    addToList(getClassLink(iwc, LocaleSetter.class,"Locale Setter"),(Image) image.clone());
-    addToList(getClassLink(iwc, ObjectTypeManager.class,"Object Types"), (Image) image.clone());
-    addToList(getClassLink(iwc, BundleCreator.class,"Bundle Creator"),(Image) image.clone());
-    addToList(getClassLink(iwc, BundlePropertySetter.class,"Bundle Property Setter"),(Image) image.clone());
-    addToList(getClassLink(iwc, BundleResourceManager.class,"Bundle Resource Manager"),(Image) image.clone());
-    addToList(getClassLink(iwc, BundleComponentManager.class,"Bundle Components"),(Image) image.clone());
-    addToList(getClassLink(iwc, ComponentManager.class,"Component Manager"),(Image) image.clone());
-    addToList(getClassLink(iwc, ApplicationPropertySetter.class,"Application Property Setter"),(Image) image.clone());
-    addToList(getClassLink(iwc, DBPoolStatusViewer.class,"DBPool Status Viewer"),(Image) image.clone());
-    addToList(getClassLink(iwc, SQLQueryer.class,"SQL Queryer"),(Image) image.clone());
-    addToList(getClassLink(iwc, ApplicationStatus.class,"Application Status"),(Image) image.clone());
-    addToList(getClassLink(iwc, Caches.class,"Caches"),(Image) image.clone());
-    addToList(getClassLink(iwc, Logs.class,"Logs"),(Image) image.clone());
-    addToList(getClassLink(iwc, Versions.class,"Versions"),(Image) image.clone());
-	addToList(getClassLink(iwc, UpdateManager.class,"UpdateManager"),(Image) image.clone());
-	addToList(getClassLink(iwc, HomePageGenerator.class,"Homepage Generator"),(Image) image.clone());
-	addToList(getClassLink(iwc, PageObjects.class,"Page Object Viewer"),(Image) image.clone());
-	addToList(getClassLink(iwc, ScriptManager.class,"Script Manager"),(Image) image.clone());
-	try{
-		Class ldapManagerClass = Class.forName("com.idega.block.ldap.manager.LDAPManager");
-		addToList(getClassLink(iwc, ldapManagerClass,"LDAP Manager"),(Image) image.clone());
-	}
-	catch(ClassNotFoundException cnfe){
-	}
-	try{
-		Class siteInfo = Class.forName("com.idega.content.themes.presentation.SiteInfo");
-		addToList(getClassLink(iwc, siteInfo, "Site Info"), (Image) image.clone());
-	}
-	catch(ClassNotFoundException cnfe){
-	}
+    addToList(getClassLink(iwc, Localizer.class,"Localizer"),image);
+    addToList(getClassLink(iwc, LocaleSwitcher.class,"Locale Switcher"),image);
+    addToList(getClassLink(iwc, LocaleSetter.class,"Locale Setter"),image);
+    addToList(getClassLink(iwc, ObjectTypeManager.class,"Object Types"), image);
+    addToList(getClassLink(iwc, BundleCreator.class,"Bundle Creator"),image);
+    addToList(getClassLink(iwc, BundlePropertySetter.class,"Bundle Property Setter"),image);
+    addToList(getClassLink(iwc, BundleResourceManager.class,"Bundle Resource Manager"),image);
+    addToList(getClassLink(iwc, BundleComponentManager.class,"Bundle Components"),image);
+    addToList(getClassLink(iwc, ComponentManager.class,"Component Manager"),image);
+    addToList(getClassLink(iwc, ApplicationPropertySetter.class,"Application Property Setter"),image);
+    addToList(getClassLink(iwc, DBPoolStatusViewer.class,"DBPool Status Viewer"),image);
+    addToList(getClassLink(iwc, SQLQueryer.class,"SQL Queryer"),image);
+    addToList(getClassLink(iwc, ApplicationStatus.class,"Application Status"),image);
+    addToList(getClassLink(iwc, Caches.class,"Caches"),image);
+    addToList(getClassLink(iwc, Logs.class,"Logs"),image);
+    addToList(getClassLink(iwc, Versions.class,"Versions"),image);
+	addToList(getClassLink(iwc, UpdateManager.class,"UpdateManager"),image);
+	addToList(getClassLink(iwc, HomePageGenerator.class,"Homepage Generator"),image);
+	addToList(getClassLink(iwc, PageObjects.class,"Page Object Viewer"),image);
+	addToList(getClassLink(iwc, ScriptManager.class,"Script Manager"),image);
+	addToList(getClassLink(iwc, LDAPManager.class,"LDAP Manager"),image);
 	
     setZebraColors("#B0B29D","#B0B29D");
   }

@@ -44,7 +44,7 @@ public class BundleComponentManager extends Block {
 	}
 
 	public void main(IWContext iwc) {
-		//add(IWDeveloper.getTitleTable(this.getClass()));
+		add(IWDeveloper.getTitleTable(this.getClass()));
 		if (!iwc.isIE()) {
 			getParentPage().setBackgroundColor("#FFFFFF");
 		}
@@ -91,6 +91,8 @@ public class BundleComponentManager extends Block {
 			Collections.sort(componentTypes);
 			Iterator iter = componentTypes.iterator();
 
+			CheckBox deleteBox = new CheckBox(DELETE_CHECKBOX_NAME);
+
 			while (iter.hasNext()) {
 				String type = (String) iter.next();
 				typesDrop.addMenuElement(type);
@@ -115,7 +117,7 @@ public class BundleComponentManager extends Block {
 				table.add(getSmallText(className), 1, index);
 				table.add(getSmallText(type), 2, index);
 
-				CheckBox rowBox = new CheckBox(DELETE_CHECKBOX_NAME);
+				CheckBox rowBox = (CheckBox) deleteBox.clone();
 				rowBox.setContent(className);
 				table.add(rowBox, 3, index);
 
@@ -165,7 +167,7 @@ public class BundleComponentManager extends Block {
 					}
 				// 
 				iwb.addComponent(newComponentClass, newComponentType);
-				//iwb.storeState();
+				iwb.storeState();
 			}
 		}
 		else if ((iwb != null) && (save == null)) {

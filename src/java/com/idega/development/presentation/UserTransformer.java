@@ -122,9 +122,8 @@ public class UserTransformer extends Block{
 	}
 	
 	public void createOldUser(IWContext iwc) {
-       	String objUserSysAtt = iwc.getApplicationSettings().getProperty("IW_USER_SYSTEM");
-   		boolean isOldSystemUsed = "OLD".equals(objUserSysAtt);
-  
+		Object objUserSysAtt = iwc.getApplicationSettings().getProperty("IW_USER_SYSTEM");
+		boolean isOldSystemUsed = objUserSysAtt != null && objUserSysAtt.toString().equals("OLD");
 		if(!isOldSystemUsed) {
 			addText("Creating an old user can only be done if the application property \"IW_USER_SYSTEM\" is set to \"OLD\"");
 			return;

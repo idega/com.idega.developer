@@ -54,6 +54,12 @@ public class NewComponentPropertyWindow extends Window {
 
 	public static final String PARAMETER_SAVE = "iw_n_p_save";
 
+	private final static String openingParentheses = "(";
+
+	private final static String closingParentheses = ")";
+
+	private final static String comma = ",";
+
 	private IWBundle selectedBundle = null;
 	private String component = null;
 

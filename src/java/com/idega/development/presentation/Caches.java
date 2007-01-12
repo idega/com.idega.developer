@@ -1,7 +1,6 @@
 package com.idega.development.presentation;
 import com.idega.builder.business.BuilderLogic;
 import com.idega.business.IBOLookup;
-import com.idega.core.cache.IWCacheManager2;
 import com.idega.data.IDOContainer;
 import com.idega.idegaweb.IWCacheManager;
 import com.idega.presentation.Block;
@@ -23,11 +22,11 @@ public class Caches extends Block {
 	private static final String PARAM_IDO_BEAN = "iw_cache_ido_bean";
 	private static final String PARAM_IDO_QUERY = "iw_cache_ido_query";
 	private static final String PARAM_IWCACHEMANAGER = "iw_cache_iwcachemanager";
-	private static final String PARAM_IWCACHEMANAGER_OLD = "iw_cache_iwcachemanager_old";
 	
 	public Caches() {
 	}
 	public void main(IWContext iwc) throws Exception {
+		add(IWDeveloper.getTitleTable(this.getClass()));
 		if (!iwc.isIE()) {
 			getParentPage().setBackgroundColor("#FFFFFF");
 		}
@@ -38,21 +37,18 @@ public class Caches extends Block {
 		//form.setTarget(IWDeveloper.frameName);
 		add(form);
 		Table table = new Table();
-		//table.setAlignment(3, 1, "right");
+		table.setAlignment(3, 1, "right");
 		form.add(table);
-		SubmitButton iw_cacheman = new SubmitButton(PARAM_IWCACHEMANAGER, "Clear master cache (IWCacheManager2)");
-		SubmitButton ib_pages = new SubmitButton(PARAM_IB_PAGES, "Clear Builder Page Cache");
-		//SubmitButton lookup = new SubmitButton(PARAM_LOOKUP, "Clear all Lookup Cache");
-		SubmitButton ido_bean = new SubmitButton(PARAM_IDO_BEAN, "Clear IDO Bean Cache");
-		SubmitButton ido_query = new SubmitButton(PARAM_IDO_QUERY, "Clear IDO Query Cache");
-		SubmitButton iw_cacheman_old = new SubmitButton(PARAM_IWCACHEMANAGER_OLD, "Clear Block content Cache (IWCachemanager)");
-		
-		table.add(iw_cacheman, 3, 1);
-		table.add(ib_pages, 3, 3);
-		//table.add(lookup, 3, 3);
-		table.add(ido_bean, 3, 4);
-		table.add(ido_query, 3, 5);
-		table.add(iw_cacheman_old, 3, 6);
+		SubmitButton ib_pages = new SubmitButton(PARAM_IB_PAGES, "Clear all preloaded Builder Pages");
+		SubmitButton lookup = new SubmitButton(PARAM_LOOKUP, "Clear all Lookup Cache");
+		SubmitButton ido_bean = new SubmitButton(PARAM_IDO_BEAN, "Clear all IDO Bean Cache");
+		SubmitButton ido_query = new SubmitButton(PARAM_IDO_QUERY, "Clear all IDO Query Cache");
+		SubmitButton iw_cacheman = new SubmitButton(PARAM_IWCACHEMANAGER, "Clear all IWCacheManager Cache");
+		table.add(ib_pages, 3, 1);
+		table.add(lookup, 3, 2);
+		table.add(ido_bean, 3, 3);
+		table.add(ido_query, 3, 4);
+		table.add(iw_cacheman, 3, 5);
 
 		processBusiness(iwc);
 	}
@@ -60,7 +56,7 @@ public class Caches extends Block {
 		String clearIBPages = iwc.getParameter(PARAM_IB_PAGES);
 		if (clearIBPages != null) {
 			BuilderLogic.getInstance().clearAllCachedPages();
-			add(IWDeveloper.getText("Cleared all Builder (ib pages) cache!"));
+			add(IWDeveloper.getText("Cleared all ib pages cache!"));
 		}
 		String clearLookup = iwc.getParameter(PARAM_LOOKUP);
 		if (clearLookup != null) {
@@ -79,12 +75,6 @@ public class Caches extends Block {
 		}
 		String iwcacheman = iwc.getParameter(PARAM_IWCACHEMANAGER);
 		if (iwcacheman != null) {
-			IWCacheManager2 iwcm2 = IWCacheManager2.getInstance(iwc.getIWMainApplication());
-			iwcm2.reset();
-			add(IWDeveloper.getText("Flushed all IWCacheManager2 cache!"));
-		}
-		String iwcacheman_old = iwc.getParameter(PARAM_IWCACHEMANAGER_OLD);
-		if (iwcacheman_old != null) {
 			IWCacheManager.getInstance(iwc.getIWMainApplication()).clearAllCaches();
 			add(IWDeveloper.getText("Flushed all IWCachemanager cache!"));
 		}

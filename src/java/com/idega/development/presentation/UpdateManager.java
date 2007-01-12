@@ -1,5 +1,5 @@
 /*
- * $Id: UpdateManager.java,v 1.8 2006/06/01 12:01:36 laddi Exp $
+ * $Id: UpdateManager.java,v 1.6.2.1 2007/01/12 19:31:58 idegaweb Exp $
  *
  * Copyright (C) 2002 Idega hf. All Rights Reserved.
  *
@@ -49,6 +49,7 @@ private String PARAM_EXECUTE_UPDATE="iw_updateman_execupdate";
 	this.iwb = getBundle(iwc);
   	handleAction(iwc);
     IWResourceBundle iwrb = this.iwb.getResourceBundle(iwc);
+    add(IWDeveloper.getTitleTable(this.getClass()));
 		if (!iwc.isIE()) {
 			getParentPage().setBackgroundColor("#FFFFFF");
 		}

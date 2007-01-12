@@ -1,6 +1,5 @@
 package com.idega.development.presentation;
 
-import com.idega.idegaweb.IWMainApplicationSettings;
 import com.idega.presentation.Block;
 import com.idega.presentation.IWContext;
 import com.idega.presentation.Table;
@@ -22,12 +21,10 @@ public class ApplicationStatus extends Block {
 	private static final String RESTART_PARAMETER = "iw_app_re";
 
 	public ApplicationStatus() {
-		// empty
 	}
 
 	public void main(IWContext iwc) throws Exception {
-		IWMainApplicationSettings settings = iwc.getApplicationSettings();
-		//add(IWDeveloper.getTitleTable(this.getClass()));
+		add(IWDeveloper.getTitleTable(this.getClass()));
 		if (!iwc.isIE()) {
 			getParentPage().setBackgroundColor("#FFFFFF");
 		}
@@ -47,9 +44,9 @@ public class ApplicationStatus extends Block {
 
 		// Adding some fancy stuff :.
 
-		String shutdown = settings.getProperty("last_shutdown");
-		String startup = settings.getProperty("last_startup");
-		String reboot = settings.getProperty("last_restart");
+		String shutdown = iwc.getApplicationSettings().getProperty("last_shutdown");
+		String startup = iwc.getApplicationSettings().getProperty("last_startup");
+		String reboot = iwc.getApplicationSettings().getProperty("last_restart");
 		IWTimestamp start = null, shut = null, rest = null;
 		if (shutdown != null && !shutdown.equals("")) {
 			shut = new IWTimestamp(shutdown);
@@ -88,7 +85,7 @@ public class ApplicationStatus extends Block {
 		table.add(IWDeveloper.getText("Uptime"), 1, 7);
 		IWTimestamp now = IWTimestamp.RightNow();
 		int minutes = 0, maxmin = 0;
-		String MaxMinutes = settings.getProperty("max_minutes");
+		String MaxMinutes = iwc.getApplicationSettings().getProperty("max_minutes");
 		if (MaxMinutes != null && !MaxMinutes.equals("")) {
 			maxmin = Integer.parseInt(MaxMinutes);
 		}
@@ -107,7 +104,7 @@ public class ApplicationStatus extends Block {
 
 		if (minutes > maxmin) {
 			maxmin = minutes;
-			settings.setProperty("max_minutes", Integer.toString(maxmin));
+			iwc.getApplicationSettings().setProperty("max_minutes", maxmin);
 		}
 
 		table.add(IWDeveloper.getText("Max. uptime"), 1, 8);
@@ -119,11 +116,10 @@ public class ApplicationStatus extends Block {
 	}
 
 	private void doBusiness(IWContext iwc) throws Exception {
-		IWMainApplicationSettings settings = iwc.getApplicationSettings();
 		String check = iwc.getParameter(RESTART_PARAMETER);
 		if (check != null) {
 			add(IWDeveloper.getText("Done Restarting!"));
-			settings.setProperty("last_restart", com.idega.util.IWTimestamp.RightNow().toString());
+			iwc.getApplicationSettings().setProperty("last_restart", com.idega.util.IWTimestamp.RightNow().toString());
 			iwc.getIWMainApplication().restartApplication();
 		}
 	}
