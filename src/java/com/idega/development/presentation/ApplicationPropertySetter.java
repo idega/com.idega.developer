@@ -9,7 +9,6 @@ import com.idega.idegaweb.IWMainApplicationSettings;
 import com.idega.idegaweb.IWProperty;
 import com.idega.presentation.Block;
 import com.idega.presentation.IWContext;
-import com.idega.presentation.Page;
 import com.idega.presentation.PresentationObject;
 import com.idega.presentation.Table;
 import com.idega.presentation.text.Text;
