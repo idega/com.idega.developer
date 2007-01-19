@@ -11,11 +11,18 @@ import com.idega.idegaweb.IWBundle;
 import com.idega.idegaweb.IWMainApplication;
 import com.idega.presentation.Block;
 import com.idega.presentation.IWContext;
-import com.idega.presentation.Table;
+import com.idega.presentation.Layer;
+import com.idega.presentation.Table2;
+import com.idega.presentation.TableCell2;
+import com.idega.presentation.TableRow;
+import com.idega.presentation.TableRowGroup;
 import com.idega.presentation.text.Text;
 import com.idega.presentation.ui.CheckBox;
 import com.idega.presentation.ui.DropdownMenu;
+import com.idega.presentation.ui.FieldSet;
 import com.idega.presentation.ui.Form;
+import com.idega.presentation.ui.Label;
+import com.idega.presentation.ui.Legend;
 import com.idega.presentation.ui.SubmitButton;
 import com.idega.presentation.ui.TextInput;
 import com.idega.repository.data.RefactorClassRegistry;
@@ -44,49 +51,84 @@ public class BundleComponentManager extends Block {
 	}
 
 	public void main(IWContext iwc) {
-		//add(IWDeveloper.getTitleTable(this.getClass()));
-		if (!iwc.isIE()) {
-			getParentPage().setBackgroundColor("#FFFFFF");
-		}
+		IWBundle iwb = iwc.getIWMainApplication().getBundle("com.idega.developer");
+		getParentPage().addStyleSheetURL(iwb.getVirtualPathWithFileNameString("style/developer.css"));
+		String bundleIdentifier = iwc.getParameter(BUNDLE_PARAMETER);
+
+		Layer topLayer = new Layer(Layer.DIV);
+		topLayer.setStyleClass("developer");
+		topLayer.setID("applicationPropertySetter");
+		add(topLayer);
 
 		IWMainApplication iwma = iwc.getIWMainApplication();
 		DropdownMenu bundles = BundlePropertySetter.getRegisteredBundlesDropdown(iwma, BUNDLE_PARAMETER);
 		bundles.keepStatusOnAction();
 		bundles.setToSubmit();
 
+		DropdownMenu typesDrop = new DropdownMenu(BundleComponentManager.TYPE_INPUT_NAME);
+		TextInput classesInput = new TextInput(CLASS_INPUT_NAME);
+
+		FieldSet fieldSet = new FieldSet("Bundle Component Manager");
+		fieldSet.setStyleClass("componentManager");
+		topLayer.add(fieldSet);
+		
 		Form form = new Form();
 		form.maintainParameter(IWDeveloper.actionParameter);
 		form.maintainParameter(IWDeveloper.PARAMETER_CLASS_NAME);
-		//form.setTarget(IWDeveloper.frameName);
-		add(form);
-		Table table = new Table();
-		table.setCellpadding(5);
-		Table selectTable = new Table(3, 1);
-		form.add(selectTable);
-		form.add(Text.getBreak());
-		form.add(Text.getBreak());
-		form.add(table);
+		fieldSet.add(form);
 
-		selectTable.add(IWDeveloper.getText("Bundle:"), 1, 1);
-		selectTable.add(bundles, 2, 1);
-		SubmitButton button1 = new SubmitButton("Go");
-		selectTable.add(button1, 3, 1);
+		Layer formItem = new Layer(Layer.DIV);
+		formItem.setStyleClass("formItem");
+		Label label = new Label("Bundle", bundles);
+		formItem.add(label);
+		formItem.add(bundles);
+		form.add(formItem);
 
-		String bundleIdentifier = iwc.getParameter(BUNDLE_PARAMETER);
+		if (bundleIdentifier != null) {
+			formItem = new Layer(Layer.DIV);
+			formItem.setStyleClass("formItem");
+			label = new Label("Class name", classesInput);
+			formItem.add(label);
+			formItem.add(classesInput);
+			form.add(formItem);
+
+			formItem = new Layer(Layer.DIV);
+			formItem.setStyleClass("formItem");
+			label = new Label("Class type", typesDrop);
+			formItem.add(label);
+			formItem.add(typesDrop);
+			form.add(formItem);
+		}
+		
+		Layer buttonLayer = new Layer(Layer.DIV);
+		buttonLayer.setStyleClass("buttonLayer");
+		form.add(buttonLayer);
+
+		SubmitButton go = new SubmitButton("Select");
+		go.setStyleClass("button");
+		go.setID("select");
+
+		SubmitButton save = new SubmitButton("save", "Save");
+		save.setStyleClass("button");
+		save.setID("save");
+
+		buttonLayer.add(go);
+		if (bundleIdentifier != null) {
+			buttonLayer.add(save);
+		}
 
 		if (bundleIdentifier != null) {
 
-			IWBundle iwb = iwma.getBundle(bundleIdentifier);
-
+			IWBundle bundle = iwc.getIWMainApplication().getBundle(bundleIdentifier);
+			
 			try {
-				doBusiness(iwc, iwb);
+				doBusiness(iwc, bundle);
 			}
 			catch (Exception e) {
 				add("Error: " + e.getClass().getName() + " " + e.getMessage());
 				e.printStackTrace();
 			}
 
-			DropdownMenu typesDrop = new DropdownMenu(BundleComponentManager.TYPE_INPUT_NAME);
 			List componentTypes = com.idega.core.component.data.ICObjectBMPBean.getAvailableComponentTypes();
 			Collections.sort(componentTypes);
 			Iterator iter = componentTypes.iterator();
@@ -96,42 +138,21 @@ public class BundleComponentManager extends Block {
 				typesDrop.addMenuElement(type);
 			}
 
-			TextInput classesInput = new TextInput(CLASS_INPUT_NAME);
-			classesInput.setLength(40);
-
-			int index = 2;
-
-			table.add(IWDeveloper.getText("ClassName: "), 1, 1);
-			table.add(IWDeveloper.getText("Type: "), 2, 1);
-			table.add(IWDeveloper.getText("Remove?"), 3, 1);
-
-			List compList = iwb.getComponentKeys();
+			List compList = bundle.getComponentKeys();
 			Collections.sort(compList);
 			Iterator compIter = compList.iterator();
-			while (compIter.hasNext()) {
-				String className = (String) compIter.next();
-				String type = iwb.getComponentType(className);
 
-				table.add(getSmallText(className), 1, index);
-				table.add(getSmallText(type), 2, index);
+			FieldSet keySet = new FieldSet(new Legend("Available classes"));
+			keySet.setStyleClass("availableClasses");
+			topLayer.add(keySet);
 
-				CheckBox rowBox = new CheckBox(DELETE_CHECKBOX_NAME);
-				rowBox.setContent(className);
-				table.add(rowBox, 3, index);
-
-				index++;
-			}
-
-			table.add(classesInput, 1, index);
-			table.add(typesDrop, 2, index);
-
-			table.setColumnAlignment(3, "center");
-			table.add(new SubmitButton("Save", "save"), 3, index + 1);
+			keySet.add(getPropertiesTable(bundle, compIter));
+			
 		}
 	}
 
 	private void doBusiness(IWContext iwc, IWBundle iwb) throws Exception {
-		String save = iwc.getParameter("Save");
+		String save = iwc.getParameter("save");
 
 		if ((iwb != null) && (save != null)) {
 			String newComponentClass = iwc.getParameter(BundleComponentManager.CLASS_INPUT_NAME);
@@ -173,11 +194,76 @@ public class BundleComponentManager extends Block {
 		}
 		IBAddModuleWindow.removeAttributes(iwc);
 	}
+	
+	public static Form getPropertiesTable(IWBundle iwb, Iterator iter) {
+		Form form = new Form();
+		form.maintainParameter(IWDeveloper.actionParameter);
+		form.maintainParameter(IWDeveloper.PARAMETER_CLASS_NAME);
 
-	private Text getSmallText(String text) {
-		Text T = new Text(text);
-		T.setFontFace(Text.FONT_FACE_VERDANA);
-		T.setFontSize(Text.FONT_SIZE_7_HTML_1);
-		return T;
+		Table2 table = new Table2();
+		table.setCellpadding(0);
+		table.setCellspacing(0);
+		table.setStyleClass("developerTable");
+		table.setStyleClass("ruler");
+		form.add(table);
+		
+		TableRowGroup group = table.createHeaderRowGroup();
+		TableRow row = group.createRow();
+		
+		TableCell2 cell = row.createHeaderCell();
+		cell.setStyleClass("firstColumn");
+		cell.add(new Text("ClassName"));
+
+		cell = row.createHeaderCell();
+		cell.add(new Text("Type"));
+
+		cell = row.createHeaderCell();
+		cell.setStyleClass("lastColumn");
+		cell.add(new Text("Remove"));
+
+		group = table.createBodyRowGroup();
+		
+		int i = 0;
+		while (iter.hasNext()) {
+			row = group.createRow();
+
+			String className = (String) iter.next();
+			String type = iwb.getComponentType(className);
+
+			CheckBox rowBox = new CheckBox(DELETE_CHECKBOX_NAME);
+			rowBox.setContent(className);
+
+			cell = row.createCell();
+			cell.setStyleClass("firstColumn");
+			cell.add(new Text(className));
+
+			cell = row.createCell();
+			cell.add(new Text(type));
+
+			cell = row.createCell();
+			cell.setStyleClass("lastColumn");
+			cell.add(rowBox);
+
+			i++;
+
+			if (i % 2 == 0) {
+				row.setStyleClass("evenRow");
+			}
+			else {
+				row.setStyleClass("oddRow");
+			}
+		}
+
+		Layer buttonLayer = new Layer(Layer.DIV);
+		buttonLayer.setStyleClass("buttonLayer");
+		form.add(buttonLayer);
+
+		SubmitButton delete = new SubmitButton("Delete", "delete");
+		delete.setStyleClass("button");
+		delete.setID("delete");
+
+		buttonLayer.add(delete);
+
+		return form;
 	}
 }

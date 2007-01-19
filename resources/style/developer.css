@@ -16,11 +16,15 @@ div.developer fieldset.querySet {
 	border-bottom: 1px #D7D7D7 solid;
 }
 
+div.developer fieldset.componentManager {
+	border-bottom: 0;
+}
+
 div.developer fieldset.querySet legend {
 	display: none;
 }
 
-div.developer fieldSet.resultSet, div.developer fieldSet.keySet {
+div.developer fieldSet.resultSet, div.developer fieldSet.keySet, div.developer fieldset.availableClasses {
 	border: 0;
 	padding: 0;
 	margin: 0;
@@ -104,9 +108,10 @@ div.developer div.buttonLayer input.button {
 	text-transform: capitalize;
 }
 
-div.developer div.buttonLayer input#execute, div.developer div.buttonLayer input#save, div.developer div.buttonLayer input#delete {
+div.developer div.buttonLayer input#select, div.developer div.buttonLayer input#execute, div.developer div.buttonLayer input#save, div.developer div.buttonLayer input#delete {
 	float: left;
 	margin: 0;
+	margin-right: 4px;
 }
 
 div.developer div.buttonLayer input#delete {
