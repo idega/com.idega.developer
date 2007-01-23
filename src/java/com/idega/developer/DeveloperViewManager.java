@@ -5,9 +5,8 @@ package com.idega.developer;
 
 import java.util.ArrayList;
 import java.util.Collection;
-
 import com.idega.core.accesscontrol.business.StandardRoles;
-import com.idega.core.localisation.business.LocaleSwitcher;
+import com.idega.core.localisation.presentation.LocaleSwitcher;
 import com.idega.core.view.DefaultViewNode;
 import com.idega.core.view.KeyboardShortcut;
 import com.idega.core.view.ViewManager;
@@ -40,10 +39,10 @@ import com.idega.workspace.view.WorkspaceClassViewNode;
  * <p>
  * TODO tryggvil Describe Type SchoolViewManager
  * </p>
- *  Last modified: $Date: 2006/11/21 17:07:42 $ by $Author: valdas $
+ *  Last modified: $Date: 2007/01/23 19:06:30 $ by $Author: tryggvil $
  * 
  * @author <a href="mailto:tryggvil@idega.com">tryggvil</a>
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class DeveloperViewManager {
 
