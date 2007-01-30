@@ -4,6 +4,13 @@
     <author email="tryggvi@idega.com">Tryggvi Larusson</author>
   </properties>
   <body>
+  
+  	<release version="3.1.1" date="2007-01-30">
+      <action dev="eiki" type="update">
+      	Changed LocaleSetter so you can disable english all together.
+      </action>
+    </release>
+    
   	<release version="3.1.0" date="2005-06-19">
       <action dev="tryggvil" type="update">
       	Declaration of version for including in ePlatform release 3.1
