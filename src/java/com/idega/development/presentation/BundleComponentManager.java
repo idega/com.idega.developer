@@ -4,14 +4,21 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.ejb.FinderException;
+
 import com.idega.builder.presentation.IBAddModuleWindow;
 import com.idega.core.component.data.BundleComponent;
+import com.idega.core.component.data.ICObject;
+import com.idega.core.component.data.ICObjectHome;
+import com.idega.data.IDOLookup;
+import com.idega.data.IDOLookupException;
 import com.idega.development.presentation.comp.BundleComponentFactory;
 import com.idega.idegaweb.IWBundle;
 import com.idega.idegaweb.IWMainApplication;
 import com.idega.presentation.Block;
 import com.idega.presentation.IWContext;
 import com.idega.presentation.Layer;
+import com.idega.presentation.Page;
 import com.idega.presentation.Table2;
 import com.idega.presentation.TableCell2;
 import com.idega.presentation.TableRow;
@@ -46,13 +53,21 @@ public class BundleComponentManager extends Block {
 	private static final String CLASS_INPUT_NAME = "iw_bundle_comp_class";
 	private static final String TYPE_INPUT_NAME = "iw_bundle_comp_type";
 	private static final String DELETE_CHECKBOX_NAME = "iw_bundle_comp_delete";
+	private static final String COMPONENT_IS_WIDGET = "iw_bundle_comp_widget";
+	private static final String COMPONENT_IS_BLOCK = "iw_bundle_comp_block";
+	private static final String FORM_ID = "componentCustomizeForm";
+	private static final String UPDATE_PARAMETER = "update";
 
 	public BundleComponentManager() {
 	}
 
 	public void main(IWContext iwc) {
 		IWBundle iwb = iwc.getIWMainApplication().getBundle("com.idega.developer");
-		getParentPage().addStyleSheetURL(iwb.getVirtualPathWithFileNameString("style/developer.css"));
+		Page parent = getParentPage();
+		if (parent != null) {
+			parent.addStyleSheetURL(iwb.getVirtualPathWithFileNameString("style/developer.css"));
+			parent.addJavascriptURL(iwb.getVirtualPathWithFileNameString("javascript/developer.js"));
+		}
 		String bundleIdentifier = iwc.getParameter(BUNDLE_PARAMETER);
 
 		Layer topLayer = new Layer(Layer.DIV);
@@ -149,6 +164,7 @@ public class BundleComponentManager extends Block {
 			keySet.add(getPropertiesTable(bundle, compIter));
 			
 		}
+		doRecognizeComponents(iwc);
 	}
 
 	private void doBusiness(IWContext iwc, IWBundle iwb) throws Exception {
@@ -192,11 +208,13 @@ public class BundleComponentManager extends Block {
 		else if ((iwb != null) && (save == null)) {
 
 		}
+
 		IBAddModuleWindow.removeAttributes(iwc);
 	}
 	
-	public static Form getPropertiesTable(IWBundle iwb, Iterator iter) {
+	protected Form getPropertiesTable(IWBundle iwb, Iterator iter) {
 		Form form = new Form();
+		form.setId(FORM_ID);
 		form.maintainParameter(IWDeveloper.actionParameter);
 		form.maintainParameter(IWDeveloper.PARAMETER_CLASS_NAME);
 
@@ -216,6 +234,12 @@ public class BundleComponentManager extends Block {
 
 		cell = row.createHeaderCell();
 		cell.add(new Text("Type"));
+		
+		cell = row.createHeaderCell();
+		cell.add(new Text("Widget"));
+		
+		cell = row.createHeaderCell();
+		cell.add(new Text("Block"));
 
 		cell = row.createHeaderCell();
 		cell.setStyleClass("lastColumn");
@@ -223,15 +247,40 @@ public class BundleComponentManager extends Block {
 
 		group = table.createBodyRowGroup();
 		
+		CheckBox isWidget = null;
+		CheckBox isBlock = null;
 		int i = 0;
-		while (iter.hasNext()) {
+		ICObjectHome objectHome = getICObjectHome();
+		ICObject object = null;
+		for (Iterator it = iter; it.hasNext(); ) {
 			row = group.createRow();
 
 			String className = (String) iter.next();
 			String type = iwb.getComponentType(className);
+			if (objectHome != null) {
+				try {
+					object = objectHome.findByClassName(className);
+				} catch (FinderException e) {
+					e.printStackTrace();
+				}
+			}
 
 			CheckBox rowBox = new CheckBox(DELETE_CHECKBOX_NAME);
 			rowBox.setContent(className);
+			
+			isWidget = new CheckBox();
+			isWidget.setContent(className);
+			isWidget.setOnClick("addComponentPropertyToList('"+FORM_ID+"', '"+COMPONENT_IS_WIDGET+"', this)");
+			if (object != null) {
+				isWidget.setChecked(object.isWidget());
+			}
+			
+			isBlock = new CheckBox();
+			isBlock.setContent(className);
+			isBlock.setOnClick("addComponentPropertyToList('"+FORM_ID+"', '"+COMPONENT_IS_BLOCK+"', this)");
+			if (object != null) {
+				isBlock.setChecked(object.isBlock());
+			}
 
 			cell = row.createCell();
 			cell.setStyleClass("firstColumn");
@@ -239,6 +288,12 @@ public class BundleComponentManager extends Block {
 
 			cell = row.createCell();
 			cell.add(new Text(type));
+			
+			cell = row.createCell();
+			cell.add(isWidget);
+			
+			cell = row.createCell();
+			cell.add(isBlock);
 
 			cell = row.createCell();
 			cell.setStyleClass("lastColumn");
@@ -258,12 +313,98 @@ public class BundleComponentManager extends Block {
 		buttonLayer.setStyleClass("buttonLayer");
 		form.add(buttonLayer);
 
-		SubmitButton delete = new SubmitButton("Delete", "delete");
-		delete.setStyleClass("button");
-		delete.setID("delete");
+		SubmitButton update = new SubmitButton(UPDATE_PARAMETER, "Update");
+		update.setStyleClass("button");
+		update.setID(UPDATE_PARAMETER);
 
-		buttonLayer.add(delete);
+		buttonLayer.add(update);
 
 		return form;
+	}
+	
+	private void doRecognizeComponents(IWContext iwc) {
+		String update = iwc.getParameter(UPDATE_PARAMETER);
+		if (update == null) {
+			return;
+		}
+		String[] widgets = iwc.getParameterValues(COMPONENT_IS_WIDGET);
+		String[] blocks = iwc.getParameterValues(COMPONENT_IS_BLOCK);
+		if (widgets == null && blocks == null) {
+			return;
+		}
+		
+		ICObjectHome objectHome = getICObjectHome();
+		if (objectHome == null) {
+			return;
+		}
+		
+		setComponentValues(widgets, objectHome, true);
+		setComponentValues(blocks, objectHome, false);
+	}
+	
+	private void setComponentValues(String[] classNames, ICObjectHome objectHome, boolean manageWidgets) {
+		if (classNames == null || objectHome == null) {
+			return;
+		}
+		ICObject object = null;
+		String[] values = null;
+		String eta = "@";
+		String enable = "enable";
+		boolean needToStore = false;
+		for (int i = 0; i < classNames.length; i++) {
+			needToStore = false;
+			values = classNames[i].split(eta);
+			if (values.length == 2) {
+				try {
+					object = objectHome.findByClassName(values[0]);
+				} catch (FinderException e) {
+					e.printStackTrace();
+				}
+				if (object != null) {
+					if (values[1].indexOf(enable) == -1) { // Setting FALSE
+						if (manageWidgets) {
+							if (object.isWidget()) {
+								object.setIsWidget(Boolean.FALSE);
+								needToStore = true;
+							}
+						}
+						else {
+							if (object.isBlock()) {
+								object.setIsBlock(Boolean.FALSE);
+								needToStore = true;
+							}
+						}
+					}
+					else { // Setting TRUE
+						if (manageWidgets) {
+							if (!object.isWidget()) {
+								object.setIsWidget(Boolean.TRUE);
+								needToStore = true;
+							}
+						}
+						else {
+							if (!object.isBlock()) {
+								object.setIsBlock(Boolean.TRUE);
+								needToStore = true;
+							}
+						}
+					}
+					if (needToStore) {
+						object.store();
+					}
+				}
+			}
+		}
+	}
+	
+	private ICObjectHome getICObjectHome() {
+		ICObjectHome home = null;
+		try {
+			home = (ICObjectHome) IDOLookup.getHome(ICObject.class);
+		} catch (IDOLookupException e) {
+			e.printStackTrace();
+			return null;
+		}
+		return home;
 	}
 }

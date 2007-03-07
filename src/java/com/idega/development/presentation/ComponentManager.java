@@ -15,6 +15,7 @@ import com.idega.idegaweb.IWPropertyList;
 import com.idega.idegaweb.IWPropertyListIterator;
 import com.idega.presentation.Block;
 import com.idega.presentation.IWContext;
+import com.idega.presentation.Page;
 import com.idega.presentation.PresentationObject;
 import com.idega.presentation.Table;
 import com.idega.presentation.text.Link;
@@ -45,13 +46,19 @@ public class ComponentManager extends Block {
 	private static final String METHOD_PARAMETER = "iw_method_par";
 	private static final String METHOD_DESCRIPTION_PARAMETER = "iw_method_desc_par";
 	private static final String OPTIONS_PARAMETER = "iw_method_options";
+	private static final String USER_FRIENDLY_PARAMETER = "iw_method_user_friendly";
 
 	public ComponentManager() {
 	}
 
 	public void main(IWContext iwc) throws Exception {
-		if (!iwc.isIE()) {
-			getParentPage().setBackgroundColor("#FFFFFF");
+		Page parent = getParentPage();
+		if (parent != null) {
+			if (!iwc.isIE()) {
+				parent.setBackgroundColor("#FFFFFF");
+			}
+			IWBundle iwb = iwc.getIWMainApplication().getBundle("com.idega.developer");
+			parent.addJavascriptURL(iwb.getVirtualPathWithFileNameString("javascript/developer.js"));
 		}
 
 		IWMainApplication iwma = iwc.getIWMainApplication();
@@ -160,8 +167,11 @@ public class ComponentManager extends Block {
 				if (methodsToDelete != null) {
 					deleteMethods(iwb, selectedComponentKey, methodsToDelete);
 				}
-
+				
 				IWPropertyList methodsList = IBPropertyHandler.getInstance().getMethods(iwb, selectedComponentKey);
+				
+				manageUserFriendlyMethods(iwb, selectedComponentKey, iwc.getParameterValues(USER_FRIENDLY_PARAMETER), methodsList);
+				
 				if (methodsList != null) {
 
 					IWPropertyListIterator methodsIter = methodsList.getIWPropertyListIterator();
@@ -174,8 +184,9 @@ public class ComponentManager extends Block {
 						yindex = 1;
 
 						propertyTable.add(IWDeveloper.getText("Remove?"), 1, yindex);
-						propertyTable.add(IWDeveloper.getText("Property"), 2, yindex);
-						propertyTable.add(IWDeveloper.getText("Method used"), 3, yindex);
+						propertyTable.add(IWDeveloper.getText("\"User Friendly\"?"), 2, yindex);
+						propertyTable.add(IWDeveloper.getText("Property"), 3, yindex);
+						propertyTable.add(IWDeveloper.getText("Method used"), 4, yindex);
 						while (methodsIter.hasNext()) {
 							yindex++;
 							IWProperty prop = methodsIter.nextProperty();
@@ -192,7 +203,7 @@ public class ComponentManager extends Block {
 								e.printStackTrace();
 							}
 
-							propertyTable.add(getSmallText(description), 2, yindex);
+							propertyTable.add(getSmallText(description), 3, yindex);
 							//table.add(getSmallText(identifier),3,yindex);
 							if (method != null) {
 								methodName = method.getName() + "( ";
@@ -203,16 +214,22 @@ public class ComponentManager extends Block {
 									methodName += method.getParameterTypes()[i].getName();
 								}
 								methodName += " )";
-								propertyTable.add(getSmallText(methodName), 3, yindex);
+								propertyTable.add(getSmallText(methodName), 4, yindex);
 							}
 							CheckBox rowBox = new CheckBox(DELETE_CHECKBOX_NAME);
 							rowBox.setContent(identifier);
 							propertyTable.add(rowBox, 1, yindex);
+							
+							CheckBox manageSimpleProperty = new CheckBox();
+							manageSimpleProperty.setContent(identifier);
+							manageSimpleProperty.setOnClick("addComponentPropertyToList(null, '"+USER_FRIENDLY_PARAMETER+"', this)");
+							manageSimpleProperty.setChecked(prop.getPropertySimple());
+							propertyTable.add(manageSimpleProperty, 2, yindex);
 
 						}
 						yindex++;
 						propertyTable.add(new SubmitButton("Update"), 1, yindex);
-						propertyTable.mergeCells(1, yindex, 3, yindex);
+						propertyTable.mergeCells(1, yindex, 4, yindex);
 					}
 				}
 			}
@@ -220,7 +237,6 @@ public class ComponentManager extends Block {
 		}
 
 		table.setWidth(1, "160");
-
 	}
 
 	private void doBusiness(IWBundle iwb, String selectedComponentKey, String selectedMethodIdentifier, String selectedMethodDesc, Map options) {
@@ -298,6 +314,7 @@ public class ComponentManager extends Block {
 			}
 
 		}
+		
 		return theReturn;
 	}
 
@@ -309,6 +326,34 @@ public class ComponentManager extends Block {
 			iwb.storeState();
 		}
 
+	}
+	
+	private void manageUserFriendlyMethods(IWBundle iwb, String selectedComponentKey, String[] markedMethods, IWPropertyList methods) {
+		if (iwb == null || selectedComponentKey == null || markedMethods == null || methods == null) {
+			return;
+		}
+		String enable = "enable";
+		String[] values = null;
+		String eta = "@";
+		boolean madeChanges = false;
+		for (int i = 0; i < markedMethods.length; i++) {
+			values = markedMethods[i].split(eta);
+			if (values.length == 2) {
+				IWProperty property = methods.getIWProperty(values[0]);
+				if (property != null) {
+					if (values[1].indexOf(enable) == -1) {
+						property.setSimple(false);
+					}
+					else {
+						property.setSimple(true);
+					}
+					madeChanges = true;
+				}
+			}
+		}
+		if (madeChanges) {
+			iwb.storeState();
+		}
 	}
 
 	private Text getSmallText(String text) {
