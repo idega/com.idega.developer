@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import com.idega.builder.business.BuilderConstants;
+import com.idega.builder.business.BuilderLogic;
 import com.idega.builder.business.IBPropertyHandler;
 import com.idega.idegaweb.IWBundle;
 import com.idega.idegaweb.IWMainApplication;
@@ -170,7 +172,7 @@ public class ComponentManager extends Block {
 				
 				IWPropertyList methodsList = IBPropertyHandler.getInstance().getMethods(iwb, selectedComponentKey);
 				
-				manageUserFriendlyMethods(iwb, selectedComponentKey, iwc.getParameterValues(USER_FRIENDLY_PARAMETER), methodsList);
+				manageUserFriendlyMethods(iwb, selectedComponentKey, iwc.getParameterValues(USER_FRIENDLY_PARAMETER), methodsList, iwc);
 				
 				if (methodsList != null) {
 
@@ -328,7 +330,7 @@ public class ComponentManager extends Block {
 
 	}
 	
-	private void manageUserFriendlyMethods(IWBundle iwb, String selectedComponentKey, String[] markedMethods, IWPropertyList methods) {
+	private void manageUserFriendlyMethods(IWBundle iwb, String selectedComponentKey, String[] markedMethods, IWPropertyList methods, IWContext iwc) {
 		if (iwb == null || selectedComponentKey == null || markedMethods == null || methods == null) {
 			return;
 		}
@@ -352,7 +354,10 @@ public class ComponentManager extends Block {
 			}
 		}
 		if (madeChanges) {
-			iwb.storeState();
+			//	Removing from cache
+			BuilderLogic.getInstance().removeBlockObjectFromCache(iwc, BuilderConstants.EDIT_MODULE_WINDOW_CACHE_KEY);
+			BuilderLogic.getInstance().removeBlockObjectFromCache(iwc, BuilderConstants.ADD_NEW_MODULE_WINDOW_CACHE_KEY);
+			methods.store();
 		}
 	}
 

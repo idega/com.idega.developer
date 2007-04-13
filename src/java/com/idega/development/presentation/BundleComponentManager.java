@@ -6,6 +6,10 @@ import java.util.List;
 
 import javax.ejb.FinderException;
 
+import com.idega.builder.business.BuilderConstants;
+import com.idega.builder.business.BuilderLogic;
+import com.idega.builder.presentation.AddModuleBlock;
+import com.idega.builder.presentation.EditModuleBlock;
 import com.idega.builder.presentation.IBAddModuleWindow;
 import com.idega.core.component.data.BundleComponent;
 import com.idega.core.component.data.ICObject;
@@ -204,6 +208,7 @@ public class BundleComponentManager extends Block {
 				iwb.addComponent(newComponentClass, newComponentType);
 				//iwb.storeState();
 			}
+			
 		}
 		else if ((iwb != null) && (save == null)) {
 
@@ -327,6 +332,11 @@ public class BundleComponentManager extends Block {
 		if (update == null) {
 			return;
 		}
+		
+		//	Removing from cache
+		BuilderLogic.getInstance().removeBlockObjectFromCache(iwc, BuilderConstants.EDIT_MODULE_WINDOW_CACHE_KEY);
+		BuilderLogic.getInstance().removeBlockObjectFromCache(iwc, BuilderConstants.ADD_NEW_MODULE_WINDOW_CACHE_KEY);
+		
 		String[] widgets = iwc.getParameterValues(COMPONENT_IS_WIDGET);
 		String[] blocks = iwc.getParameterValues(COMPONENT_IS_BLOCK);
 		if (widgets == null && blocks == null) {
