@@ -49,6 +49,7 @@ public class ComponentManager extends Block {
 	private static final String METHOD_DESCRIPTION_PARAMETER = "iw_method_desc_par";
 	private static final String OPTIONS_PARAMETER = "iw_method_options";
 	private static final String USER_FRIENDLY_PARAMETER = "iw_method_user_friendly";
+	private static final String METHOD_NEEDS_RELOAD_PARAMETER = "iw_method_needs_reload";
 
 	public ComponentManager() {
 	}
@@ -98,7 +99,7 @@ public class ComponentManager extends Block {
 			yindex++;
 
 			List componentNames = iwb.getComponentKeys();
-			Map names = new TreeMap();
+			Map<String, String> names = new TreeMap<String, String>();
 			Iterator iter = componentNames.iterator();
 			while (iter.hasNext()) {
 				String element = (String) iter.next();
@@ -172,7 +173,8 @@ public class ComponentManager extends Block {
 				
 				IWPropertyList methodsList = IBPropertyHandler.getInstance().getMethods(iwb, selectedComponentKey);
 				
-				manageUserFriendlyMethods(iwb, selectedComponentKey, iwc.getParameterValues(USER_FRIENDLY_PARAMETER), methodsList, iwc);
+				manageMethodProperties(iwb, selectedComponentKey, iwc.getParameterValues(USER_FRIENDLY_PARAMETER), methodsList, iwc, true);
+				manageMethodProperties(iwb, selectedComponentKey, iwc.getParameterValues(METHOD_NEEDS_RELOAD_PARAMETER), methodsList, iwc, false);
 				
 				if (methodsList != null) {
 
@@ -187,8 +189,12 @@ public class ComponentManager extends Block {
 
 						propertyTable.add(IWDeveloper.getText("Remove?"), 1, yindex);
 						propertyTable.add(IWDeveloper.getText("\"User Friendly\"?"), 2, yindex);
-						propertyTable.add(IWDeveloper.getText("Property"), 3, yindex);
-						propertyTable.add(IWDeveloper.getText("Method used"), 4, yindex);
+						propertyTable.add(IWDeveloper.getText("Needs reload"), 3, yindex);
+						propertyTable.add(IWDeveloper.getText("Property"), 4, yindex);
+						propertyTable.add(IWDeveloper.getText("Method used"), 5, yindex);
+						
+						String simpleAction = null;
+						String reloadAction = null;
 						while (methodsIter.hasNext()) {
 							yindex++;
 							IWProperty prop = methodsIter.nextProperty();
@@ -205,8 +211,8 @@ public class ComponentManager extends Block {
 								e.printStackTrace();
 							}
 
-							propertyTable.add(getSmallText(description), 3, yindex);
-							//table.add(getSmallText(identifier),3,yindex);
+							propertyTable.add(getSmallText(description), 4, yindex);
+							//table.add(getSmallText(identifier),4,yindex);
 							if (method != null) {
 								methodName = method.getName() + "( ";
 								for (int i = 0; i < method.getParameterTypes().length; i++) {
@@ -216,7 +222,7 @@ public class ComponentManager extends Block {
 									methodName += method.getParameterTypes()[i].getName();
 								}
 								methodName += " )";
-								propertyTable.add(getSmallText(methodName), 4, yindex);
+								propertyTable.add(getSmallText(methodName), 5, yindex);
 							}
 							CheckBox rowBox = new CheckBox(DELETE_CHECKBOX_NAME);
 							rowBox.setContent(identifier);
@@ -224,10 +230,17 @@ public class ComponentManager extends Block {
 							
 							CheckBox manageSimpleProperty = new CheckBox();
 							manageSimpleProperty.setContent(identifier);
-							manageSimpleProperty.setOnClick("addComponentPropertyToList(null, '"+USER_FRIENDLY_PARAMETER+"', this)");
-							manageSimpleProperty.setChecked(prop.getPropertySimple());
+							simpleAction = new StringBuffer("addComponentPropertyToList(null, '").append(USER_FRIENDLY_PARAMETER).append("', this)").toString();
+							manageSimpleProperty.setOnClick(simpleAction);
+							manageSimpleProperty.setChecked(prop.isPropertySimple());
 							propertyTable.add(manageSimpleProperty, 2, yindex);
-
+							
+							CheckBox manageNeedsReloadProperty = new CheckBox();
+							manageNeedsReloadProperty.setContent(identifier);
+							reloadAction = new StringBuffer("addComponentPropertyToList(null, '").append(METHOD_NEEDS_RELOAD_PARAMETER).append("', this)").toString();
+							manageNeedsReloadProperty.setOnClick(reloadAction);
+							manageNeedsReloadProperty.setChecked(prop.doNeedReload());
+							propertyTable.add(manageNeedsReloadProperty, 3, yindex);
 						}
 						yindex++;
 						propertyTable.add(new SubmitButton("Update"), 1, yindex);
@@ -330,7 +343,7 @@ public class ComponentManager extends Block {
 
 	}
 	
-	private void manageUserFriendlyMethods(IWBundle iwb, String selectedComponentKey, String[] markedMethods, IWPropertyList methods, IWContext iwc) {
+	private void manageMethodProperties(IWBundle iwb, String selectedComponentKey, String[] markedMethods, IWPropertyList methods, IWContext iwc, boolean manageSimple) {
 		if (iwb == null || selectedComponentKey == null || markedMethods == null || methods == null) {
 			return;
 		}
@@ -344,10 +357,20 @@ public class ComponentManager extends Block {
 				IWProperty property = methods.getIWProperty(values[0]);
 				if (property != null) {
 					if (values[1].indexOf(enable) == -1) {
-						property.setSimple(false);
+						if (manageSimple) {
+							property.setSimple(false);
+						}
+						else {
+							property.setNeedsReload(false);
+						}
 					}
 					else {
-						property.setSimple(true);
+						if (manageSimple) {
+							property.setSimple(true);
+						}
+						else {
+							property.setNeedsReload(true);
+						}
 					}
 					madeChanges = true;
 				}
