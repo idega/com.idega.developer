@@ -239,7 +239,7 @@ public class ComponentManager extends Block {
 							manageNeedsReloadProperty.setContent(identifier);
 							reloadAction = new StringBuffer("addComponentPropertyToList(null, '").append(METHOD_NEEDS_RELOAD_PARAMETER).append("', this)").toString();
 							manageNeedsReloadProperty.setOnClick(reloadAction);
-							manageNeedsReloadProperty.setChecked(prop.doNeedReload());
+							manageNeedsReloadProperty.setChecked(prop.isNeedsReload());
 							propertyTable.add(manageNeedsReloadProperty, 3, yindex);
 						}
 						yindex++;
