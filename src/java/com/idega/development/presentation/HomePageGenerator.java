@@ -154,7 +154,7 @@ public class HomePageGenerator extends Block {
 					ICPage homePage = group.getHomePage();
 					
 					if(homePage!=null) {
-						IBPageChooser page = new IBPageChooser("-");
+						IBPageChooser page = new IBPageChooser("-", true);
 						page.setSelectedPage(((Integer)homePage.getPrimaryKey()).intValue(),homePage.getName());
 						page.setDisabled(true);
 						groupListTable.add(page,2,tableRow);
