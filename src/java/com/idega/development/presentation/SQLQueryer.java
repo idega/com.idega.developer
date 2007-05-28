@@ -14,6 +14,9 @@ import java.sql.Statement;
 import java.sql.Types;
 import java.util.StringTokenizer;
 
+import com.idega.block.web2.business.Web2Business;
+import com.idega.business.IBOLookup;
+import com.idega.business.IBOLookupException;
 import com.idega.development.business.SQLSessionConnection;
 import com.idega.idegaweb.IWBundle;
 import com.idega.presentation.Block;
@@ -48,7 +51,7 @@ public class SQLQueryer extends Block {
 
 	public final static String IW_BUNDLE_IDENTIFIER = "com.idega.developer";
 
-	private static String PARAM_QUERY = "sql_qry_str";
+	private static String PARAM_QUERY = "sqlQuery";
 	private static String PARAM_NUM_RECORDS = "sql_num_rec";
 	private static String DUMP_FILE = "dump_file";
 	private static String DUMP_TYPE = "dump_type";
@@ -78,7 +81,7 @@ public class SQLQueryer extends Block {
 	}
 
 	public void main(IWContext iwc) throws Exception {
-		IWBundle iwb = this.getBundle(iwc);
+		IWBundle iwb = this.getBundle(iwc);	
 		getParentPage().addStyleSheetURL(iwb.getVirtualPathWithFileNameString("style/developer.css"));
 
 		Layer topLayer = new Layer(Layer.DIV);
@@ -123,10 +126,20 @@ public class SQLQueryer extends Block {
 				form.setID("sqlQuerier");
 				form.setStyleClass("developerForm");
 				form.maintainParameter(IWDeveloper.PARAMETER_CLASS_NAME);
+			
 				querySet.add(form);
-
+				
+				try {
+					Web2Business web2 = (Web2Business) IBOLookup.getServiceInstance(iwc, Web2Business.class);
+					this.getParentPage().addJavascriptURL(web2.getCodePressScriptFilePath());
+				} catch (IBOLookupException e1) {
+					e1.printStackTrace();
+				}
 				TextArea input = new TextArea(PARAM_QUERY);
+				input.setId(PARAM_QUERY);
 				input.keepStatusOnAction(true);
+//				enable syntax coloring!
+				input.setStyleClass("codepress sql linenumbers-on");
 
 				Layer formItem = new Layer(Layer.DIV);
 				formItem.setStyleClass("formItem");
@@ -209,10 +222,8 @@ public class SQLQueryer extends Block {
 				//rollback.setToFormSubmit(form);
 
 				SubmitButton execute = new SubmitButton("Execute");
-				//Link execute = new Link(new Span(new Text("Execute")));
 				execute.setStyleClass("button");
 				execute.setID("execute");
-				//execute.setToFormSubmit(form);
 
 				buttonLayer.add(execute);
 				buttonLayer.add(commit);
