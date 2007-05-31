@@ -5,6 +5,12 @@
   </properties>
   <body>
   
+    <release version="3.1.2" date="2007-05-31">
+      <action dev="eiki" type="update">
+      	Added syntax coloring support to the SQLQueryer
+      </action>
+    </release>
+    
   	<release version="3.1.1" date="2007-01-30">
       <action dev="eiki" type="update">
       	Changed LocaleSetter so you can disable english all together.
