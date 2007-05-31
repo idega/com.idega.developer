@@ -179,3 +179,7 @@ table.developerTable tbody tr td a {
 table.developerTable tr td.number {
 	text-align: right;
 }
+
+.maximizedvertically .wf_blockmainarea{
+	top: 23px !important;
+}
