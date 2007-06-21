@@ -15,8 +15,7 @@ import java.sql.Types;
 import java.util.StringTokenizer;
 
 import com.idega.block.web2.business.Web2Business;
-import com.idega.business.IBOLookup;
-import com.idega.business.IBOLookupException;
+import com.idega.business.SpringBeanLookup;
 import com.idega.development.business.SQLSessionConnection;
 import com.idega.idegaweb.IWBundle;
 import com.idega.presentation.Block;
@@ -129,12 +128,9 @@ public class SQLQueryer extends Block {
 			
 				querySet.add(form);
 				
-				try {
-					Web2Business web2 = (Web2Business) IBOLookup.getServiceInstance(iwc, Web2Business.class);
-					this.getParentPage().addJavascriptURL(web2.getCodePressScriptFilePath());
-				} catch (IBOLookupException e1) {
-					e1.printStackTrace();
-				}
+				Web2Business web2 = (Web2Business) SpringBeanLookup.getInstance().getSpringBean(iwc, Web2Business.class);
+				this.getParentPage().addJavascriptURL(web2.getCodePressScriptFilePath());
+				
 				TextArea input = new TextArea(PARAM_QUERY);
 				input.setId(PARAM_QUERY);
 				input.keepStatusOnAction(true);
