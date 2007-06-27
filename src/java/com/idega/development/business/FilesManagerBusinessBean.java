@@ -124,7 +124,7 @@ public class FilesManagerBusinessBean extends IBOSessionBean implements FilesMan
 	private boolean copyFile(ICFile file, IWSlideService slide, String basePath, boolean checkName) {
 		String name = file.getName();
 		if (name == null) {
-			return false;
+			return true;	//	Skipping
 		}
 		
 		if (checkName) {
@@ -143,7 +143,7 @@ public class FilesManagerBusinessBean extends IBOSessionBean implements FilesMan
 		
 		InputStream stream = file.getFileValue();
 		if (stream == null) {
-			return false;
+			return true;	//	Skipping
 		}
 		
 		boolean result = true;
