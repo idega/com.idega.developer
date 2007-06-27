@@ -1,8 +1,10 @@
 package com.idega.development.business;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.ejb.FinderException;
 
@@ -20,6 +22,8 @@ public class FilesManagerBusinessBean extends IBOSessionBean implements FilesMan
 
 	private static final long serialVersionUID = -4600940859804313580L;
 	
+	private List<String> copiedFiles = null;
+	
 	public boolean copyFilesToSlide() {
 		ICFileHome icFileHome = null;
 		try {
@@ -31,24 +35,21 @@ public class FilesManagerBusinessBean extends IBOSessionBean implements FilesMan
 			return false;
 		}
 		
-		ICFile root = null;
+		Collection files = null;
 		try {
-			root = icFileHome.findRootFolder();
+			files = icFileHome.findAllDescendingOrdered();
 		} catch (FinderException e) {
 			e.printStackTrace();
 		}
 		
-		return copyFiles(root);
+		copiedFiles = new ArrayList<String>();
+
+		return copyFiles(files);
 	}
 	
-	private boolean copyFiles(ICFile root) {
-		if (root == null) {
-			return false;
-		}
-		
-		Collection files = root.getChildren();
+	private boolean copyFiles(Collection files) {
 		if (files == null) {
-			System.out.println("ROOT folder has no children, nothing to copy, returning");
+			System.out.println("No files found, nothing to copy, returning");
 			return true;	//	Nothing to copy
 		}
 		
@@ -75,9 +76,9 @@ public class FilesManagerBusinessBean extends IBOSessionBean implements FilesMan
 			if (o instanceof ICFile) {
 				file = (ICFile) o;
 				if (file.isLeaf()) {
-					result = copyFile(file, slide, DeveloperConstants.OLD_FILES_FOLDER_FOR_OTHER_FILES);
+					result = copyFile(file, slide, DeveloperConstants.OLD_FILES_FOLDER_FOR_OTHER_FILES, true);
 				}
-				else {
+				else if (file.isFolder() || !file.isLeaf()) {
 					result = copyFilesFromFolder(file, slide, DeveloperConstants.OLD_FILES_FOLDER);
 				}
 			}
@@ -102,10 +103,10 @@ public class FilesManagerBusinessBean extends IBOSessionBean implements FilesMan
 			o = it.next();
 			if (o instanceof ICFile) {
 				file = (ICFile) o;
-				if (file.isLeaf()) {
-					result = copyFile(file, slide, basePath);
+				if (file.isLeaf()) {	//	File
+					result = copyFile(file, slide, basePath, false);
 				}
-				else {
+				else if (file.isFolder() || !file.isLeaf()) {	// Folder or file with children
 					basePath = new StringBuffer(basePath).append(file.getName()).append(CoreConstants.SLASH).toString();
 					result = copyFilesFromFolder(file, slide, basePath);
 				}
@@ -115,14 +116,32 @@ public class FilesManagerBusinessBean extends IBOSessionBean implements FilesMan
 		return result;
 	}
 	
-	private boolean copyFile(ICFile file, IWSlideService slide, String basePath) {
+	private boolean copyFile(ICFile file, IWSlideService slide, String basePath, boolean checkName) {
+		String name = file.getName();
+		if (checkName) {
+			int index = 1;
+			String tempName = name;
+			while (copiedFiles.contains(tempName)) {
+				System.out.println("File " + tempName + " was already copied, changing name");
+				tempName = new StringBuffer(index).append("_").append(name).toString();
+				index++;
+			}
+			name = tempName;
+			copiedFiles.add(name);
+		}
+		System.out.println("Copying file " + name + " to folder " + basePath);
+		boolean result = true;
 		try {
-			System.out.println("Copying file " + file.getName() + " to folder " + basePath);
-			return slide.uploadFileAndCreateFoldersFromStringAsRoot(basePath, file.getName(), file.getFileValue(), file.getMimeType(),true);
+			result =  slide.uploadFileAndCreateFoldersFromStringAsRoot(basePath, name, file.getFileValue(), file.getMimeType(), true);
 		} catch (RemoteException e) {
 			e.printStackTrace();
 			return false;
 		}
+		if (result) {
+			file.setFileUri(new StringBuffer(CoreConstants.CONTENT).append(basePath).append(name).toString());
+			file.store();
+		}
+		return result;
 	}
 
 }
