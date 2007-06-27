@@ -1,5 +1,7 @@
 package com.idega.development.business;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -43,7 +45,7 @@ public class FilesManagerBusinessBean extends IBOSessionBean implements FilesMan
 		}
 		
 		copiedFiles = new ArrayList<String>();
-
+		
 		return copyFiles(files);
 	}
 	
@@ -77,8 +79,9 @@ public class FilesManagerBusinessBean extends IBOSessionBean implements FilesMan
 				file = (ICFile) o;
 				if (file.isLeaf()) {
 					result = copyFile(file, slide, DeveloperConstants.OLD_FILES_FOLDER_FOR_OTHER_FILES, true);
+					System.out.println("File " + file.getName() + " copied succesfully: " + result);
 				}
-				else if (file.isFolder()/* || !file.isLeaf()*/) {
+				else if (file.isFolder() || !file.isLeaf()) {
 					result = copyFilesFromFolder(file, slide, DeveloperConstants.OLD_FILES_FOLDER);
 				}
 			}
@@ -96,17 +99,19 @@ public class FilesManagerBusinessBean extends IBOSessionBean implements FilesMan
 		
 		System.out.println("Copying files (" + files.size() + ") from folder " + folder.getName());
 		
+		Iterator filesIterator = files.iterator();
 		Object o = null;
 		ICFile file = null;
 		boolean result = true;
-		for (Iterator it = files.iterator(); (it.hasNext() && result);) {
+		for (Iterator it = filesIterator; (it.hasNext() && result);) {
 			o = it.next();
 			if (o instanceof ICFile) {
 				file = (ICFile) o;
 				if (file.isLeaf()) {	//	File
 					result = copyFile(file, slide, basePath, false);
+					System.out.println("File " + file.getName() + " copied succesfully: " + result);
 				}
-				else if (file.isFolder()/* || !file.isLeaf()*/) {	// Folder or file with children
+				else if (file.isFolder() || !file.isLeaf()) {	// Folder or file with children
 					basePath = new StringBuffer(basePath).append(file.getName()).append(CoreConstants.SLASH).toString();
 					result = copyFilesFromFolder(file, slide, basePath);
 				}
@@ -118,7 +123,12 @@ public class FilesManagerBusinessBean extends IBOSessionBean implements FilesMan
 	
 	private boolean copyFile(ICFile file, IWSlideService slide, String basePath, boolean checkName) {
 		String name = file.getName();
+		if (name == null) {
+			return false;
+		}
+		
 		if (checkName) {
+			System.out.println("Checking name: " + name +". Names list contains it: " + copiedFiles.contains(name));
 			int index = 1;
 			String tempName = name;
 			while (copiedFiles.contains(tempName)) {
@@ -130,18 +140,37 @@ public class FilesManagerBusinessBean extends IBOSessionBean implements FilesMan
 			copiedFiles.add(name);
 		}
 		System.out.println("Copying file " + name + " to folder " + basePath);
+		
+		InputStream stream = file.getFileValue();
+		if (stream == null) {
+			return false;
+		}
+		
 		boolean result = true;
 		try {
-			result =  slide.uploadFileAndCreateFoldersFromStringAsRoot(basePath, name, file.getFileValue(), file.getMimeType(), true);
+			result =  slide.uploadFileAndCreateFoldersFromStringAsRoot(basePath, name, stream, file.getMimeType(), true);
 		} catch (RemoteException e) {
 			e.printStackTrace();
 			return false;
+		} finally {
+			closeStream(stream);
 		}
 		if (result) {
 			file.setFileUri(new StringBuffer(CoreConstants.CONTENT).append(basePath).append(name).toString());
 			file.store();
 		}
 		return result;
+	}
+	
+	private void closeStream(InputStream stream) {
+		if (stream == null) {
+			return;
+		}
+		try {
+			stream.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
