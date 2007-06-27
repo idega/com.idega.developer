@@ -133,7 +133,7 @@ public class FilesManagerBusinessBean extends IBOSessionBean implements FilesMan
 			String tempName = name;
 			while (copiedFiles.contains(tempName)) {
 				System.out.println("File " + tempName + " was already copied, changing name");
-				tempName = new StringBuffer(index).append("_").append(name).toString();
+				tempName = new StringBuffer().append(index).append("_").append(name).toString();
 				index++;
 			}
 			name = tempName;
@@ -148,7 +148,7 @@ public class FilesManagerBusinessBean extends IBOSessionBean implements FilesMan
 		
 		boolean result = true;
 		try {
-			result =  slide.uploadFileAndCreateFoldersFromStringAsRoot(basePath, name, stream, file.getMimeType(), true);
+			result = slide.uploadFileAndCreateFoldersFromStringAsRoot(basePath, name, stream, file.getMimeType(), true);
 		} catch (RemoteException e) {
 			e.printStackTrace();
 			return false;
