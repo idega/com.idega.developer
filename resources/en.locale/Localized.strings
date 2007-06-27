@@ -1,3 +1,7 @@
 #Tue Sep 09 16:28:13 CEST 2003
 iw.component.com.idega.development.presentation.LocaleSwitcher.name=Locale Switcher
 iw.component.com.idega.development.presentation.SQLQueryer.name=SQL Queryer
+export_ic_files=Copy files
+copying=Copying...
+succeeded_to_copy_files=Files were successfully copied
+failed_to_copy_files=Failed to copy files

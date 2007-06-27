@@ -11,6 +11,7 @@ import com.idega.core.view.DefaultViewNode;
 import com.idega.core.view.KeyboardShortcut;
 import com.idega.core.view.ViewManager;
 import com.idega.core.view.ViewNode;
+import com.idega.development.business.DeveloperConstants;
 import com.idega.development.presentation.ApplicationPropertySetter;
 import com.idega.development.presentation.ApplicationStatus;
 import com.idega.development.presentation.BundleComponentManager;
@@ -20,6 +21,7 @@ import com.idega.development.presentation.BundleResourceManager;
 import com.idega.development.presentation.Caches;
 import com.idega.development.presentation.ComponentManager;
 import com.idega.development.presentation.DBPoolStatusViewer;
+import com.idega.development.presentation.FilesManager;
 import com.idega.development.presentation.HomePageGenerator;
 import com.idega.development.presentation.LocaleSetter;
 import com.idega.development.presentation.Localizer;
@@ -39,10 +41,10 @@ import com.idega.workspace.view.WorkspaceClassViewNode;
  * <p>
  * TODO tryggvil Describe Type SchoolViewManager
  * </p>
- *  Last modified: $Date: 2007/01/23 19:06:30 $ by $Author: tryggvil $
+ *  Last modified: $Date: 2007/06/27 10:07:56 $ by $Author: valdas $
  * 
  * @author <a href="mailto:tryggvil@idega.com">tryggvil</a>
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class DeveloperViewManager {
 
@@ -71,7 +73,7 @@ public class DeveloperViewManager {
 	
 	
 	public ViewNode getDeveloperViewNode(){
-		IWBundle iwb = this.iwma.getBundle("com.idega.developer");
+		IWBundle iwb = this.iwma.getBundle(DeveloperConstants.BUNDLE_IDENTIFIER);
 		if(this.developerNode==null){
 			this.developerNode = initalizeDeveloperNode(iwb);
 		}
@@ -217,6 +219,11 @@ public class DeveloperViewManager {
 		appPropertiesNode.setName("Application Properties");
 		appPropertiesNode.setComponentClass(ApplicationPropertySetter.class);
 		appPropertiesNode.setMaximizeBlockVertically(true);
+		
+		WorkspaceClassViewNode filesManager = new WorkspaceClassViewNode("icfilesmanager", devNode);
+		filesManager.setName("Files Manager");
+		filesManager.setComponentClass(FilesManager.class);
+		filesManager.setMaximizeBlockVertically(true);
 		
 		//oldDeveloperNode.setJspUri(workspace.getResourceURI());
 
