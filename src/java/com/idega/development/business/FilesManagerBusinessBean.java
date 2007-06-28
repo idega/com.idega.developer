@@ -51,7 +51,6 @@ public class FilesManagerBusinessBean extends IBOSessionBean implements FilesMan
 	
 	private boolean copyFiles(Collection files) {
 		if (files == null) {
-			System.out.println("No files found, nothing to copy, returning");
 			return true;	//	Nothing to copy
 		}
 		
@@ -80,7 +79,6 @@ public class FilesManagerBusinessBean extends IBOSessionBean implements FilesMan
 				file = (ICFile) o;
 				if (file.isLeaf()) {
 					result = copyFile(file, slide, DeveloperConstants.OLD_FILES_FOLDER_FOR_OTHER_FILES, true);
-					System.out.println("File " + file.getName() + " copied succesfully: " + result);
 				}
 				else if (file.isFolder() || !file.isLeaf()) {
 					result = copyFilesFromFolder(file, slide, DeveloperConstants.OLD_FILES_FOLDER);
@@ -94,11 +92,8 @@ public class FilesManagerBusinessBean extends IBOSessionBean implements FilesMan
 	private boolean copyFilesFromFolder(ICFile folder, IWSlideService slide, String basePath) {
 		Collection files = folder.getChildren();
 		if (files == null) {
-			System.out.println("Folder " + folder.getName() + " has no files");
 			return true;	//	Nothing to copy
 		}
-		
-		System.out.println("Copying files (" + files.size() + ") from folder " + folder.getName());
 		
 		Iterator filesIterator = files.iterator();
 		Object o = null;
@@ -110,7 +105,6 @@ public class FilesManagerBusinessBean extends IBOSessionBean implements FilesMan
 				file = (ICFile) o;
 				if (file.isLeaf()) {	//	File
 					result = copyFile(file, slide, basePath, false);
-					System.out.println("File " + file.getName() + " copied succesfully: " + result);
 				}
 				else if (file.isFolder() || !file.isLeaf()) {	// Folder or file with children
 					basePath = new StringBuffer(basePath).append(file.getName()).append(CoreConstants.SLASH).toString();
@@ -125,23 +119,19 @@ public class FilesManagerBusinessBean extends IBOSessionBean implements FilesMan
 	private boolean copyFile(ICFile file, IWSlideService slide, String basePath, boolean checkName) {
 		String name = file.getName();
 		if (name == null) {
-			System.out.println("File is untitled, setting default name");
 			name = "Untitled";
 		}
 		
 		if (checkName) {
-			System.out.println("Checking name: " + name +". Names list contains it: " + copiedFiles.contains(name));
 			int index = 1;
 			String tempName = name;
 			while (copiedFiles.contains(tempName)) {
-				System.out.println("File " + tempName + " was already copied, changing name");
 				tempName = new StringBuffer().append(index).append("_").append(name).toString();
 				index++;
 			}
 			name = tempName;
 			copiedFiles.add(name);
 		}
-		System.out.println("Copying file " + name + " to folder " + basePath);
 		
 		InputStream stream = file.getFileValue();
 		if (stream == null) {
