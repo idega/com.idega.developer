@@ -190,7 +190,7 @@ public class BundleComponentManager extends Block {
 				for (int i = 0; i < deletes.length; i++) {
 					iwb.removeComponent(deletes[i]);
 				}
-				iwb.storeState();
+				iwb.storeState(false);
 			}
 
 			String emptyString = StringHandler.EMPTY_STRING;
