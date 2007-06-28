@@ -71,7 +71,7 @@ public class BundlePropertySetter extends Block {
 				for (int a = 0; a < values.length; a++) {
 					bundle.removeProperty(values[a]);
 				}
-				bundle.storeState();
+				bundle.storeState(false);
 				deleted = true;
 			}
 		}
@@ -80,10 +80,10 @@ public class BundlePropertySetter extends Block {
 			String KeyValue = iwc.getParameter(BundlePropertySetter.PROPERTY_VALUE_PARAMETER);
 			if (KeyName != null && KeyName.length() > 0){
 				bundle.setProperty(KeyName, KeyValue);
-				bundle.storeState();
+				bundle.storeState(false);
 				saved = true;
 			}
-			bundle.storeState();
+			bundle.storeState(false);
 			
 			Layer layer = new Layer(Layer.DIV);
 			layer.setStyleClass("statusLayer");
