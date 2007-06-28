@@ -70,10 +70,11 @@ public class FilesManagerBusinessBean extends IBOSessionBean implements FilesMan
 			return false;
 		}
 		
+		Iterator filesIterator = files.iterator();
 		Object o = null;
 		ICFile file = null;
 		boolean result = true;
-		for (Iterator it = files.iterator(); (it.hasNext() && result);) {
+		for (Iterator it = filesIterator; (it.hasNext() && result);) {
 			o = it.next();
 			if (o instanceof ICFile) {
 				file = (ICFile) o;
@@ -124,7 +125,8 @@ public class FilesManagerBusinessBean extends IBOSessionBean implements FilesMan
 	private boolean copyFile(ICFile file, IWSlideService slide, String basePath, boolean checkName) {
 		String name = file.getName();
 		if (name == null) {
-			return true;	//	Skipping
+			System.out.println("File is untitled, setting default name");
+			name = "Untitled";
 		}
 		
 		if (checkName) {
