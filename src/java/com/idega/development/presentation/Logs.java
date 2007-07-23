@@ -1,12 +1,18 @@
 package com.idega.development.presentation;
 
+import java.io.File;
+import java.util.Iterator;
+import java.util.List;
+
 import com.idega.idegaweb.IWMainApplicationSettings;
 import com.idega.idegaweb.IWResourceBundle;
 import com.idega.presentation.Block;
 import com.idega.presentation.IWContext;
 import com.idega.presentation.Table;
 import com.idega.presentation.ui.Form;
+import com.idega.presentation.ui.Label;
 import com.idega.presentation.ui.SubmitButton;
+import com.idega.presentation.ui.TextInput;
 import com.idega.util.FileUtil;
 import com.idega.util.text.TextSoap;
 
@@ -26,11 +32,14 @@ public class Logs extends Block {
 
 	private static final String LOG_FILE_ERROR_NAME = "LOG_FILE_ERROR_NAME";
 
-	private static final String LOG_FILE_OUT_NAME = "LOG_FILE_OUT_NAME";
+	private static final String LOG_FILE_OUT_NAME 	= "LOG_FILE_OUT_NAME";
 
-	private static final String PARAM_VIEW_OUT_LOG = "iw_dev_view_out_log";
+	private static final String PARAM_VIEW_OUT_LOG 	= "iw_dev_view_out_log";
 
-	private static final String PARAM_VIEW_ERR_LOG = "iw_dev_view_err_log";
+	private static final String PARAM_VIEW_ERR_LOG 	= "iw_dev_view_err_log";
+	private static final String PARAM_LINES_CNT 	= "iw_dev_lines_cnt_log";
+	private static final int 	DEFAULT_LINES_CNT 	= 200;
+	private static final String	SYM_NEW_LINE 		= "\n";
 	
 	public static final String IW_BUNDLE_IDENTIFIER = "com.idega.developer";
 	
@@ -75,6 +84,16 @@ public class Logs extends Block {
 		// Error Log");
 		table.add(viewOut, 1, 2);
 		table.add(viewErr, 1, 2);
+		
+		TextInput lines_cnt = new TextInput(PARAM_LINES_CNT);
+		lines_cnt.setContent(iwc.isParameterSet(PARAM_LINES_CNT) ? iwc.getParameter(PARAM_LINES_CNT) : String.valueOf(DEFAULT_LINES_CNT));
+		
+		Label lines_cnt_label = new Label("Line count:", lines_cnt);
+		lines_cnt_label.setStyleAttribute("padding", "0 0 0 15px");
+		
+		table.add(lines_cnt_label, 1, 2);
+		table.add(lines_cnt, 1, 2);
+		
 		//		table.add(clearOut, 1, 1);
 		//		table.add(clearErr, 1, 1);
 		if (iwc.isParameterSet(PARAM_VIEW_OUT_LOG) || iwc.isParameterSet(PARAM_VIEW_ERR_LOG)) {
@@ -88,8 +107,15 @@ public class Logs extends Block {
 		// path in application properties
 		table.setColor(1,3,"#dddddd");
 		table.setColor(1,4,"#cecece");
-		String defaultLogFolderPath = System.getProperty("user.dir") + FileUtil.getFileSeparator() + ".."
-				+ FileUtil.getFileSeparator() + "logs" + FileUtil.getFileSeparator();
+		String defaultLogFolderPath = 
+			new StringBuilder(System.getProperty("user.dir"))
+			.append(File.separator)
+			.append("..")
+			.append(File.separator)
+			.append("logs")
+			.append(File.separator)
+			.toString();
+		
 		String defaultLogFileName = "catalina.out";
 		
 		String logDir = settings.getProperty(LOG_FILE_FOLDER_PATH, defaultLogFolderPath);
@@ -116,7 +142,29 @@ public class Logs extends Block {
 		}
 		
 		table.add(logDir,1,3);
-		table.add("<pre>" + FileUtil.getStringFromFile(logDir) + "</pre>", 1, 4);
+
+		int lines_cnt = DEFAULT_LINES_CNT;
+		
+		if(iwc.isParameterSet(PARAM_LINES_CNT)) {
+			
+			try {
+				lines_cnt = Integer.parseInt(iwc.getParameter(PARAM_LINES_CNT));
+			} catch (Exception e) { }
+		}
+		
+		List output = FileUtil.tail(new File(logDir), lines_cnt);
+		
+		StringBuffer output_str = new StringBuffer("<pre>");
+		
+		if(output != null)
+			for (Iterator iter = output.iterator(); iter.hasNext();) {
+				output_str.append((String)iter.next());
+				output_str.append(SYM_NEW_LINE);
+			}
+		
+		output_str.append("</pre>");
+		
+		table.add(output_str.toString(), 1, 4);
 		
 		//		else if (iwc.isParameterSet(PARAM_CLEAR_OUT_LOG)) {
 		//			tomcatLogDir = tomcatLogDir + outLogName;
