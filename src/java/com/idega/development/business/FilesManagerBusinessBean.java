@@ -148,7 +148,7 @@ public class FilesManagerBusinessBean extends IBOSessionBean implements FilesMan
 			closeStream(stream);
 		}
 		if (result) {
-			file.setFileUri(new StringBuffer(CoreConstants.CONTENT).append(basePath).append(name).toString());
+			file.setFileUri(new StringBuffer(CoreConstants.WEBDAV_SERVLET_URI).append(basePath).append(name).toString());
 			file.store();
 		}
 		return result;
