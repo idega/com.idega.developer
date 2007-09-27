@@ -3,6 +3,7 @@ package com.idega.development.presentation;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+
 import com.idega.core.localisation.business.ICLocaleBusiness;
 import com.idega.core.localisation.data.ICLocale;
 import com.idega.idegaweb.IWBundle;
@@ -30,7 +31,7 @@ public class LocaleSetter extends Block {
 
 	public static String localesParameter = "iw_localeswitcher_locale";
 	private int count = 0;
-	private Locale _coreLocale = null;
+	//private Locale _coreLocale = null;
 
 	public LocaleSetter() {
 		//setResetGoneThroughMainInRestore(true);
@@ -42,7 +43,7 @@ public class LocaleSetter extends Block {
 			getParentPage().setBackgroundColor("#FFFFFF");
 		}*/
 
-		this._coreLocale = iwc.getIWMainApplication().getCoreLocale();
+		//this._coreLocale = iwc.getIWMainApplication().getCoreLocale();
 
 		if (iwc.getParameter("save") != null) {
 			save(iwc);
@@ -100,10 +101,11 @@ public class LocaleSetter extends Block {
 				javaLocale = ICLocaleBusiness.getLocaleFromLocaleString(icLocale.getLocale());
 				chk = new CheckBox("loc_chk" + this.count, String.valueOf(icLocale.getLocaleID()));
 				chk.setChecked(icLocale.getInUse());
-				if (javaLocale.equals(this._coreLocale)) {
-					chk.setDisabled(true);
-					T.add(new HiddenInput("loc_chk" + this.count, String.valueOf(icLocale.getLocaleID())), 1, this.count);
-				}
+				//had to comment this out so you can actually disable english!
+//				if (javaLocale.equals(this._coreLocale)) {
+//					chk.setDisabled(true);
+//					T.add(new HiddenInput("loc_chk" + this.count, String.valueOf(icLocale.getLocaleID())), 1, this.count);
+//				}
 				T.add(chk, 1, this.count);
 				T.add(IWDeveloper.getText(javaLocale.getDisplayCountry()), 2, this.count);
 				T.add(IWDeveloper.getText(javaLocale.getDisplayLanguage()), 3, this.count);
