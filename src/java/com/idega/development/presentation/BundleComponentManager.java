@@ -8,8 +8,6 @@ import javax.ejb.FinderException;
 
 import com.idega.builder.business.BuilderConstants;
 import com.idega.builder.business.BuilderLogic;
-import com.idega.builder.presentation.AddModuleBlock;
-import com.idega.builder.presentation.EditModuleBlock;
 import com.idega.builder.presentation.IBAddModuleWindow;
 import com.idega.core.component.data.BundleComponent;
 import com.idega.core.component.data.ICObject;
@@ -65,6 +63,7 @@ public class BundleComponentManager extends Block {
 	public BundleComponentManager() {
 	}
 
+	@Override
 	public void main(IWContext iwc) {
 		IWBundle iwb = iwc.getIWMainApplication().getBundle("com.idega.developer");
 		Page parent = getParentPage();
