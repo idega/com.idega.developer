@@ -3,6 +3,7 @@ div.developer fieldset {
 	margin: 0;
 	padding: 8px;
 	border-bottom: 1px #D7D7D7 solid;
+	font-family: "Lucida Grande", "Lucida Sans", "Lucida Sans Unicode", Arial, Helvetica, sans-serif;
 }
 
 div.developer fieldset legend {
@@ -54,12 +55,13 @@ div.developer fieldset.resultSet p span.query {
 
 div.developer div.formItem {
 	overflow: hidden;
-	margin-bottom: 8px;
+	margin-bottom: 12px;
 }
 
 div.developer div.formItem label {
 	float: left;
-	width: 120px;
+	width: 150px;
+	font-weight: bold;
 }
 
 div.developer div.formItem textarea, div.formItem input, div.formItem select {
@@ -106,6 +108,7 @@ div.developer div.buttonLayer input.button {
 	border: 1px #999 solid;
 	padding: 2px 3px;
 	text-transform: capitalize;
+	font-size: 13px;
 }
 
 div.developer div.buttonLayer input#select, div.developer div.buttonLayer input#execute, div.developer div.buttonLayer input#save, div.developer div.buttonLayer input#delete {
