@@ -5,6 +5,7 @@ package com.idega.developer;
 
 import java.util.ArrayList;
 import java.util.Collection;
+
 import com.idega.core.accesscontrol.business.StandardRoles;
 import com.idega.core.localisation.presentation.LocaleSwitcher;
 import com.idega.core.view.DefaultViewNode;
@@ -41,10 +42,10 @@ import com.idega.workspace.view.WorkspaceClassViewNode;
  * <p>
  * TODO tryggvil Describe Type SchoolViewManager
  * </p>
- *  Last modified: $Date: 2007/06/27 10:07:56 $ by $Author: valdas $
+ *  Last modified: $Date: 2007/12/17 16:21:29 $ by $Author: laddi $
  * 
  * @author <a href="mailto:tryggvil@idega.com">tryggvil</a>
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class DeveloperViewManager {
 
@@ -96,6 +97,7 @@ public class DeveloperViewManager {
 		
 		DefaultViewNode devNode = new WorkspaceApplicationNode("developer",workspace,roles);
 		//devNode.setName("#{localizedStrings['com.idega.developer']['developer']}");
+		devNode.setJspUri("/idegaweb/bundles/com.idega.developer.bundle/jsp/developer.jsp");
 		devNode.setKeyboardShortcut(new KeyboardShortcut("3"));
 		
 		WorkspaceClassViewNode localizerNode = new WorkspaceClassViewNode("localizer",devNode);
