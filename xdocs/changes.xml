@@ -5,6 +5,12 @@
   </properties>
   <body>
   
+  	<release version="3.1.5" date="2008-02-19">
+      <action dev="alexis" type="update">
+		Added the session polling property as a checkbox into Application Properties
+      </action>
+    </release>
+    
     <release version="3.1.4" date="2007-07-12">
       <action dev="palli" type="update">
 		Updated core reference so that new FileUtil is used.

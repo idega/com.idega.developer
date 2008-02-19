@@ -15,6 +15,7 @@ import com.idega.presentation.TableCell2;
 import com.idega.presentation.TableRow;
 import com.idega.presentation.TableRowGroup;
 import com.idega.presentation.text.Link;
+import com.idega.presentation.text.Paragraph;
 import com.idega.presentation.text.Text;
 import com.idega.presentation.ui.CheckBox;
 import com.idega.presentation.ui.DropdownMenu;
@@ -46,6 +47,7 @@ public class ApplicationPropertySetter extends Block {
 	private static final String IDO_ENTITY_QUERY_CACHING_PARAMETER = "iw_e_q_c_p";
 	private static final String IDO_USE_PREPARED_STATEMENT = "iw_a_u_p_s";
 	private static final String DEBUG_PARAMETER = "iw_d_p";
+	private static final String SESSION_POLLING_PARAMETER = "iw_s_p_p";
 
 	public ApplicationPropertySetter() {
 		// empty
@@ -202,6 +204,19 @@ public class ApplicationPropertySetter extends Block {
 		formItem.add(box8);
 		formItem.add(label);
 		form.add(formItem);
+		
+		CheckBox box9 = new CheckBox(SESSION_POLLING_PARAMETER);
+		if (iwma.getSettings().getIfUseSessionPolling()) {
+			box9.setChecked(true);
+		}
+
+		formItem = new Layer(Layer.DIV);
+		formItem.setStyleClass("formItem");
+		formItem.setStyleClass("checkBoxItem");
+		label = new Label("Enable session polling", box8);
+		formItem.add(box9);
+		formItem.add(label);
+		form.add(formItem);
 
 		Layer buttonLayer = new Layer(Layer.DIV);
 		buttonLayer.setStyleClass("buttonLayer");
@@ -222,6 +237,9 @@ public class ApplicationPropertySetter extends Block {
 		keySet.setStyleClass("keySet");
 		topLayer.add(keySet);
 
+		Paragraph paragraph = new Paragraph();
+		paragraph.add(new Text("Available Keys"));
+		keySet.add(paragraph);
 		keySet.add(getParametersTable(iwma));
 	}
 
@@ -234,6 +252,7 @@ public class ApplicationPropertySetter extends Block {
 		}
 		String setterState = iwc.getParameter(APPLICATION_SETTER_PARAMETER);
 		if (setterState != null) {
+			String enableSessionPolling = iwc.getParameter(SESSION_POLLING_PARAMETER);
 			String entityAutoCreate = iwc.getParameter(ENTITY_AUTOCREATE_PARAMETER);
 			String autoCreateStrings = iwc.getParameter(AUTOCREATE_STRINGS_PARAMETER);
 			String autoCreateProperties = iwc.getParameter(AUTOCREATE_PROPERTIES_PARAMETER);
@@ -261,7 +280,11 @@ public class ApplicationPropertySetter extends Block {
 			else {
 				iwc.getIWMainApplication().getSettings().setEntityBeanCaching(false);
 			}
-
+			if(enableSessionPolling != null) {
+				iwc.getIWMainApplication().getSettings().setEnableSessionPolling(true);
+			} else {
+				iwc.getIWMainApplication().getSettings().setEnableSessionPolling(false);
+			}
 			if (entityQueryCache != null) {
 				iwc.getIWMainApplication().getSettings().setEntityQueryCaching(true);
 			}
