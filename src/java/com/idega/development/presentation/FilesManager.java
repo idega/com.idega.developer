@@ -10,6 +10,7 @@ import com.idega.presentation.IWContext;
 import com.idega.presentation.Layer;
 import com.idega.presentation.text.Text;
 import com.idega.presentation.ui.GenericButton;
+import com.idega.util.CoreConstants;
 
 public class FilesManager extends Block {
 	
@@ -45,7 +46,7 @@ public class FilesManager extends Block {
 	private void addJavaScript(IWContext iwc) {
 		AddResource adder = AddResourceFactory.getInstance(iwc);
 		
-		adder.addJavaScriptAtPosition(iwc, AddResource.HEADER_BEGIN, "/dwr/engine.js");
+		adder.addJavaScriptAtPosition(iwc, AddResource.HEADER_BEGIN, CoreConstants.DWR_ENGINE_SCRIPT);
 		adder.addJavaScriptAtPosition(iwc, AddResource.HEADER_BEGIN, "/dwr/interface/FilesManagerBusiness.js");
 		adder.addJavaScriptAtPosition(iwc, AddResource.HEADER_BEGIN, getBundle(iwc).getVirtualPathWithFileNameString("javascript/FilesManagerHelper.js"));
 	}
