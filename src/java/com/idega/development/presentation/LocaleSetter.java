@@ -125,8 +125,8 @@ public class LocaleSetter extends Block {
 		String sCount = iwc.getParameter("loc_count");
 
 		if (sCount != null) {
-			java.util.Vector V = new java.util.Vector();
-			int count = Integer.parseInt(sCount);
+			java.util.Vector<String> V = new java.util.Vector<String>();
+			int count = Integer.parseInt(sCount) + 1;
 			String chk;
 			for (int i = 0; i < count; i++) {
 				chk = iwc.getParameter("loc_chk" + i);
