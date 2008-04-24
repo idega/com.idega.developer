@@ -54,6 +54,7 @@ public class ComponentManager extends Block {
 	public ComponentManager() {
 	}
 
+	@Override
 	public void main(IWContext iwc) throws Exception {
 		Page parent = getParentPage();
 		if (parent != null) {
@@ -113,7 +114,7 @@ public class ComponentManager extends Block {
 			iter = names.keySet().iterator();
 			while (iter.hasNext()) {
 				String display = (String) iter.next();
-				String component = (String) names.get(display);
+				String component = names.get(display);
 
 				componentsDrop.addMenuElement(component, display);
 			}

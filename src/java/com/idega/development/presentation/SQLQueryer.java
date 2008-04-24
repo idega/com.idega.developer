@@ -79,6 +79,8 @@ public class SQLQueryer extends Block {
 		this.resultName = resultName;
 	}
 
+	@Override
+	@SuppressWarnings("cast")
 	public void main(IWContext iwc) throws Exception {
 		IWBundle iwb = this.getBundle(iwc);	
 		getParentPage().addStyleSheetURL(iwb.getVirtualPathWithFileNameString("style/developer.css"));
@@ -381,6 +383,7 @@ public class SQLQueryer extends Block {
 		return conn.getConnection();
 	}
 
+	@Override
 	public Object clone() {
 		SQLQueryer obj = null;
 		try {
@@ -395,6 +398,7 @@ public class SQLQueryer extends Block {
 		return obj;
 	}
 
+	@Override
 	public String getBundleIdentifier() {
 		return IW_BUNDLE_IDENTIFIER;
 	}
