@@ -14,12 +14,14 @@
   <inceptionYear>2000</inceptionYear>
   <description>Developer Application contains tools for developing, debugging and managing within an idegaWeb Application</description>
   <scm>
-    <!--
+    
     <connection>scm:cvs:ext:${user.name}@code.idega.com:/idega/cvs:${groupId}/${artifactId}/</connection>
     <developerConnection>scm:cvs:ext:${user.name}@code.idega.com:/idega/cvs:${groupId}/${artifactId}/</developerConnection> 
-    -->
+    
+    <!--
     <connection>scm:cvs:ext:civilis@code.idega.com:/idega/cvs:com.idega.block.platform/com.idega.developer/</connection>
     <developerConnection>scm:cvs:ext:civilis@code.idega.com:/idega/cvs:com.idega.block.platform/com.idega.developer/</developerConnection>
+    -->
   </scm>
 
   <developers>
