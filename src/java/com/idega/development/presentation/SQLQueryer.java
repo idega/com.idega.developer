@@ -270,17 +270,18 @@ public class SQLQueryer extends Block {
 								// Get the N of Cols in the ResultSet
 								int noCols = rsMeta.getColumnCount();
 								
+								TableCell2 cell = row.createHeaderCell();
+								cell.setStyleClass("firstColumn");
+								cell.add(new Text("#"));
+								
 								for (int c = 1; c <= noCols; c++) {
 									String el = rsMeta.getColumnLabel(c);
 									int type = rsMeta.getColumnType(c);
 
-									TableCell2 cell = row.createHeaderCell();
+									cell = row.createHeaderCell();
 									cell.add(new Text(el));
 
-									if (c == 1) {
-										cell.setStyleClass("firstColumn");
-									}
-									else if (c == noCols) {
+									if (c == noCols) {
 										cell.setStyleClass("lastColumn");
 									}
 
@@ -298,17 +299,18 @@ public class SQLQueryer extends Block {
 								while (rs.next() && (counter < this.numberOfViewedResults)) {
 									row = group.createRow();
 									
+									cell = row.createCell();
+									cell.setStyleClass("firstColumn");
+									cell.add(new Text(String.valueOf(counter + 1)));
+									
 									for (int c = 1; c <= noCols; c++) {
 										String el = rs.getString(c);
 										int type = rsMeta.getColumnType(c);
 
-										TableCell2 cell = row.createCell();
+										cell = row.createCell();
 										cell.add(new Text(el));
 										
-										if (c == 1) {
-											cell.setStyleClass("firstColumn");
-										}
-										else if (c == noCols) {
+										if (c == noCols) {
 											cell.setStyleClass("lastColumn");
 										}
 
@@ -332,8 +334,8 @@ public class SQLQueryer extends Block {
 								group = table.createFooterRowGroup();
 								row = group.createRow();
 
-								TableCell2 cell = row.createCell();
-								cell.setColumnSpan(noCols);
+								cell = row.createCell();
+								cell.setColumnSpan(noCols + 1);
 								cell.add(new Text("Query time: " + queryTime + " ms"));
 							}
 							else if (queryString.trim().toLowerCase().startsWith("commit")) {
