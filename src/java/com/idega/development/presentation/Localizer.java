@@ -1,7 +1,6 @@
 package com.idega.development.presentation;
 
 import com.idega.block.web2.business.Web2Business;
-import com.idega.builder.presentation.IBAddModuleWindow;
 import com.idega.business.IBOLookup;
 import com.idega.business.IBOLookupException;
 import com.idega.business.IBORuntimeException;
@@ -119,44 +118,11 @@ public class Localizer extends Block {
 		if (selectedBundle != null) {
 			iwb = iwma.getBundle(selectedBundle);
 			IWResourceBundle iwrb = iwb.getResourceBundle(LocaleUtil.getLocale(iwc.getParameter(localesParameter)));
-			String stringsKey = iwc.isParameterSet(stringsParameter) ? iwc.getParameter(stringsParameter) : null;
-			String areaText = iwc.isParameterSet(areaParameter) ? iwc.getParameter(areaParameter) : null;
-			String newStringsKey = iwc.isParameterSet(newStringKeyParameter) ? iwc.getParameter(newStringKeyParameter) : null;
-			
-			if (stringsKey == null && newStringsKey != null) {
-				stringsKey = newStringsKey;
-			}
 
 			TextInput newInput = new TextInput(newStringKeyParameter);
 			newInput.setID("localizerNewKey");
 			TextArea area = new TextArea(areaParameter);
 			area.setID("localizerValue");
-
-			if (stringsKey != null) {
-				String oldStringValue = iwrb.getLocalizedString(stringsKey);
-				if (this.isDeleting(iwc)) {
-					iwb.removeLocalizableString(stringsKey);
-					iwrb.storeState();
-				}
-				
-				if (areaText == null && oldStringValue != null) {
-					area.setValue(oldStringValue);
-				}
-				else if (areaText != null) {
-					area.setValue(areaText);
-
-					if (this.isSaving(iwc)) {
-						if (newStringsKey != null) {
-							iwrb.setString(newStringsKey, areaText);
-						}
-						else {
-							iwrb.setString(stringsKey, areaText);
-						}
-
-						IBAddModuleWindow.removeAttributes(iwc);
-					}
-				}
-			}
 
 			stringsDrop = Localizer.getLocalizeableStringsMenu(iwma, selectedBundle, stringsParameter);
 			stringsDrop.addMenuElementFirst("", "");
@@ -304,14 +270,6 @@ public class Localizer extends Block {
 			down.addMenuElement(strings[i]);
 		}
 		return down;
-	}
-
-	private boolean isSaving(IWContext iwc) {
-		return iwc.isParameterSet(subAction) && iwc.getParameter(subAction).equals(ACTION_SAVE);
-	}
-
-	private boolean isDeleting(IWContext iwc) {
-		return iwc.isParameterSet(subAction) && iwc.getParameter(subAction).equals(ACTION_DELETE);
 	}
 	
 	private Web2Business getWeb2Business(IWApplicationContext iwac) {
