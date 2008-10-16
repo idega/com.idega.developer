@@ -7,20 +7,28 @@ import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import com.idega.business.IBOServiceBean;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
+
+
 import com.idega.idegaweb.IWBundle;
+import com.idega.idegaweb.IWMainApplication;
+import com.idega.presentation.IWContext;
+import com.idega.util.CoreConstants;
 
 
 /**
  * <p>
  * TODO laddi Describe Type LocalizerBusinessBean
  * </p>
- *  Last modified: $Date: 2008/10/16 20:06:12 $ by $Author: laddi $
+ *  Last modified: $Date: 2008/10/16 20:41:07 $ by $Author: civilis $
  * 
  * @author <a href="mailto:laddi@idega.com">laddi</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
-public class LocalizerBusinessBean extends IBOServiceBean implements LocalizerBusiness {
+@Scope("singleton")
+@Service("localizer")
+public class LocalizerBusinessBean implements LocalizerBusiness {
 
 	public int storeLocalizedString(String key, String newKey, String value, String bundleIdentifier, String locale) {
 		IWBundle bundle = getIWMainApplication().getBundle(bundleIdentifier);
@@ -55,9 +63,9 @@ public class LocalizerBusinessBean extends IBOServiceBean implements LocalizerBu
 		return key;
 	}
 	
-	public Map getLocalizedStrings(String bundleIdentifier) {
-		Map map = new LinkedHashMap();
-		map.put("", "");
+	public Map<String, String> getLocalizedStrings(String bundleIdentifier) {
+		LinkedHashMap<String, String> map = new LinkedHashMap<String, String>();
+		map.put(CoreConstants.EMPTY, CoreConstants.EMPTY);
 
 		String[] strings = getIWMainApplication().getBundle(bundleIdentifier).getLocalizableStrings();
 		if (strings != null) {
@@ -102,5 +110,18 @@ public class LocalizerBusinessBean extends IBOServiceBean implements LocalizerBu
 			value = "";
 		}
 		return value;
+	}
+	
+	private IWMainApplication getIWMainApplication() {
+		
+		final IWContext iwc = IWContext.getCurrentInstance();
+		final IWMainApplication iwma;
+		
+		if(iwc != null)
+			iwma = iwc.getIWMainApplication();
+		else
+			iwma = IWMainApplication.getDefaultIWMainApplication();
+		
+		return iwma;
 	}
 }

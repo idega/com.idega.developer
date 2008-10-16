@@ -2,33 +2,31 @@ package com.idega.development.business;
 
 
 import java.util.Map;
-import com.idega.business.IBOService;
-import java.rmi.RemoteException;
 
-public interface LocalizerBusiness extends IBOService {
+public interface LocalizerBusiness {
 
 	/**
 	 * @see com.idega.development.business.LocalizerBusinessBean#storeLocalizedString
 	 */
-	public int storeLocalizedString(String key, String newKey, String value, String bundleIdentifier, String locale) throws RemoteException;
+	public int storeLocalizedString(String key, String newKey, String value, String bundleIdentifier, String locale);
 
 	/**
 	 * @see com.idega.development.business.LocalizerBusinessBean#getLocalizedKey
 	 */
-	public String getLocalizedKey(int index, String bundleIdentifier) throws RemoteException;
+	public String getLocalizedKey(int index, String bundleIdentifier);
 
 	/**
 	 * @see com.idega.development.business.LocalizerBusinessBean#getLocalizedStrings
 	 */
-	public Map getLocalizedStrings(String bundleIdentifier) throws RemoteException;
+	public Map<String, String> getLocalizedStrings(String bundleIdentifier);
 
 	/**
 	 * @see com.idega.development.business.LocalizerBusinessBean#removeLocalizedKey
 	 */
-	public int removeLocalizedKey(String key, String bundleIdentifier) throws RemoteException;
+	public int removeLocalizedKey(String key, String bundleIdentifier);
 
 	/**
 	 * @see com.idega.development.business.LocalizerBusinessBean#getLocalizedString
 	 */
-	public String getLocalizedString(String key, String bundleIdentifier, String locale) throws RemoteException;
+	public String getLocalizedString(String key, String bundleIdentifier, String locale);
 }

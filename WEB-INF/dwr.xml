@@ -7,13 +7,14 @@
 			<param name="class" value="com.idega.development.business.FilesManagerBusiness"/>
 		</create>
 
-		<create creator="ibo" javascript="Localizer" scope="application">
-			<param name="class" value="com.idega.development.business.LocalizerBusiness"/>
-			<include method="getLocalizedKey"/>
-			<include method="getLocalizedString"/>
-			<include method="getLocalizedStrings"/>
-			<include method="removeLocalizedKey"/>
-			<include method="storeLocalizedString"/>
-		</create>
+        <create creator="jsf" javascript="Localizer">
+            <param name="managedBeanName" value="localizer" />
+            <param name="class" value="com.idega.development.business.LocalizerBusinessBean" />
+            <include method="getLocalizedKey"/>
+            <include method="getLocalizedString"/>
+            <include method="getLocalizedStrings"/>
+            <include method="removeLocalizedKey"/>
+            <include method="storeLocalizedString"/>
+        </create>
 	</allow>
 </dwr>
