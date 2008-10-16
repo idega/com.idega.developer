@@ -36,6 +36,7 @@ import com.idega.presentation.ui.Legend;
 import com.idega.presentation.ui.SubmitButton;
 import com.idega.presentation.ui.TextArea;
 import com.idega.presentation.ui.TextInput;
+import com.idega.util.PresentationUtil;
 import com.idega.util.SQLDataDumper;
 import com.idega.util.expression.ELUtil;
 
@@ -80,10 +81,9 @@ public class SQLQueryer extends Block {
 	}
 
 	@Override
-	@SuppressWarnings("cast")
 	public void main(IWContext iwc) throws Exception {
 		IWBundle iwb = this.getBundle(iwc);	
-		getParentPage().addStyleSheetURL(iwb.getVirtualPathWithFileNameString("style/developer.css"));
+		PresentationUtil.addStyleSheetToHeader(iwc, iwb.getVirtualPathWithFileNameString("style/developer.css"));
 
 		Layer topLayer = new Layer(Layer.DIV);
 		topLayer.setStyleClass("developer");

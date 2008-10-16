@@ -10,7 +10,7 @@ div.developer fieldset legend {
 	display: none;
 }
 
-div.developer fieldset.querySet {
+div.developer fieldset.querySet, #localizer fieldSet {
 	border: 0;
 	margin: 0;
 	padding: 8px;
@@ -25,11 +25,29 @@ div.developer fieldset.querySet legend {
 	display: none;
 }
 
-div.developer fieldSet.resultSet, div.developer fieldSet.keySet, div.developer fieldset.availableClasses {
+div.developer fieldSet.resultSet, div.developer fieldsfet.keySet, div.developer fieldset.availableClasses, #localizer fieldset.stringsSet {
 	border: 0;
 	padding: 0;
 	margin: 0;
 	border-top: 1px #fff solid;
+}
+
+#localizer fieldset.stringsSet {
+	border-bottom: 0;	
+}
+
+#localizer textarea {
+	width: 500px;
+	height: 200px;	
+}
+
+#localizer fieldset.stringsSet td.isEmpty {
+	color: #f33;
+	font-style: italic;	
+}
+
+#localizer td {
+	width: 50%;	
 }
 
 div.developer fieldset.versions {
@@ -111,7 +129,7 @@ div.developer div.buttonLayer input.button {
 	font-size: 13px;
 }
 
-div.developer div.buttonLayer input#select, div.developer div.buttonLayer input#execute, div.developer div.buttonLayer input#save, div.developer div.buttonLayer input#delete {
+div.developer div.buttonLayer input#select, div.developer div.buttonLayer input#execute, div.developer div.buttonLayer input#save, div.developer div.buttonLayer input#delete, div.developer div.buttonLayer input#choose {
 	float: left;
 	margin: 0;
 	margin-right: 4px;
@@ -130,7 +148,7 @@ div.developer div.statusLayer {
 }
 
 .wf_blockmainarea {
-	padding: 0;
+	padding: 0 !important;
 }
 
 table.developerTable {

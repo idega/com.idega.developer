@@ -25,6 +25,7 @@ import com.idega.presentation.TableRowGroup;
 import com.idega.presentation.text.Text;
 import com.idega.presentation.ui.FieldSet;
 import com.idega.presentation.ui.Legend;
+import com.idega.util.PresentationUtil;
 
 /**
  * A class to get versions for all the bundles installed on the system.
@@ -39,9 +40,10 @@ public class Versions extends Block {
   public Versions() {
   }
 
-  public void main(IWContext iwc){
+  @Override
+	public void main(IWContext iwc){
 		IWBundle iwb = iwc.getIWMainApplication().getBundle("com.idega.developer");
-		getParentPage().addStyleSheetURL(iwb.getVirtualPathWithFileNameString("style/developer.css"));
+		PresentationUtil.addStyleSheetToHeader(iwc, iwb.getVirtualPathWithFileNameString("style/developer.css"));
 
     IWMainApplication iwma = iwc.getIWMainApplication();
     List bundles = getRegisteredBundles(iwma);
@@ -140,7 +142,8 @@ public class Versions extends Block {
     return bundles;
   }
 
-  public String getBundleIdentifier(){
+  @Override
+	public String getBundleIdentifier(){
     return IW_BUNDLE_IDENTIFIER;
   }
 }

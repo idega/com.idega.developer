@@ -20,7 +20,6 @@ import com.idega.idegaweb.IWMainApplication;
 import com.idega.presentation.Block;
 import com.idega.presentation.IWContext;
 import com.idega.presentation.Layer;
-import com.idega.presentation.Page;
 import com.idega.presentation.Table2;
 import com.idega.presentation.TableCell2;
 import com.idega.presentation.TableRow;
@@ -35,6 +34,7 @@ import com.idega.presentation.ui.Legend;
 import com.idega.presentation.ui.SubmitButton;
 import com.idega.presentation.ui.TextInput;
 import com.idega.repository.data.RefactorClassRegistry;
+import com.idega.util.PresentationUtil;
 import com.idega.util.StringHandler;
 
 /**
@@ -66,11 +66,9 @@ public class BundleComponentManager extends Block {
 	@Override
 	public void main(IWContext iwc) {
 		IWBundle iwb = iwc.getIWMainApplication().getBundle("com.idega.developer");
-		Page parent = getParentPage();
-		if (parent != null) {
-			parent.addStyleSheetURL(iwb.getVirtualPathWithFileNameString("style/developer.css"));
-			parent.addJavascriptURL(iwb.getVirtualPathWithFileNameString("javascript/developer.js"));
-		}
+		PresentationUtil.addStyleSheetToHeader(iwc, iwb.getVirtualPathWithFileNameString("style/developer.css"));
+		PresentationUtil.addJavaScriptSourceLineToHeader(iwc, iwb.getVirtualPathWithFileNameString("javascript/developer.js"));
+
 		String bundleIdentifier = iwc.getParameter(BUNDLE_PARAMETER);
 
 		Layer topLayer = new Layer(Layer.DIV);

@@ -17,7 +17,6 @@ import com.idega.idegaweb.IWPropertyList;
 import com.idega.idegaweb.IWPropertyListIterator;
 import com.idega.presentation.Block;
 import com.idega.presentation.IWContext;
-import com.idega.presentation.Page;
 import com.idega.presentation.PresentationObject;
 import com.idega.presentation.Table;
 import com.idega.presentation.text.Link;
@@ -29,6 +28,7 @@ import com.idega.presentation.ui.Parameter;
 import com.idega.presentation.ui.SubmitButton;
 import com.idega.presentation.ui.TextInput;
 import com.idega.repository.data.RefactorClassRegistry;
+import com.idega.util.PresentationUtil;
 import com.idega.util.reflect.MethodFinder;
 
 /**
@@ -56,14 +56,8 @@ public class ComponentManager extends Block {
 
 	@Override
 	public void main(IWContext iwc) throws Exception {
-		Page parent = getParentPage();
-		if (parent != null) {
-			if (!iwc.isIE()) {
-				parent.setBackgroundColor("#FFFFFF");
-			}
-			IWBundle iwb = iwc.getIWMainApplication().getBundle("com.idega.developer");
-			parent.addJavascriptURL(iwb.getVirtualPathWithFileNameString("javascript/developer.js"));
-		}
+		IWBundle iwb = iwc.getIWMainApplication().getBundle("com.idega.developer");
+		PresentationUtil.addJavaScriptSourceLineToHeader(iwc, iwb.getVirtualPathWithFileNameString("javascript/developer.js"));
 
 		IWMainApplication iwma = iwc.getIWMainApplication();
 		DropdownMenu bundles = BundlePropertySetter.getRegisteredBundlesDropdown(iwma, BUNDLE_PARAMETER);
@@ -94,8 +88,7 @@ public class ComponentManager extends Block {
 		String bundleIdentifier = iwc.getParameter(BUNDLE_PARAMETER);
 
 		if (bundleIdentifier != null) {
-
-			IWBundle iwb = iwma.getBundle(bundleIdentifier);
+			iwb = iwma.getBundle(bundleIdentifier);
 
 			yindex++;
 

@@ -26,6 +26,7 @@ import com.idega.presentation.ui.Label;
 import com.idega.presentation.ui.Legend;
 import com.idega.presentation.ui.SubmitButton;
 import com.idega.presentation.ui.TextInput;
+import com.idega.util.PresentationUtil;
 
 /**
  * Title:        idega Framework
@@ -46,9 +47,10 @@ public class BundlePropertySetter extends Block {
 	public BundlePropertySetter() {
 	}
 
+	@Override
 	public void main(IWContext iwc) {
 		IWBundle iwb = iwc.getIWMainApplication().getBundle("com.idega.developer");
-		getParentPage().addStyleSheetURL(iwb.getVirtualPathWithFileNameString("style/developer.css"));
+		PresentationUtil.addStyleSheetToHeader(iwc, iwb.getVirtualPathWithFileNameString("style/developer.css"));
 
 		Layer topLayer = new Layer(Layer.DIV);
 		topLayer.setStyleClass("developer");
@@ -268,6 +270,7 @@ public class BundlePropertySetter extends Block {
 		return form;
 	}
 
+	@Override
 	public String getBundleIdentifier() {
 		return IW_BUNDLE_IDENTIFIER;
 	}
