@@ -129,7 +129,7 @@ div.developer div.buttonLayer input.button {
 	font-size: 13px;
 }
 
-div.developer div.buttonLayer input#select, div.developer div.buttonLayer input#execute, div.developer div.buttonLayer input#save, div.developer div.buttonLayer input#delete, div.developer div.buttonLayer input#choose {
+div.developer div.buttonLayer input#select, div.developer div.buttonLayer input#execute, div.developer div.buttonLayer input#save, div.developer div.buttonLayer input#delete, div.developer div.buttonLayer input#localizerSave, div.developer div.buttonLayer input#chooseLocalizer, div.developer div.buttonLayer input#localizerDelete {
 	float: left;
 	margin: 0;
 	margin-right: 4px;

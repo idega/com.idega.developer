@@ -89,12 +89,12 @@ public class Localizer extends Block {
 		fieldSet.add(form);
 
 		DropdownMenu bundlesDrop = getRegisteredDropdown(iwma, bundlesParameter);
-		bundlesDrop.setID("bundle");
+		bundlesDrop.setID("localizerBundle");
 		bundlesDrop.keepStatusOnAction();
 		bundlesDrop.setToSubmit();
 		
 		DropdownMenu localesDrop = LocalePresentationUtil.getAvailableLocalesDropdown(iwma, localesParameter);
-		localesDrop.setID("locale");
+		localesDrop.setID("localizerLocale");
 		localesDrop.keepStatusOnAction();
 		localesDrop.setToSubmit();
 
@@ -128,9 +128,9 @@ public class Localizer extends Block {
 			}
 
 			TextInput newInput = new TextInput(newStringKeyParameter);
-			newInput.setID("newKey");
+			newInput.setID("localizerNewKey");
 			TextArea area = new TextArea(areaParameter);
-			area.setID("value");
+			area.setID("localizerValue");
 
 			if (stringsKey != null) {
 				String oldStringValue = iwrb.getLocalizedString(stringsKey);
@@ -160,7 +160,7 @@ public class Localizer extends Block {
 
 			stringsDrop = Localizer.getLocalizeableStringsMenu(iwma, selectedBundle, stringsParameter);
 			stringsDrop.addMenuElementFirst("", "");
-			stringsDrop.setID("key");
+			stringsDrop.setID("localizerKey");
 
 			formItem = new Layer(Layer.DIV);
 			formItem.setStyleClass("formItem");
@@ -189,11 +189,11 @@ public class Localizer extends Block {
 
 			GenericButton save = new GenericButton("Save", ACTION_SAVE);
 			save.setStyleClass("button");
-			save.setID("save");
+			save.setID("localizerSave");
 
 			GenericButton delete = new GenericButton("Delete", ACTION_DELETE);
 			delete.setStyleClass("button");
-			delete.setID("delete");
+			delete.setID("localizerDelete");
 
 			buttonLayer.add(save);
 			buttonLayer.add(delete);
@@ -211,7 +211,7 @@ public class Localizer extends Block {
 
 			SubmitButton choose = new SubmitButton("Get available keys", subAction, "choose");
 			choose.setStyleClass("button");
-			choose.setID("choose");
+			choose.setID("chooseLocalizer");
 
 			buttonLayer.add(choose);
 		}

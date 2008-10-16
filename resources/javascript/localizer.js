@@ -1,15 +1,15 @@
 jQuery.noConflict();
 
 jQuery(document).ready(function() {
-	jQuery("#delete").hide();
+	jQuery("#localizerDelete").hide();
 	
-	jQuery("#save").click(function() {
-		var key = dwr.util.getValue("key");
-		var newKey = dwr.util.getValue("newKey");
-		var value = dwr.util.getValue("value");
+	jQuery("#localizerSave").click(function() {
+		var key = dwr.util.getValue("localizerKey");
+		var newKey = dwr.util.getValue("localizerNewKey");
+		var value = dwr.util.getValue("localizerValue");
 		
-		var locale = dwr.util.getValue("locale");
-		var bundleIdentifier = dwr.util.getValue("bundle");
+		var locale = dwr.util.getValue("localizerLocale");
+		var bundleIdentifier = dwr.util.getValue("localizerBundle");
 		
 		Localizer.storeLocalizedString(key, newKey, value, bundleIdentifier, locale, {
 			callback: function(index) {
@@ -24,12 +24,12 @@ jQuery(document).ready(function() {
 						jQuery("table tbody tr:eq(" + beforeIndex + ")");
 					}
 					
-					dwr.util.removeAllOptions("key");
+					dwr.util.removeAllOptions("localizerKey");
 					Localizer.getLocalizedStrings(bundleIdentifier, {
 						callback: function(values) {
-							dwr.util.addOptions("key", values);
-							dwr.util.setValue("key", newKey);
-							dwr.util.setValue("newKey", "");
+							dwr.util.addOptions("localizerKey", values);
+							dwr.util.setValue("localizerKey", newKey);
+							dwr.util.setValue("localizerNewKey", "");
 						}
 					});
 
@@ -42,14 +42,14 @@ jQuery(document).ready(function() {
 				}			
 
 				jQuery("table tbody tr:eq(" + index + ") td.lastColumn").removeClass("isEmpty").text(value);
-				jQuery("#delete").fadeIn();
+				jQuery("#localizerDelete").fadeIn();
 			}
 		});
 	});
 	
-	jQuery("#delete").click(function() {
-		var key = dwr.util.getValue("key");
-		var bundleIdentifier = dwr.util.getValue("bundle");
+	jQuery("#localizerDelete").click(function() {
+		var key = dwr.util.getValue("localizerKey");
+		var bundleIdentifier = dwr.util.getValue("localizerBundle");
 		
 		Localizer.removeLocalizedKey(key, bundleIdentifier, {
 			callback: function(index) {
@@ -57,12 +57,12 @@ jQuery(document).ready(function() {
 					jQuery("table tbody tr:eq(" + index + ")").fadeOut().remove();
 					initializeZebraColors();
 				}
-				dwr.util.removeAllOptions("key");
+				dwr.util.removeAllOptions("localizerKey");
 				Localizer.getLocalizedStrings(bundleIdentifier, {
 					callback: function(value) {
-						dwr.util.addOptions("key", value);
-						dwr.util.setValue("value", "");
-						jQuery("#delete").fadeOut();
+						dwr.util.addOptions("localizerKey", value);
+						dwr.util.setValue("localizerValue", "");
+						jQuery("#localizerDelete").fadeOut();
 						humanMsg.displayMsg("Localized string deleted...");
 					}
 				});
@@ -76,15 +76,15 @@ jQuery(document).ready(function() {
 
 function initializeLinks() {
 	jQuery("a.keyLink").click(function() {
-		var bundleIdentifier = dwr.util.getValue("bundle");
+		var bundleIdentifier = dwr.util.getValue("localizerBundle");
 		var key = jQuery(this).text();
 
-		var locale = dwr.util.getValue("locale");
+		var locale = dwr.util.getValue("localizerLocale");
 		Localizer.getLocalizedString(key, bundleIdentifier, locale, {
 			callback: function(value) {
-				dwr.util.setValue("value", value);
-				dwr.util.setValue("key", key);
-				jQuery("#delete").fadeIn();
+				dwr.util.setValue("localizerValue", value);
+				dwr.util.setValue("localizerKey", key);
+				jQuery("#localizerDelete").fadeIn();
 			}
 		});
 		
@@ -93,15 +93,15 @@ function initializeLinks() {
 }
 
 function initializeDropdown() {
-	jQuery("#key").change(function() {
-		var bundleIdentifier = dwr.util.getValue("bundle");
-		var key = dwr.util.getValue("key");
+	jQuery("#localizerKey").change(function() {
+		var bundleIdentifier = dwr.util.getValue("localizerBundle");
+		var key = dwr.util.getValue("localizerKey");
 
-		var locale = dwr.util.getValue("locale");
+		var locale = dwr.util.getValue("localizerLocale");
 		Localizer.getLocalizedString(key, bundleIdentifier, locale, {
 			callback: function(value) {
-				dwr.util.setValue("value", value);
-				jQuery("#delete").fadeIn();
+				dwr.util.setValue("localizerValue", value);
+				jQuery("#localizerDelete").fadeIn();
 			}
 		});
 	});
