@@ -8,11 +8,19 @@ import com.idega.idegaweb.IWBundle;
 import com.idega.idegaweb.IWMainApplication;
 import com.idega.presentation.Block;
 import com.idega.presentation.IWContext;
-import com.idega.presentation.Table;
+import com.idega.presentation.Layer;
+import com.idega.presentation.Table2;
+import com.idega.presentation.TableCell2;
+import com.idega.presentation.TableRow;
+import com.idega.presentation.TableRowGroup;
+import com.idega.presentation.text.Text;
+import com.idega.presentation.ui.FieldSet;
 import com.idega.presentation.ui.Form;
-import com.idega.presentation.ui.Parameter;
+import com.idega.presentation.ui.Label;
+import com.idega.presentation.ui.Legend;
 import com.idega.presentation.ui.SubmitButton;
 import com.idega.presentation.ui.TextInput;
+import com.idega.util.PresentationUtil;
 
 /**
  * Title:        idega Framework
@@ -25,75 +33,113 @@ import com.idega.presentation.ui.TextInput;
 
 public class BundleCreator extends Block {
 
-	private static final String NEW_BUNDLE_PARAMETER = "iw_b_i";
 	private static final String NEW_BUNDLE_NAME_PARAMETER = "iw_b_i_n_b_n";
-	//private static final String NEW_BUNDLE_PATH_PARAMETER = "iw_b_i_n_b_p";
 
 	public BundleCreator() {
 	}
 
+	@Override
 	public void main(IWContext iwc) throws Exception {
-		//add(IWDeveloper.getTitleTable(this.getClass()));
-		if (!iwc.isIE()) {
-			getParentPage().setBackgroundColor("#FFFFFF");
-		}
-
-		Form form = new Form();
-		form.maintainParameter(IWDeveloper.actionParameter);
-		form.maintainParameter(IWDeveloper.PARAMETER_CLASS_NAME);
-		//form.setTarget(IWDeveloper.frameName);
-		add(form);
-		Table table = new Table(2, 4);
-		table.setAlignment(2, 3, "right");
-		form.add(table);
-		TextInput name = new TextInput(NEW_BUNDLE_NAME_PARAMETER);
-		//TextInput path = new TextInput(this.NEW_BUNDLE_PATH_PARAMETER);
-
-		table.add(IWDeveloper.getText("Create New Bundle"), 1, 1);
-		table.add(IWDeveloper.getText("Bundle Identifier"), 1, 2);
-		table.add(name, 2, 2);
-		//table.add("Bundle Directory Name",2,2);
-		//table.add(path,2,2);
-		table.add(new Parameter(NEW_BUNDLE_PARAMETER, "dummy"));
-		table.add(new SubmitButton("Create", NEW_BUNDLE_PARAMETER, "save"), 2, 3);
+		IWBundle iwb = iwc.getIWMainApplication().getBundle("com.idega.developer");
+		PresentationUtil.addStyleSheetToHeader(iwc, iwb.getVirtualPathWithFileNameString("style/developer.css"));
 
 		doBusiness(iwc);
 
-		table.add(getRegisteredBundles(iwc), 1, 4);
-		table.mergeCells(1, 4, 2, 4);
+		Layer topLayer = new Layer(Layer.DIV);
+		topLayer.setStyleClass("developer");
+		topLayer.setID("bundleCreator");
+		add(topLayer);
+
+		Form form = new Form();
+		topLayer.add(form);
+
+		FieldSet fieldSet = new FieldSet("Create bundle");
+		form.add(fieldSet);
+		
+		TextInput name = new TextInput(NEW_BUNDLE_NAME_PARAMETER);
+
+		Layer formItem = new Layer(Layer.DIV);
+		formItem.setStyleClass("formItem");
+		Label label = new Label("Bundle Identifier", name);
+		formItem.add(label);
+		formItem.add(name);
+		fieldSet.add(formItem);
+
+		Layer buttonLayer = new Layer(Layer.DIV);
+		buttonLayer.setStyleClass("buttonLayer");
+		fieldSet.add(buttonLayer);
+
+		SubmitButton save = new SubmitButton("Create");
+		save.setStyleClass("button");
+		buttonLayer.add(save);
+
+		FieldSet keySet = new FieldSet(new Legend("Created bundles"));
+		keySet.setStyleClass("createdBundles");
+		topLayer.add(keySet);
+
+		keySet.add(getRegisteredBundles(iwc));
 	}
 
-	private Table getRegisteredBundles(IWContext iwc) {
-		Table T = new Table();
-		int row = 1;
-		T.add(IWDeveloper.getText("Registered bundles:"), 1, row++);
+	private Table2 getRegisteredBundles(IWContext iwc) {
+		Table2 table = new Table2();
+		table.setCellpadding(0);
+		table.setCellspacing(0);
+		table.setWidth("100%");
+		table.setStyleClass("developerTable");
+		table.setStyleClass("ruler");
+		
+		TableRowGroup group = table.createHeaderRowGroup();
+		TableRow row = group.createRow();
+		
+		TableCell2 cell = row.createHeaderCell();
+		cell.setStyleClass("firstColumn");
+		cell.add(new Text("Identifier"));
+
+		cell = row.createHeaderCell();
+		cell.add(new Text("Name"));
+
+		cell = row.createHeaderCell();
+		cell.add(new Text("Vendor"));
+
+		cell = row.createHeaderCell();
+		cell.setStyleClass("lastColumn");
+		cell.add(new Text("Version"));
+
+		group = table.createBodyRowGroup();
+
 		List bundles = iwc.getIWMainApplication().getRegisteredBundles();
 		Collections.sort(bundles);
 
 		Iterator iter = bundles.iterator();
 		while (iter.hasNext()) {
+			row = group.createRow();
 			IWBundle item = (IWBundle) iter.next();
-			T.add(item.getBundleIdentifier(), 1, row++);
+
+			cell = row.createCell();
+			cell.setStyleClass("firstColumn");
+			cell.add(new Text(item.getModuleIdentifier()));
+
+			cell = row.createCell();
+			cell.add(new Text(item.getModuleName()));
+
+			cell = row.createCell();
+			cell.add(new Text(item.getModuleVendor()));
+
+			cell = row.createCell();
+			cell.setStyleClass("lastColumn");
+			cell.add(new Text(item.getModuleVersion()));
 		}
-		return T;
+
+		return table;
 	}
 
 	private void doBusiness(IWContext iwc) throws Exception {
-		String check = iwc.getParameter(NEW_BUNDLE_PARAMETER);
-		if (check != null) {
+		if (iwc.isParameterSet(NEW_BUNDLE_NAME_PARAMETER)) {
 			String bundleIdentifier = iwc.getParameter(NEW_BUNDLE_NAME_PARAMETER);
-			//String bundleDir = iwc.getParameter(this.NEW_BUNDLE_PATH_PARAMETER);
-			//String bundleDir = bundleIdentifier + ".bundle";
 			IWMainApplication iwma = iwc.getIWMainApplication();
-			//if (bundleDir.indexOf(IWMainApplication.BUNDLES_STANDARD_DIRECTORY) == -1) {
-				//bundleDir = IWMainApplication.BUNDLES_STANDARD_DIRECTORY + File.separator + bundleDir;
-				//bundleDir = iwma.getBundlesRealPath() + File.separator + bundleDir;
-			//}
 			iwma.registerBundle(bundleIdentifier, true);
 			IWBundle iwb = iwma.getBundle(bundleIdentifier);
 			iwb.storeState();
-			
-			add(IWDeveloper.getText("Creation Successful"));
 		}
 	}
 }

@@ -9,14 +9,21 @@ import com.idega.core.localisation.data.ICLocale;
 import com.idega.idegaweb.IWBundle;
 import com.idega.presentation.Block;
 import com.idega.presentation.IWContext;
-import com.idega.presentation.Table;
+import com.idega.presentation.Layer;
+import com.idega.presentation.Table2;
+import com.idega.presentation.TableCell2;
+import com.idega.presentation.TableRow;
+import com.idega.presentation.TableRowGroup;
 import com.idega.presentation.text.Text;
 import com.idega.presentation.ui.CheckBox;
+import com.idega.presentation.ui.FieldSet;
 import com.idega.presentation.ui.Form;
 import com.idega.presentation.ui.HiddenInput;
+import com.idega.presentation.ui.Label;
 import com.idega.presentation.ui.RadioButton;
 import com.idega.presentation.ui.SubmitButton;
 import com.idega.presentation.ui.TextInput;
+import com.idega.util.PresentationUtil;
 
 /**
  * Title:        idega Framework
@@ -31,19 +38,14 @@ public class LocaleSetter extends Block {
 
 	public static String localesParameter = "iw_localeswitcher_locale";
 	private int count = 0;
-	//private Locale _coreLocale = null;
 
 	public LocaleSetter() {
-		//setResetGoneThroughMainInRestore(true);
 	}
 
+	@Override
 	public void main(IWContext iwc) {
-		/*add(IWDeveloper.getTitleTable(this.getClass()));
-		if (!iwc.isIE()) {
-			getParentPage().setBackgroundColor("#FFFFFF");
-		}*/
-
-		//this._coreLocale = iwc.getIWMainApplication().getCoreLocale();
+		IWBundle iwb = iwc.getIWMainApplication().getBundle("com.idega.developer");
+		PresentationUtil.addStyleSheetToHeader(iwc, iwb.getVirtualPathWithFileNameString("style/developer.css"));
 
 		if (iwc.getParameter("save") != null) {
 			save(iwc);
@@ -52,71 +54,148 @@ public class LocaleSetter extends Block {
 		Locale defLocale = iwc.getApplicationSettings().getDefaultLocale();
 		ICLocale icDefLocale = ICLocaleBusiness.getICLocale(defLocale);
 
-		Form form = new Form();
-		form.maintainParameter(IWDeveloper.PARAMETER_CLASS_NAME);
-		//form.setTarget(IWDeveloper.frameName);
-		Table T = new Table();
-		T.add(IWDeveloper.getText("Use"), 1, 1);
-		T.add(IWDeveloper.getText("Country"), 2, 1);
-		T.add(IWDeveloper.getText("Language"), 3, 1);
-		T.add(IWDeveloper.getText("Region"), 4, 1);
-		T.add(IWDeveloper.getText("Default"), 5, 1);
-		
+		Layer topLayer = new Layer(Layer.DIV);
+		topLayer.setStyleClass("developer");
+		topLayer.setID("localeSetter");
+		add(topLayer);
 
-		this.count = 1;
-		addToTable(T, ICLocaleBusiness.listOfLocales(true), icDefLocale);
+		Form form = new Form();
+		topLayer.add(form);
+
+		FieldSet fieldSet = new FieldSet("Active locales");
+		fieldSet.setStyleClass("activeLocales");
+		form.add(fieldSet);
 		
-		Text localeVariant = new Text("Locale Variant:");
+		Table2 table = new Table2();
+		table.setCellpadding(0);
+		table.setCellspacing(0);
+		table.setWidth("100%");
+		table.setStyleClass("developerTable");
+		table.setStyleClass("ruler");
+		fieldSet.add(table);
+		
+		TableRowGroup group = table.createHeaderRowGroup();
+		TableRow row = group.createRow();
+		
+		TableCell2 cell = row.createHeaderCell();
+		cell.setStyleClass("firstColumn");
+		cell.setStyleClass("inputColumn");
+		cell.add(new Text("Use"));
+
+		cell = row.createHeaderCell();
+		cell.add(new Text("Language"));
+
+		cell = row.createHeaderCell();
+		cell.add(new Text("Country"));
+
+		cell = row.createHeaderCell();
+		cell.setStyleClass("lastColumn");
+		cell.setStyleClass("inputColumn");
+		cell.add(new Text("Default"));
+
+		group = table.createBodyRowGroup();
+		
+		this.count = 1;
+		addToTable(group, ICLocaleBusiness.listOfLocales(true), icDefLocale);
+		
 		String setLocaleVariant = iwc.getApplicationSettings().getProperty("com.idega.core.localevariant");
 		if(setLocaleVariant==null){
 			setLocaleVariant="";
 		}
-		TextInput localeVariantInput = new TextInput("com.idega.core.localevariant",setLocaleVariant);
-		this.count++;
-		T.add(localeVariant, 1, this.count);
-		T.add(localeVariantInput, 2, this.count);
+		TextInput localeVariantInput = new TextInput("com.idega.core.localevariant", setLocaleVariant);
 		
+		Layer formItem = new Layer(Layer.DIV);
+		formItem.setStyleClass("formItem");
+		Label label = new Label("Locale Variant", localeVariantInput);
+		formItem.add(label);
+		formItem.add(localeVariantInput);
+		fieldSet.add(formItem);
+
+		Layer buttonLayer = new Layer(Layer.DIV);
+		buttonLayer.setStyleClass("buttonLayer");
+		fieldSet.add(buttonLayer);
+
 		SubmitButton save = new SubmitButton("save", "Save");
-		this.count++;
-		T.add(save, 1, this.count);
-		this.count++;
-		addToTable(T, ICLocaleBusiness.listOfLocales(false), null);
-		T.add(new HiddenInput("loc_count", String.valueOf(this.count)));
-		T.setCellpadding(2);
-		//T.setBorder(1);
-		form.add(T);
-		add(form);
+		buttonLayer.add(save);
+		
+		fieldSet = new FieldSet("Available locales");
+		fieldSet.setStyleClass("availableLocales");
+		form.add(fieldSet);
+		
+		table = new Table2();
+		table.setCellpadding(0);
+		table.setCellspacing(0);
+		table.setWidth("100%");
+		table.setStyleClass("developerTable");
+		table.setStyleClass("ruler");
+		fieldSet.add(table);
+		
+		group = table.createHeaderRowGroup();
+		row = group.createRow();
+		
+		cell = row.createHeaderCell();
+		cell.setStyleClass("firstColumn");
+		cell.setStyleClass("inputColumn");
+		cell.add(new Text("Use"));
+
+		cell = row.createHeaderCell();
+		cell.add(new Text("Language"));
+
+		cell = row.createHeaderCell();
+		cell.setStyleClass("lastColumn");
+		cell.add(new Text("Country"));
+
+		group = table.createBodyRowGroup();
+		
+		addToTable(group, ICLocaleBusiness.listOfLocales(false), null);
+		form.add(new HiddenInput("loc_count", String.valueOf(this.count)));
 	}
 
-	private void addToTable(Table T, List listOfLocales, ICLocale defLocale) {
+	private void addToTable(TableRowGroup group, List listOfLocales, ICLocale defLocale) {
 		if (listOfLocales != null) {
-			CheckBox chk;
-			RadioButton rb;
-			ICLocale icLocale;
-			Locale javaLocale;
 			Iterator I = listOfLocales.iterator();
+			int rowCount = 1;
 			while (I.hasNext()) {
-				this.count++;
-				icLocale = (ICLocale) I.next();
-				javaLocale = ICLocaleBusiness.getLocaleFromLocaleString(icLocale.getLocale());
-				chk = new CheckBox("loc_chk" + this.count, String.valueOf(icLocale.getLocaleID()));
-				chk.setChecked(icLocale.getInUse());
-				//had to comment this out so you can actually disable english!
-//				if (javaLocale.equals(this._coreLocale)) {
-//					chk.setDisabled(true);
-//					T.add(new HiddenInput("loc_chk" + this.count, String.valueOf(icLocale.getLocaleID())), 1, this.count);
-//				}
-				T.add(chk, 1, this.count);
-				T.add(IWDeveloper.getText(javaLocale.getDisplayCountry()), 2, this.count);
-				T.add(IWDeveloper.getText(javaLocale.getDisplayLanguage()), 3, this.count);
-				T.add(IWDeveloper.getText(javaLocale.getDisplayVariant()), 4, this.count);
-				if (defLocale != null && icLocale.getInUse()) {
-					rb = new RadioButton("default_locale", icLocale.getName());
-					T.add(rb, 5, this.count);
-					if (defLocale.getLocaleID() == icLocale.getLocaleID()) {
-						rb.setSelected();
-					}
+				ICLocale icLocale = (ICLocale) I.next();
+				Locale javaLocale = ICLocaleBusiness.getLocaleFromLocaleString(icLocale.getLocale());
+				if (javaLocale.getDisplayCountry().length() == 0 && !javaLocale.equals(Locale.ENGLISH)) {
+					continue;
 				}
+				
+				TableRow row = group.createRow();
+				
+				CheckBox checkBox = new CheckBox("loc_chk" + this.count++, String.valueOf(icLocale.getLocaleID()));
+				checkBox.setChecked(icLocale.getInUse());
+				
+				TableCell2 cell = row.createCell();
+				cell.setStyleClass("inputColumn");
+				cell.setStyleClass("firstColumn");
+				cell.add(checkBox);
+
+				cell = row.createCell();
+				cell.add(new Text(javaLocale.getDisplayLanguage(javaLocale) + " (" + javaLocale.getDisplayLanguage() + ")"));
+				
+				cell = row.createCell();
+				cell.add(new Text(javaLocale.getDisplayCountry(javaLocale) + " (" + javaLocale.getDisplayCountry() + ")"));
+				
+				if (defLocale != null && icLocale.getInUse()) {
+					RadioButton radio = new RadioButton("default_locale", icLocale.getName());
+					if (defLocale.getLocaleID() == icLocale.getLocaleID()) {
+						radio.setSelected();
+					}
+					cell = row.createCell();
+					cell.setStyleClass("lastColumn");
+					cell.setStyleClass("inputColumn");
+					cell.add(radio);
+				}
+				
+				if (rowCount % 2 == 0) {
+					row.setStyleClass("evenRow");
+				}
+				else {
+					row.setStyleClass("oddRow");
+				}
+				rowCount++;
 			}
 		}
 	}
@@ -164,5 +243,4 @@ public class LocaleSetter extends Block {
 			}
 		}
 	}
-
 }
