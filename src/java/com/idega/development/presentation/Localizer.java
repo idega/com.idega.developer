@@ -13,6 +13,7 @@ import com.idega.idegaweb.presentation.LocaleChanger;
 import com.idega.presentation.Block;
 import com.idega.presentation.IWContext;
 import com.idega.presentation.Layer;
+import com.idega.presentation.Span;
 import com.idega.presentation.Table2;
 import com.idega.presentation.TableCell2;
 import com.idega.presentation.TableRow;
@@ -245,7 +246,11 @@ public class Localizer extends Block {
 			else{
 				localizedString = TextSoap.formatText(localizedString);
 			}
-			cell.add(new Text(localizedString));
+			
+			Span span = new Span(new Text(localizedString));
+			span.setStyleClass("stringValue");
+			
+			cell.add(span);
 
 			if (i % 2 == 0) {
 				row.setStyleClass("evenRow");

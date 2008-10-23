@@ -14,7 +14,7 @@ jQuery(document).ready(function() {
 		Localizer.storeLocalizedString(key, newKey, value, bundleIdentifier, locale, {
 			callback: function(index) {
 				if (newKey.length > 0) {
-					var newValue = "<tr><td class=\"firstColumn\"><a class=\"keyLink\" href=\"#\">" + newKey + "</a></td><td class=\"lastColumn\"><span>" + value + "</span></td></tr>";
+					var newValue = "<tr><td class=\"firstColumn\"><a class=\"keyLink\" href=\"#\">" + newKey + "</a></td><td class=\"lastColumn\"><span class=\"stringValue\">" + value + "</span></td></tr>";
 					
 					if (index == 0) {
 						jQuery("table tbody").prepend(newValue);
@@ -41,7 +41,7 @@ jQuery(document).ready(function() {
 					humanMsg.displayMsg("Localized string saved...");
 				}			
 
-				jQuery("table tbody tr:eq(" + index + ") td.lastColumn").removeClass("isEmpty").text(value);
+				jQuery("table tbody tr:eq(" + index + ") td.lastColumn").removeClass("isEmpty").children().get(0).text(value);
 				jQuery("#localizerDelete").fadeIn();
 			}
 		});
@@ -89,6 +89,33 @@ function initializeLinks() {
 		});
 		
 		jQuery(".wf_blockmainarea").scrollTo(0, 300);
+	});
+
+	jQuery(".stringValue").dblclick(function() {
+		jQuery(this).fadeOut('fast', function() {
+			var oldValue = jQuery(this).text();
+			if (jQuery(this).parent().hasClass('isEmpty')) {
+				oldValue = "";
+			}
+			jQuery(this).parent().prepend("<textarea class=\"newStringValue\">" + oldValue + "</textarea>");
+			jQuery(".newStringValue").focus().blur(function() {
+				var value = jQuery(this).val();
+				if (value.length > 0) {
+					var key = jQuery(this).parents('tr').children('td.firstColumn').text();
+					var locale = dwr.util.getValue("localizerLocale");
+					var bundleIdentifier = dwr.util.getValue("localizerBundle");
+					
+					Localizer.storeLocalizedString(key, '', value, bundleIdentifier, locale);
+					humanMsg.displayMsg("Localized string saved...");
+					jQuery(this).parent().removeClass('isEmpty').children('span').text(value);
+				}
+
+				jQuery(this).hide();
+				jQuery(this).parent().children('span').fadeIn('fast');
+				jQuery(this).remove();
+				initializeZebraColors();
+			})
+		});
 	});
 }
 
