@@ -42,10 +42,10 @@ import com.idega.workspace.view.WorkspaceClassViewNode;
  * <p>
  * TODO tryggvil Describe Type SchoolViewManager
  * </p>
- *  Last modified: $Date: 2007/12/17 16:21:29 $ by $Author: laddi $
+ *  Last modified: $Date: 2008/10/23 12:29:54 $ by $Author: laddi $
  * 
  * @author <a href="mailto:tryggvil@idega.com">tryggvil</a>
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public class DeveloperViewManager {
 
@@ -196,9 +196,10 @@ public class DeveloperViewManager {
 		scriptmanager.setMaximizeBlockVertically(true);
 		
 		try{
+			Class ldapmanagerClass = Class.forName("com.idega.block.ldap.manager.LDAPManager");
+
 			WorkspaceClassViewNode ldap = new WorkspaceClassViewNode("ldap",devNode);
 			ldap.setName("LDAP Manager");
-			Class ldapmanagerClass = Class.forName("com.idega.block.ldap.manager.LDAPManager");
 			ldap.setComponentClass(ldapmanagerClass);
 			ldap.setMaximizeBlockVertically(true);
 		}
@@ -207,9 +208,10 @@ public class DeveloperViewManager {
 		}
 		
 		try{
+			Class siteInfoClass = Class.forName("com.idega.content.themes.presentation.SiteInfo");
+
 			WorkspaceClassViewNode siteInfo = new WorkspaceClassViewNode("siteinfo",devNode);
 			siteInfo.setName("Site Info");
-			Class siteInfoClass = Class.forName("com.idega.content.themes.presentation.SiteInfo");
 			siteInfo.setComponentClass(siteInfoClass);
 			siteInfo.setMaximizeBlockVertically(true);
 		}

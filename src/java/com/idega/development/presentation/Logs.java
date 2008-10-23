@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Iterator;
 import java.util.List;
 
+import com.idega.idegaweb.IWBundle;
 import com.idega.idegaweb.IWMainApplicationSettings;
 import com.idega.idegaweb.IWResourceBundle;
 import com.idega.presentation.Block;
@@ -14,6 +15,7 @@ import com.idega.presentation.ui.Label;
 import com.idega.presentation.ui.SubmitButton;
 import com.idega.presentation.ui.TextInput;
 import com.idega.util.FileUtil;
+import com.idega.util.PresentationUtil;
 import com.idega.util.text.TextSoap;
 
 /**
@@ -52,15 +54,15 @@ public class Logs extends Block {
 		// empty
 	}
 
+	@Override
 	public void main(IWContext iwc) throws Exception {
 		IWResourceBundle iwrb = getResourceBundle(iwc);
 		String text = iwrb.getLocalizedString("Logs.tutorial_text",defaultText);
 		text = TextSoap.findAndReplace(text, "\n", "<br>");
 		
-		//add(IWDeveloper.getTitleTable(this.getClass()));
-		if (!iwc.isIE()) {
-			getParentPage().setBackgroundColor("#FFFFFF");
-		}
+		IWBundle iwb = iwc.getIWMainApplication().getBundle("com.idega.developer");
+		PresentationUtil.addStyleSheetToHeader(iwc, iwb.getVirtualPathWithFileNameString("style/developer.css"));
+
 		Form form = new Form();
 		form.maintainParameter(IWDeveloper.PARAMETER_CLASS_NAME);
 		form.maintainParameter(IWDeveloper.actionParameter);
@@ -184,6 +186,7 @@ public class Logs extends Block {
 		//		}
 	}
 	
+	@Override
 	public String getBundleIdentifier(){
 		return IW_BUNDLE_IDENTIFIER;
 	}

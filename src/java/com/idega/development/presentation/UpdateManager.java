@@ -1,5 +1,5 @@
 /*
- * $Id: UpdateManager.java,v 1.8 2006/06/01 12:01:36 laddi Exp $
+ * $Id: UpdateManager.java,v 1.9 2008/10/23 12:29:54 laddi Exp $
  *
  * Copyright (C) 2002 Idega hf. All Rights Reserved.
  *
@@ -27,6 +27,7 @@ import com.idega.presentation.ui.DeselectAllButton;
 import com.idega.presentation.ui.Form;
 import com.idega.presentation.ui.SelectAllButton;
 import com.idega.presentation.ui.SubmitButton;
+import com.idega.util.PresentationUtil;
 import com.idega.versioncontrol.business.UpdateService;
 
 /**
@@ -45,13 +46,12 @@ private String PARAM_EXECUTE_UPDATE="iw_updateman_execupdate";
   public UpdateManager() {
   }
 
-  public void main(IWContext iwc)throws Exception{
-	this.iwb = getBundle(iwc);
+  @Override
+	public void main(IWContext iwc)throws Exception{
+  	this.iwb = getBundle(iwc);
+  	PresentationUtil.addStyleSheetToHeader(iwc, iwb.getVirtualPathWithFileNameString("style/developer.css"));
   	handleAction(iwc);
     IWResourceBundle iwrb = this.iwb.getResourceBundle(iwc);
-		if (!iwc.isIE()) {
-			getParentPage().setBackgroundColor("#FFFFFF");
-		}
 
     IWMainApplication iwma = iwc.getIWMainApplication();
     List bundles = getRegisteredBundles(iwma);
@@ -146,7 +146,8 @@ private void handleAction(IWContext iwc) throws Exception
     return bundles;
   }
 
-  public String getBundleIdentifier(){
+  @Override
+	public String getBundleIdentifier(){
     return IW_BUNDLE_IDENTIFIER;
   }
   

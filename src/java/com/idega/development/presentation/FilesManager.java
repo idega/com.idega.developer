@@ -4,6 +4,7 @@ import org.apache.myfaces.renderkit.html.util.AddResource;
 import org.apache.myfaces.renderkit.html.util.AddResourceFactory;
 
 import com.idega.development.business.DeveloperConstants;
+import com.idega.idegaweb.IWBundle;
 import com.idega.idegaweb.IWResourceBundle;
 import com.idega.presentation.Block;
 import com.idega.presentation.IWContext;
@@ -11,11 +12,15 @@ import com.idega.presentation.Layer;
 import com.idega.presentation.text.Text;
 import com.idega.presentation.ui.GenericButton;
 import com.idega.util.CoreConstants;
+import com.idega.util.PresentationUtil;
 
 public class FilesManager extends Block {
 	
+	@Override
 	public void main(IWContext iwc) {
+		IWBundle iwb = iwc.getIWMainApplication().getBundle("com.idega.developer");
 		IWResourceBundle iwrb = getResourceBundle(iwc);
+		PresentationUtil.addStyleSheetToHeader(iwc, iwb.getVirtualPathWithFileNameString("style/developer.css"));
 		
 		addJavaScript(iwc);
 		
@@ -51,6 +56,7 @@ public class FilesManager extends Block {
 		adder.addJavaScriptAtPosition(iwc, AddResource.HEADER_BEGIN, getBundle(iwc).getVirtualPathWithFileNameString("javascript/FilesManagerHelper.js"));
 	}
 	
+	@Override
 	public String getBundleIdentifier() {
 		return DeveloperConstants.BUNDLE_IDENTIFIER;
 	}

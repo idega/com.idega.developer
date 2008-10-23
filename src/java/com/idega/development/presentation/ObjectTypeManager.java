@@ -15,6 +15,7 @@ import com.idega.core.component.data.ICObjectTypeHome;
 import com.idega.data.IDOLookup;
 import com.idega.data.IDOLookupException;
 import com.idega.development.presentation.comp.BundleComponentFactory;
+import com.idega.idegaweb.IWBundle;
 import com.idega.presentation.Block;
 import com.idega.presentation.IWContext;
 import com.idega.presentation.Table;
@@ -26,6 +27,7 @@ import com.idega.presentation.ui.HiddenInput;
 import com.idega.presentation.ui.SubmitButton;
 import com.idega.presentation.ui.TextInput;
 import com.idega.repository.data.RefactorClassRegistry;
+import com.idega.util.PresentationUtil;
 
 /**
  * @author gimmi
@@ -47,7 +49,11 @@ public class ObjectTypeManager extends Block {
 	public ObjectTypeManager() {
 	}
 
+	@Override
 	public void main(IWContext iwc) {
+		IWBundle iwb = iwc.getIWMainApplication().getBundle("com.idega.developer");
+		PresentationUtil.addStyleSheetToHeader(iwc, iwb.getVirtualPathWithFileNameString("style/developer.css"));
+
 		String otPk = iwc.getParameter(this.PARAMETER_OBJECT_TYPE_ID);
 		if (otPk != null) {
 			try {

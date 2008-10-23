@@ -1,5 +1,6 @@
 package com.idega.development.presentation;
 
+import com.idega.idegaweb.IWBundle;
 import com.idega.idegaweb.IWMainApplicationSettings;
 import com.idega.presentation.Block;
 import com.idega.presentation.IWContext;
@@ -7,6 +8,7 @@ import com.idega.presentation.Table;
 import com.idega.presentation.ui.Form;
 import com.idega.presentation.ui.SubmitButton;
 import com.idega.util.IWTimestamp;
+import com.idega.util.PresentationUtil;
 
 /**
  * Title:        idega Framework
@@ -25,12 +27,11 @@ public class ApplicationStatus extends Block {
 		// empty
 	}
 
+	@Override
 	public void main(IWContext iwc) throws Exception {
 		IWMainApplicationSettings settings = iwc.getApplicationSettings();
-		//add(IWDeveloper.getTitleTable(this.getClass()));
-		if (!iwc.isIE()) {
-			getParentPage().setBackgroundColor("#FFFFFF");
-		}
+		IWBundle iwb = iwc.getIWMainApplication().getBundle("com.idega.developer");
+		PresentationUtil.addStyleSheetToHeader(iwc, iwb.getVirtualPathWithFileNameString("style/developer.css"));
 
 		Form form = new Form();
 		form.maintainParameter(IWDeveloper.actionParameter);

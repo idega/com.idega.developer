@@ -3,12 +3,14 @@ import com.idega.builder.business.BuilderLogic;
 import com.idega.business.IBOLookup;
 import com.idega.core.cache.IWCacheManager2;
 import com.idega.data.IDOContainer;
+import com.idega.idegaweb.IWBundle;
 import com.idega.idegaweb.IWCacheManager;
 import com.idega.presentation.Block;
 import com.idega.presentation.IWContext;
 import com.idega.presentation.Table;
 import com.idega.presentation.ui.Form;
 import com.idega.presentation.ui.SubmitButton;
+import com.idega.util.PresentationUtil;
 /**
  * Title:        idega Framework
  * Description:
@@ -27,10 +29,10 @@ public class Caches extends Block {
 	
 	public Caches() {
 	}
+	@Override
 	public void main(IWContext iwc) throws Exception {
-		if (!iwc.isIE()) {
-			getParentPage().setBackgroundColor("#FFFFFF");
-		}
+		IWBundle iwb = iwc.getIWMainApplication().getBundle("com.idega.developer");
+		PresentationUtil.addStyleSheetToHeader(iwc, iwb.getVirtualPathWithFileNameString("style/developer.css"));
 
 		Form form = new Form();
 		form.maintainParameter(IWDeveloper.actionParameter);

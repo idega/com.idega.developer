@@ -17,6 +17,7 @@ import com.idega.builder.data.IBPageObjectView;
 import com.idega.builder.data.IBPageObjectViewHome;
 import com.idega.core.component.data.ICObjectBMPBean;
 import com.idega.data.IDOLookup;
+import com.idega.idegaweb.IWBundle;
 import com.idega.idegaweb.IWMainApplication;
 import com.idega.presentation.Block;
 import com.idega.presentation.IWContext;
@@ -27,6 +28,7 @@ import com.idega.presentation.ui.DropdownMenu;
 import com.idega.presentation.ui.Form;
 import com.idega.presentation.ui.SubmitButton;
 import com.idega.presentation.ui.TextInput;
+import com.idega.util.PresentationUtil;
 
 /**
  * @author aron
@@ -46,10 +48,10 @@ public class PageObjects extends Block {
 	/* (non-Javadoc)
 	 * @see com.idega.presentation.PresentationObject#main(com.idega.presentation.IWContext)
 	 */
+	@Override
 	public void main(IWContext iwc) throws Exception {
-		if (!iwc.isIE()) {
-			getParentPage().setBackgroundColor("#FFFFFF");
-		}
+		IWBundle iwb = iwc.getIWMainApplication().getBundle("com.idega.developer");
+		PresentationUtil.addStyleSheetToHeader(iwc, iwb.getVirtualPathWithFileNameString("style/developer.css"));
 		
 		//String bundleIdentifier = iwc.getParameter(BUNDLE_PARAMETER);
 		IWMainApplication iwma = iwc.getIWMainApplication();

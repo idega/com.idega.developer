@@ -1,5 +1,5 @@
 /*
- * $Id: OwnerGroupImage.java,v 1.2 2006/04/09 11:53:57 laddi Exp $
+ * $Id: OwnerGroupImage.java,v 1.3 2008/10/23 12:29:54 laddi Exp $
  * Created on 12.4.2005
  *
  * Copyright (C) 2005 Idega Software hf. All Rights Reserved.
@@ -12,19 +12,21 @@ package com.idega.development.presentation;
 import javax.ejb.FinderException;
 import com.idega.data.IDOLookup;
 import com.idega.data.IDOLookupException;
+import com.idega.idegaweb.IWBundle;
 import com.idega.presentation.IWContext;
 import com.idega.presentation.Image;
 import com.idega.presentation.Page;
 import com.idega.user.data.Group;
 import com.idega.user.data.GroupHome;
+import com.idega.util.PresentationUtil;
 
 
 /**
  * 
- *  Last modified: $Date: 2006/04/09 11:53:57 $ by $Author: laddi $
+ *  Last modified: $Date: 2008/10/23 12:29:54 $ by $Author: laddi $
  * 
  * @author <a href="mailto:gummi@idega.com">Gudmundur Agust Saemundsson</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class OwnerGroupImage extends Image {
 
@@ -36,7 +38,11 @@ public class OwnerGroupImage extends Image {
 	}
 
 	
+	@Override
 	public void main(IWContext iwc) {
+		IWBundle iwb = iwc.getIWMainApplication().getBundle("com.idega.developer");
+		PresentationUtil.addStyleSheetToHeader(iwc, iwb.getVirtualPathWithFileNameString("style/developer.css"));
+
 		Page page = this.getParentPage();
 		if(page != null) {
 			int rootPageID = page.getDynamicPageTrigger().getRootPage();

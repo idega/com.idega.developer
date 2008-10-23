@@ -18,6 +18,7 @@ import com.idega.core.component.data.ICObjectHome;
 import com.idega.data.IDOLookup;
 import com.idega.data.IDOLookupException;
 import com.idega.development.business.HomePageBusiness;
+import com.idega.idegaweb.IWBundle;
 import com.idega.presentation.Block;
 import com.idega.presentation.IWContext;
 import com.idega.presentation.Table;
@@ -29,6 +30,7 @@ import com.idega.user.data.Group;
 import com.idega.user.data.GroupHome;
 import com.idega.user.data.GroupType;
 import com.idega.user.data.GroupTypeHome;
+import com.idega.util.PresentationUtil;
 
 
 /**
@@ -58,11 +60,10 @@ public class HomePageGenerator extends Block {
 	
 	
 	
+	@Override
 	public void main(IWContext iwc) throws Exception {
-		if (!iwc.isIE()) {
-			getParentPage().setBackgroundColor("#FFFFFF");
-		}
-		
+		IWBundle iwb = iwc.getIWMainApplication().getBundle("com.idega.developer");
+		PresentationUtil.addStyleSheetToHeader(iwc, iwb.getVirtualPathWithFileNameString("style/developer.css"));
 		
 		String pDetachPageAndGroup = iwc.getParameter(_prmDetachPageAndGroup);
 		if(pDetachPageAndGroup!= null && !"".equals(pDetachPageAndGroup)) {

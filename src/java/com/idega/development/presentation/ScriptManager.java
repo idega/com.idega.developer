@@ -1,8 +1,10 @@
 package com.idega.development.presentation;
+import com.idega.idegaweb.IWBundle;
 import com.idega.idegaweb.IWResourceBundle;
 import com.idega.presentation.Block;
 import com.idega.presentation.IWContext;
 import com.idega.repository.data.RefactorClassRegistry;
+import com.idega.util.PresentationUtil;
 import com.idega.util.reflect.MethodInvoker;
 /**
  * This block manages a list of available Beanshell scripts (end with .bsh) within bundles and includes a simple script editor and the possibility to run the scripts.
@@ -17,12 +19,11 @@ public class ScriptManager extends Block {
 	}
 
 	
+	@Override
 	public void main(IWContext iwc) throws Exception {
 		IWResourceBundle iwrb = getResourceBundle(iwc);
-		//add(IWDeveloper.getTitleTable(this.getClass()));
-		if (!iwc.isIE()) {
-			getParentPage().setBackgroundColor("#FFFFFF");
-		}
+		IWBundle iwb = iwc.getIWMainApplication().getBundle("com.idega.developer");
+		PresentationUtil.addStyleSheetToHeader(iwc, iwb.getVirtualPathWithFileNameString("style/developer.css"));
 		
 		if (iwc.isLoggedOn()) {
 		
@@ -46,6 +47,7 @@ public class ScriptManager extends Block {
 		}
 	}
 	
+	@Override
 	public String getBundleIdentifier() {
 		return IW_BUNDLE_IDENTIFIER;
 	}

@@ -24,6 +24,7 @@ import com.idega.data.DatastoreInterface;
 import com.idega.data.IDOLookup;
 import com.idega.data.SapDBDatastoreInterface;
 import com.idega.data.SimpleQuerier;
+import com.idega.idegaweb.IWBundle;
 import com.idega.idegaweb.presentation.BusyBar;
 import com.idega.presentation.Block;
 import com.idega.presentation.IWContext;
@@ -38,6 +39,7 @@ import com.idega.user.data.GroupHome;
 import com.idega.user.data.User;
 import com.idega.user.data.UserHome;
 import com.idega.util.IWTimestamp;
+import com.idega.util.PresentationUtil;
 
 /**
  * @author aron & gimmi
@@ -55,7 +57,11 @@ public class UserTransformer extends Block{
 	GroupBusiness gBus;
 	String currentDate = null;
 	
+	@Override
 	public void main(IWContext iwc)throws Exception{
+		IWBundle iwb = iwc.getIWMainApplication().getBundle("com.idega.developer");
+		PresentationUtil.addStyleSheetToHeader(iwc, iwb.getVirtualPathWithFileNameString("style/developer.css"));
+
 		this.df = DateFormat.getDateTimeInstance(DateFormat.SHORT,DateFormat.SHORT,iwc.getCurrentLocale());
 		this.gBus = (GroupBusiness) IBOLookup.getServiceInstance(iwc, GroupBusiness.class);
 		String sql = iwc.getParameter("user_select_sql");

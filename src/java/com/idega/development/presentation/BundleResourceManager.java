@@ -16,6 +16,7 @@ import com.idega.presentation.text.Text;
 import com.idega.presentation.ui.DropdownMenu;
 import com.idega.presentation.ui.Form;
 import com.idega.util.LocaleUtil;
+import com.idega.util.PresentationUtil;
 /**
  * BundleResourceManager
  * 
@@ -32,11 +33,16 @@ public class BundleResourceManager extends Block {
 	 * 
 	 * @see com.idega.presentation.PresentationObject#getBundleIdentifier()
 	 */
+	@Override
 	public String getBundleIdentifier() {
 		return "com.idega.developer";
 	}
 	
+	@Override
 	public void main(IWContext iwc) {
+		IWBundle iwb = iwc.getIWMainApplication().getBundle("com.idega.developer");
+		PresentationUtil.addStyleSheetToHeader(iwc, iwb.getVirtualPathWithFileNameString("style/developer.css"));
+
 		//add(IWDeveloper.getTitleTable(this.getClass()));
 		Locale locale = null;
 		String folder = null;

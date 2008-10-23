@@ -57,7 +57,7 @@ public class ComponentManager extends Block {
 	@Override
 	public void main(IWContext iwc) throws Exception {
 		IWBundle iwb = iwc.getIWMainApplication().getBundle("com.idega.developer");
-		PresentationUtil.addJavaScriptSourceLineToHeader(iwc, iwb.getVirtualPathWithFileNameString("javascript/developer.js"));
+		PresentationUtil.addStyleSheetToHeader(iwc, iwb.getVirtualPathWithFileNameString("style/developer.css"));
 
 		IWMainApplication iwma = iwc.getIWMainApplication();
 		DropdownMenu bundles = BundlePropertySetter.getRegisteredBundlesDropdown(iwma, BUNDLE_PARAMETER);
