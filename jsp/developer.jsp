@@ -6,7 +6,7 @@
 	xmlns:ws="http://xmlns.idega.com/com.idega.workspace" version="1.2">
 	<jsp:directive.page contentType="text/html" />
 	<f:view>
-		<ws:page id="workspacepage1">
+		<ws:page id="workspacepage1" stylesheeturls="/idegaweb/bundles/com.idega.developer.bundle/resources/style/developer.css">
 			<h:form id="workspaceform1">
 			</h:form>
 		</ws:page>

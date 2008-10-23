@@ -17,6 +17,27 @@ div.developer fieldset.querySet, #localizer fieldSet {
 	border-bottom: 1px #D7D7D7 solid;
 }
 
+#localeSetter fieldset {
+	margin: 0;
+	padding: 0;
+}
+
+#localeSetter fieldset legend {
+	display: block;
+	padding: 8px;
+}
+
+#localeSetter .formItem {
+	margin-top: 12px;
+	padding-left: 8px;
+}
+
+#localeSetter .buttonLayer {
+	padding-left: 8px;
+	padding-bottom: 8px;
+	padding-top: 0;
+}
+
 div.developer fieldset.componentManager {
 	border-bottom: 0;
 }
@@ -25,11 +46,15 @@ div.developer fieldset.querySet legend {
 	display: none;
 }
 
-div.developer fieldSet.resultSet, div.developer fieldset.keySet, div.developer fieldset.availableClasses, #localizer fieldset.stringsSet {
+div.developer fieldSet.resultSet, div.developer fieldset.keySet, div.developer fieldset.availableClasses, #localizer fieldset.stringsSet, #bundleCreator fieldset.createdBundles {
 	border: 0;
 	padding: 0;
 	margin: 0;
 	border-top: 1px #fff solid;
+}
+
+#bundleCreator .button {
+	float: left;
 }
 
 #localizer fieldset.stringsSet {
@@ -199,6 +224,183 @@ table.developerTable tbody tr td a {
 
 table.developerTable tr td.number {
 	text-align: right;
+}
+
+#localeSetter table td {
+	width: 50%;
+}
+
+#localeSetter table.developerTable .inputColumn {
+	width: 12px;
+	white-space: none;
+	text-align: center;
+}
+
+.developer div.ws_layout_twocolumn div.ws_main {
+	position: absolute;
+	top: 80px;
+	bottom: 0;
+	left: 203px;
+	right: 0;
+	width: auto;
+	height: auto;
+}
+
+/*** Begin WS Function (Left) Menu ***/
+.developer div.ws_functionmenu .wf_block {
+	margin-left: 4px;
+	margin-bottom: 0;
+	margin: 0;
+	border: 0;
+}
+
+.developer div.ws_functionmenu div.wf_titlebar {
+	display: none !important;
+}
+
+.developer div.ws_functionmenu div.wf_titlebar_icon {
+	display: none;
+}
+
+.developer div.ws_functionmenu div.wf_titlebar {
+	border-top: 1px #fff solid;
+	height: 35px;
+	background: url(images/wf_background.gif) repeat-x;
+	padding: 6px 0 0 0px;
+	color: #515151;
+	font-weight: bold;
+	font-size: 1.2em;
+	font-variant: small-caps;
+}
+
+.developer div.ws_functionmenu div.wf_titlebar a {
+	text-decoration: none;
+	color: #00AEFF;
+	font-size: 0.7em;
+	font-weight: bold;
+	font-variant: normal;
+}
+
+.developer div.ws_functionmenu div.wf_titlebar a:hover {
+	text-decoration: underline;
+}
+
+.developer div.ws_functionmenu ul.wf_viewmenu,div.ws_functionmenu ul.wf_viewmenu li {
+	margin: 0;
+	padding: 0;
+}
+
+.developer div.ws_functionmenu ul.wf_viewmenu {
+	list-style: none;
+	border: none;
+	background: #fff;
+	height: auto;
+}
+
+.developer div.ws_functionmenu ul.wf_viewmenu li {
+	border-bottom: 1px solid #cdcdcd;
+	float: none;
+	line-height: 24px;
+	height: auto;
+}
+
+.developer div.ws_functionmenu ul.wf_viewmenu li.selected li.selected {
+	padding-left: 12px !important;
+	background: url(/idegaweb/bundles/com.idega.workspace.bundle/resources/style/images/viewmenu_bullet.png) no-repeat 7px 5px !important;
+}
+
+.developer div.ws_functionmenu ul.wf_viewmenu li ul.wf_viewmenu,div.ws_functionmenu ul.wf_viewmenu li ul.wf_viewmenu li {
+	background: none;
+}
+
+.developer div.ws_functionmenu ul.wf_viewmenu li ul.wf_viewmenu li {
+	min-height: 0px;
+}
+
+.developer div.ws_functionmenu ul.wf_viewmenu li a {
+	color: #303030;
+	font-weight: bold;
+	line-height: 24px;
+	padding-left: 24px;
+	margin: 0;
+	display: block;
+	border: 0;
+	background: url(/idegaweb/bundles/com.idega.workspace.bundle/resources/style/images/viewmenu_mainbullet2.png) 11px 7px no-repeat !important;
+	font-size: 11px;
+	float: none;
+}
+
+.developer div.ws_functionmenu ul.wf_viewmenu li a span {
+	float: none;
+	background: none !important;
+	line-height: 24px;
+	text-shadow: none;
+}
+
+.developer div.ws_functionmenu ul.wf_viewmenu li a:hover {
+	background-color: #f4f4f4;
+}
+
+.developer div.ws_functionmenu ul.wf_viewmenu li a:hover span {
+	background: none;
+	text-shadow: none;
+}
+
+.developer div.ws_functionmenu ul.wf_viewmenu li:hover { /*background: #FAFAFA;*/
+	
+}
+
+.developer div.ws_functionmenu ul.wf_viewmenu li.selected {
+	background: #025FD0 url(images/functionmenu/bg_item_selected.gif) repeat-x;
+}
+
+.developer div.ws_functionmenu ul.wf_viewmenu li.selected a {
+	color: #fff;
+}
+
+.developer div.ws_functionmenu ul.wf_viewmenu li.selected a:hover {
+	color: #303030;
+}
+
+.developer div.ws_functionmenu ul.wf_viewmenu li ul {
+	clear: both;
+}
+
+.developer div.ws_functionmenu ul.wf_viewmenu li ul li {
+	border: none;
+	/** TL: This float is causing problems in IE so it is commented out for now: */ /*float: left;*/
+	clear: none;
+	height: auto;
+}
+
+.developer div.ws_functionmenu ul.wf_viewmenu li ul li a {
+	display: block;
+	font-weight: normal;
+	padding: 0 0 0 24px;
+	background: none;
+	font-size: 10px;
+	color: #777777;
+	line-height: 16px;
+}
+
+.developer div.ws_functionmenu ul.wf_viewmenu li ul li:hover {
+	background: none;
+}
+
+.developer div.ws_functionmenu ul.wf_viewmenu li ul li a:hover {
+}
+
+/***By default not display more than two levels of the menu:***/
+.developer div.ws_functionmenu .wf_viewmenu * .wf_viewmenu * .wf_viewmenu {
+	display: none;
+}
+
+.developer div.ws_functionmenu .wf_viewmenu .deselected a:hover {
+	color: black;
+}
+
+.wf_block.maximizedvertically {
+	left: 0 !important;
 }
 
 .maximizedvertically .wf_blockmainarea{

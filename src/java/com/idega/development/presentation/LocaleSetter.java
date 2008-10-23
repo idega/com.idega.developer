@@ -173,10 +173,10 @@ public class LocaleSetter extends Block {
 				cell.add(checkBox);
 
 				cell = row.createCell();
-				cell.add(new Text(javaLocale.getDisplayLanguage(javaLocale) + " (" + javaLocale.getDisplayLanguage() + ")"));
+				cell.add(new Text(javaLocale.getDisplayLanguage() + " (" + javaLocale.getDisplayLanguage(javaLocale) + ")"));
 				
 				cell = row.createCell();
-				cell.add(new Text(javaLocale.getDisplayCountry(javaLocale) + " (" + javaLocale.getDisplayCountry() + ")"));
+				cell.add(new Text(javaLocale.getDisplayCountry() + " (" + javaLocale.getDisplayCountry(javaLocale) + ")"));
 				
 				if (defLocale != null && icLocale.getInUse()) {
 					RadioButton radio = new RadioButton("default_locale", icLocale.getName());
