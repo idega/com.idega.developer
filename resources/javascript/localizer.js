@@ -15,13 +15,10 @@ jQuery(document).ready(function() {
 			callback: function(index) {
 				if (newKey.length > 0) {
 					var newValue = "<tr><td class=\"firstColumn\"><a class=\"keyLink\" href=\"#\">" + newKey + "</a></td><td class=\"lastColumn\"><span class=\"stringValue\">" + value + "</span></td></tr>";
-					
-					if (index == 0) {
-						jQuery("table tbody").prepend(newValue);
-					}
-					else {
-						var beforeIndex = index - 1;
-						jQuery("table tbody tr:eq(" + beforeIndex + ")");
+					jQuery("table tbody").prepend(newValue);
+					if (index != 0) {
+						var beforeIndex = index;
+						jQuery("table tbody tr:first").insertAfter("table tbody tr:eq(" + beforeIndex + ")");
 					}
 					
 					dwr.util.removeAllOptions("localizerKey");
@@ -41,7 +38,7 @@ jQuery(document).ready(function() {
 					humanMsg.displayMsg("Localized string saved...");
 				}			
 
-				jQuery("table tbody tr:eq(" + index + ") td.lastColumn").removeClass("isEmpty").children().get(0).text(value);
+				jQuery("table tbody tr:eq(" + index + ") td.lastColumn").removeClass("isEmpty").children("span").text(value);
 				jQuery("#localizerDelete").fadeIn();
 			}
 		});
@@ -75,7 +72,7 @@ jQuery(document).ready(function() {
 });
 
 function initializeLinks() {
-	jQuery("a.keyLink").click(function() {
+	jQuery("a.keyLink").unbind("click").click(function() {
 		var bundleIdentifier = dwr.util.getValue("localizerBundle");
 		var key = jQuery(this).text();
 
@@ -89,9 +86,10 @@ function initializeLinks() {
 		});
 		
 		jQuery(".wf_blockmainarea").scrollTo(0, 300);
+		return false;
 	});
 
-	jQuery(".stringValue").dblclick(function() {
+	jQuery(".stringValue").unbind("dblclick").dblclick(function() {
 		jQuery(this).fadeOut('fast', function() {
 			var oldValue = jQuery(this).text();
 			if (jQuery(this).parent().hasClass('isEmpty')) {
@@ -135,15 +133,6 @@ function initializeDropdown() {
 }
 
 function initializeZebraColors() {
-	jQuery("table tbody tr").each(function() {
-		var index = jQuery("table tbody tr").index(this);
-		jQuery(this).removeClass("oddRow").removeClass("evenRow");
-		
-		if (index % 2 == 0) {
-			jQuery(this).addClass("evenRow");
-		}
-		else {
-			jQuery(this).addClass("oddRow");
-		}
-	});	
+	jQuery("table tbody tr:odd").removeClass("oddRow").removeClass("evenRow").addClass("evenRow");
+	jQuery("table tbody tr:even").removeClass("oddRow").removeClass("evenRow").addClass("oddRow");
 }

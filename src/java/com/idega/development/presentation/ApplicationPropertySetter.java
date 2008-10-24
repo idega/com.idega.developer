@@ -1,8 +1,11 @@
 package com.idega.development.presentation;
 
-import java.util.Iterator;
-import java.util.List;
-
+import com.idega.block.web2.business.Web2Business;
+import com.idega.block.web2.business.Web2BusinessBean;
+import com.idega.business.IBOLookup;
+import com.idega.business.IBOLookupException;
+import com.idega.business.IBORuntimeException;
+import com.idega.idegaweb.IWApplicationContext;
 import com.idega.idegaweb.IWBundle;
 import com.idega.idegaweb.IWMainApplication;
 import com.idega.idegaweb.IWMainApplicationSettings;
@@ -10,6 +13,7 @@ import com.idega.presentation.Block;
 import com.idega.presentation.IWContext;
 import com.idega.presentation.Layer;
 import com.idega.presentation.Page;
+import com.idega.presentation.Span;
 import com.idega.presentation.Table2;
 import com.idega.presentation.TableCell2;
 import com.idega.presentation.TableRow;
@@ -20,10 +24,11 @@ import com.idega.presentation.ui.CheckBox;
 import com.idega.presentation.ui.DropdownMenu;
 import com.idega.presentation.ui.FieldSet;
 import com.idega.presentation.ui.Form;
+import com.idega.presentation.ui.GenericButton;
 import com.idega.presentation.ui.Label;
 import com.idega.presentation.ui.Legend;
-import com.idega.presentation.ui.SubmitButton;
 import com.idega.presentation.ui.TextInput;
+import com.idega.util.CoreConstants;
 import com.idega.util.PresentationUtil;
 
 /**
@@ -37,33 +42,33 @@ import com.idega.util.PresentationUtil;
 
 public class ApplicationPropertySetter extends Block {
 
-	private static final String APPLICATION_SETTER_PARAMETER = "iw_a_p_s";
 	private static final String PROPERTY_KEY_NAME_PARAMETER = "iw_a_p_s_k";
 	private static final String PROPERTY_VALUE_PARAMETER = "iw_a_p_s_v";
-	private static final String ENTITY_AUTOCREATE_PARAMETER = "iw_e_a_c_p";
-	private static final String AUTOCREATE_STRINGS_PARAMETER = "iw_a_c_s_p";
-	private static final String AUTOCREATE_PROPERTIES_PARAMETER = "iw_a_c_p_p";
-	private static final String IDO_ENTITY_BEAN_CACHING_PARAMETER = "iw_e_b_c_p";
-	private static final String IDO_ENTITY_QUERY_CACHING_PARAMETER = "iw_e_q_c_p";
-	private static final String IDO_USE_PREPARED_STATEMENT = "iw_a_u_p_s";
-	private static final String DEBUG_PARAMETER = "iw_d_p";
-	private static final String SESSION_POLLING_PARAMETER = "iw_s_p_p";
 
 	public ApplicationPropertySetter() {
 		// empty
 	}
 
 	@Override
-	public void main(IWContext iwc) {
+	public void main(IWContext iwc) throws Exception {
 		IWBundle iwb = iwc.getIWMainApplication().getBundle("com.idega.developer");
 		PresentationUtil.addStyleSheetToHeader(iwc, iwb.getVirtualPathWithFileNameString("style/developer.css"));
+		PresentationUtil.addStyleSheetToHeader(iwc, getWeb2Business(iwc).getBundleUriToHumanizedMessagesStyleSheet());
+
+		PresentationUtil.addJavaScriptSourceLineToHeader(iwc, getWeb2Business(iwc).getBundleURIToJQueryLib(Web2BusinessBean.JQUERY_1_2_6_VERSION));
+		PresentationUtil.addJavaScriptSourceLineToHeader(iwc, CoreConstants.DWR_ENGINE_SCRIPT);
+		PresentationUtil.addJavaScriptSourceLineToHeader(iwc, CoreConstants.DWR_UTIL_SCRIPT);
+		PresentationUtil.addJavaScriptSourceLineToHeader(iwc, "/dwr/interface/ApplicationProperties.js");
+		PresentationUtil.addJavaScriptSourceLineToHeader(iwc, iwb.getVirtualPathWithFileNameString("javascript/jquery.scrollTo-min.js"));
+		PresentationUtil.addJavaScriptSourceLineToHeader(iwc, iwb.getVirtualPathWithFileNameString("javascript/applicationProperties.js"));
+		PresentationUtil.addJavaScriptSourceLineToHeader(iwc, getWeb2Business(iwc).getBundleUriToHumanizedMessagesScript());
 		
 		Layer topLayer = new Layer(Layer.DIV);
 		topLayer.setStyleClass("developer");
 		topLayer.setID("applicationPropertySetter");
 		add(topLayer);
 
-		doBusiness(iwc, topLayer);
+		//doBusiness(iwc, topLayer);
 		
 		IWMainApplication iwma = iwc.getIWMainApplication();
 
@@ -71,22 +76,13 @@ public class ApplicationPropertySetter extends Block {
 		topLayer.add(fieldSet);
 		
 		Form form = new Form();
-		form.maintainParameter(IWDeveloper.actionParameter);
-		form.maintainParameter(IWDeveloper.PARAMETER_CLASS_NAME);
 		fieldSet.add(form);
 
-		boolean keepValues = true;
-		if (iwc.isParameterSet(APPLICATION_SETTER_PARAMETER)) {
-			if (iwc.getParameter(APPLICATION_SETTER_PARAMETER).equals("store")) {
-				keepValues = false;
-			}
-		}
-
 		TextInput name = new TextInput(PROPERTY_KEY_NAME_PARAMETER);
-		name.keepStatusOnAction(keepValues);
+		name.setID("applicationPropertyKey");
 
 		TextInput value = new TextInput(PROPERTY_VALUE_PARAMETER);
-		value.keepStatusOnAction(keepValues);
+		value.setID("applicationPropertyValue");
 
 		Layer formItem = new Layer(Layer.DIV);
 		formItem.setStyleClass("formItem");
@@ -107,6 +103,7 @@ public class ApplicationPropertySetter extends Block {
 		menu.addMenuElement(Page.XHTML, "XHTML 1.0");
 		menu.addMenuElement(Page.XHTML1_1, "XHTML 1.1 (Experimental)");
 		menu.setSelectedElement(iwc.getApplicationSettings().getDefaultMarkupLanguage());
+		menu.setID("applicationPropertyMarkupKey");
 
 		formItem = new Layer(Layer.DIV);
 		formItem.setStyleClass("formItem");
@@ -115,7 +112,8 @@ public class ApplicationPropertySetter extends Block {
 		formItem.add(menu);
 		form.add(formItem);
 
-		CheckBox box = new CheckBox(ENTITY_AUTOCREATE_PARAMETER);
+		CheckBox box = new CheckBox(IWMainApplicationSettings.ENTITY_AUTO_CREATE);
+		box.setStyleClass("setApplicationPropertyCheck");
 		if (iwma.getSettings().getIfEntityAutoCreate()) {
 			box.setChecked(true);
 		}
@@ -128,7 +126,8 @@ public class ApplicationPropertySetter extends Block {
 		formItem.add(label);
 		form.add(formItem);
 
-		CheckBox box3 = new CheckBox(AUTOCREATE_STRINGS_PARAMETER);
+		CheckBox box3 = new CheckBox(IWMainApplicationSettings.AUTO_CREATE_LOCALIZED_STRINGS_KEY);
+		box3.setStyleClass("setApplicationPropertyCheck");
 		if (IWMainApplicationSettings.isAutoCreateStringsActive()) {
 			box3.setChecked(true);
 		}
@@ -141,7 +140,8 @@ public class ApplicationPropertySetter extends Block {
 		formItem.add(label);
 		form.add(formItem);
 
-		CheckBox box4 = new CheckBox(AUTOCREATE_PROPERTIES_PARAMETER);
+		CheckBox box4 = new CheckBox(IWMainApplicationSettings.AUTO_CREATE_PROPERTIES_KEY);
+		box4.setStyleClass("setApplicationPropertyCheck");
 		if (iwma.getSettings().isAutoCreatePropertiesActive()) {
 			box4.setChecked(true);
 		}
@@ -154,7 +154,8 @@ public class ApplicationPropertySetter extends Block {
 		formItem.add(label);
 		form.add(formItem);
 
-		CheckBox box2 = new CheckBox(DEBUG_PARAMETER);
+		CheckBox box2 = new CheckBox(IWMainApplicationSettings.USE_DEBUG_MODE);
+		box2.setStyleClass("setApplicationPropertyCheck");
 		if (iwma.getSettings().getIfDebug()) {
 			box2.setChecked(true);
 		}
@@ -167,7 +168,8 @@ public class ApplicationPropertySetter extends Block {
 		formItem.add(label);
 		form.add(formItem);
 
-		CheckBox box6 = new CheckBox(IDO_ENTITY_BEAN_CACHING_PARAMETER);
+		CheckBox box6 = new CheckBox(IWMainApplicationSettings.IDO_ENTITY_BEAN_CACHING_KEY);
+		box6.setStyleClass("setApplicationPropertyCheck");
 		if (iwma.getSettings().getIfEntityBeanCaching()) {
 			box6.setChecked(true);
 		}
@@ -180,7 +182,8 @@ public class ApplicationPropertySetter extends Block {
 		formItem.add(label);
 		form.add(formItem);
 
-		CheckBox box7 = new CheckBox(IDO_ENTITY_QUERY_CACHING_PARAMETER);
+		CheckBox box7 = new CheckBox(IWMainApplicationSettings.IDO_ENTITY_QUERY_CACHING_KEY);
+		box7.setStyleClass("setApplicationPropertyCheck");
 		if (iwma.getSettings().getIfEntityQueryCaching()) {
 			box7.setChecked(true);
 		}
@@ -193,7 +196,8 @@ public class ApplicationPropertySetter extends Block {
 		formItem.add(label);
 		form.add(formItem);
 
-		CheckBox box8 = new CheckBox(IDO_USE_PREPARED_STATEMENT);
+		CheckBox box8 = new CheckBox(IWMainApplicationSettings.USE_PREPARED_STATEMENT);
+		box8.setStyleClass("setApplicationPropertyCheck");
 		if (iwma.getSettings().getIfUsePreparedStatement()) {
 			box8.setChecked(true);
 		}
@@ -206,7 +210,8 @@ public class ApplicationPropertySetter extends Block {
 		formItem.add(label);
 		form.add(formItem);
 		
-		CheckBox box9 = new CheckBox(SESSION_POLLING_PARAMETER);
+		CheckBox box9 = new CheckBox(IWMainApplicationSettings.SESSION_POLLING_KEY);
+		box9.setStyleClass("setApplicationPropertyCheck");
 		if (iwma.getSettings().getIfUseSessionPolling()) {
 			box9.setChecked(true);
 		}
@@ -223,16 +228,11 @@ public class ApplicationPropertySetter extends Block {
 		buttonLayer.setStyleClass("buttonLayer");
 		form.add(buttonLayer);
 
-		SubmitButton save = new SubmitButton("Save", APPLICATION_SETTER_PARAMETER, "save");
+		GenericButton save = new GenericButton("Save");
 		save.setStyleClass("button");
 		save.setID("save");
 
-		SubmitButton reload = new SubmitButton("Store Application state", APPLICATION_SETTER_PARAMETER, "store");
-		reload.setStyleClass("button");
-		reload.setID("reload");
-
 		buttonLayer.add(save);
-		buttonLayer.add(reload);
 
 		FieldSet keySet = new FieldSet(new Legend("Available keys"));
 		keySet.setStyleClass("keySet");
@@ -241,110 +241,15 @@ public class ApplicationPropertySetter extends Block {
 		keySet.add(getParametersTable(iwma));
 	}
 
-	private void doBusiness(IWContext iwc, Layer topLayer) {
-		String[] values = iwc.getParameterValues("property");
-		if (values != null) {
-			for (int a = 0; a < values.length; a++) {
-				iwc.getApplicationSettings().removeProperty(values[a]);
-			}
-		}
-		String setterState = iwc.getParameter(APPLICATION_SETTER_PARAMETER);
-		if (setterState != null) {
-			String enableSessionPolling = iwc.getParameter(SESSION_POLLING_PARAMETER);
-			String entityAutoCreate = iwc.getParameter(ENTITY_AUTOCREATE_PARAMETER);
-			String autoCreateStrings = iwc.getParameter(AUTOCREATE_STRINGS_PARAMETER);
-			String autoCreateProperties = iwc.getParameter(AUTOCREATE_PROPERTIES_PARAMETER);
-			String entityBeanCache = iwc.getParameter(IDO_ENTITY_BEAN_CACHING_PARAMETER);
-			String entityQueryCache = iwc.getParameter(IDO_ENTITY_QUERY_CACHING_PARAMETER);
-			String usePreparedStatement = iwc.getParameter(IDO_USE_PREPARED_STATEMENT);
-			String debug = iwc.getParameter(DEBUG_PARAMETER);
-			String KeyName = iwc.getParameter(PROPERTY_KEY_NAME_PARAMETER);
-			String KeyValue = iwc.getParameter(PROPERTY_VALUE_PARAMETER);
-			String markup = iwc.getParameter(IWMainApplicationSettings.DEFAULT_MARKUP_LANGUAGE_KEY);
-			if (KeyName != null && KeyName.length() > 0) {
-				iwc.getIWMainApplication().getSettings().setProperty(KeyName, KeyValue);
-			}
-
-			if (entityAutoCreate != null) {
-				iwc.getIWMainApplication().getSettings().setEntityAutoCreation(true);
-			}
-			else {
-				iwc.getIWMainApplication().getSettings().setEntityAutoCreation(false);
-			}
-
-			if (entityBeanCache != null) {
-				iwc.getIWMainApplication().getSettings().setEntityBeanCaching(true);
-			}
-			else {
-				iwc.getIWMainApplication().getSettings().setEntityBeanCaching(false);
-			}
-			if(enableSessionPolling != null) {
-				iwc.getIWMainApplication().getSettings().setEnableSessionPolling(true);
-			} else {
-				iwc.getIWMainApplication().getSettings().setEnableSessionPolling(false);
-			}
-			if (entityQueryCache != null) {
-				iwc.getIWMainApplication().getSettings().setEntityQueryCaching(true);
-			}
-			else {
-				iwc.getIWMainApplication().getSettings().setEntityQueryCaching(false);
-			}
-			
-			if (usePreparedStatement != null) {
-				iwc.getIWMainApplication().getSettings().setUsePreparedStatement(true);
-			}
-			else {
-				iwc.getIWMainApplication().getSettings().setUsePreparedStatement(false);
-			}
-
-			if (autoCreateStrings != null) {
-				iwc.getIWMainApplication().getSettings().setAutoCreateStrings(true);
-			}
-			else {
-				iwc.getIWMainApplication().getSettings().setAutoCreateStrings(false);
-			}
-
-			if (autoCreateProperties != null) {
-				iwc.getIWMainApplication().getSettings().setAutoCreateProperties(true);
-			}
-			else {
-				iwc.getIWMainApplication().getSettings().setAutoCreateProperties(false);
-			}
-
-			if (debug != null) {
-				iwc.getIWMainApplication().getSettings().setDebug(true);
-			}
-			else {
-				iwc.getIWMainApplication().getSettings().setDebug(false);
-			}
-
-			if (setterState.equalsIgnoreCase("store")) {
-				iwc.getIWMainApplication().storeStatus();
-			}
-			iwc.getApplicationSettings().setProperty(IWMainApplicationSettings.DEFAULT_MARKUP_LANGUAGE_KEY, markup);
-
-			Layer layer = new Layer(Layer.DIV);
-			layer.setStyleClass("statusLayer");
-			topLayer.add(layer);
-			
-			layer.add(new Text("Property set successfully"));
-		}
-	}
-
-	public static Form getParametersTable(IWMainApplication iwma) {
+	public static Table2 getParametersTable(IWMainApplication iwma) {
 		IWMainApplicationSettings applicationSettings  = iwma.getSettings();
 		java.util.Iterator iter = applicationSettings.keySet().iterator();
-
-		Form form = new Form();
-		form.maintainParameter(IWDeveloper.actionParameter);
-		form.maintainParameter(IWDeveloper.PARAMETER_CLASS_NAME);
 
 		Table2 table = new Table2();
 		table.setCellpadding(0);
 		table.setCellspacing(0);
 		table.setStyleClass("developerTable");
 		table.setStyleClass("ruler");
-		form.add(table);
 		
 		TableRowGroup group = table.createHeaderRowGroup();
 		TableRow row = group.createRow();
@@ -373,18 +278,26 @@ public class ApplicationPropertySetter extends Block {
 			}
 
 			Link link = new Link(key);
-			link.addParameter(PROPERTY_KEY_NAME_PARAMETER, key);
-			link.addParameter(PROPERTY_VALUE_PARAMETER, value);
+			link.setURL("#");
+			link.setStyleClass("keyLink");
+			
 			cell = row.createCell();
 			cell.setStyleClass("firstColumn");
 			cell.add(link);
 
+			Span span = new Span();
+			span.setStyleClass("keyValue");
+			span.add(new Text(value));
+			
 			cell = row.createCell();
-			cell.add(new Text(value));
+			cell.add(span);
 
+			CheckBox checkbox = new CheckBox("property", key);
+			checkbox.setStyleClass("removeApplicationPropertyCheck");
+			
 			cell = row.createCell();
 			cell.setStyleClass("lastColumn");
-			cell.add(new CheckBox("property", key));
+			cell.add(checkbox);
 
 			i++;
 
@@ -396,27 +309,15 @@ public class ApplicationPropertySetter extends Block {
 			}
 		}
 
-		Layer buttonLayer = new Layer(Layer.DIV);
-		buttonLayer.setStyleClass("buttonLayer");
-		form.add(buttonLayer);
-
-		SubmitButton delete = new SubmitButton("Delete", "delete");
-		delete.setStyleClass("button");
-		delete.setID("delete");
-
-		buttonLayer.add(delete);
-
-		return form;
+		return table;
 	}
 
-	public static DropdownMenu getRegisteredBundlesDropdown(IWMainApplication iwma, String name) {
-		List locales = iwma.getRegisteredBundles();
-		DropdownMenu down = new DropdownMenu(name);
-		Iterator iter = locales.iterator();
-		while (iter.hasNext()) {
-			IWBundle item = (IWBundle) iter.next();
-			down.addMenuElement(item.getBundleIdentifier());
+	private Web2Business getWeb2Business(IWApplicationContext iwac) {
+		try {
+			return (Web2Business) IBOLookup.getServiceInstance(iwac, Web2Business.class);
 		}
-		return down;
+		catch (IBOLookupException ile) {
+			throw new IBORuntimeException(ile);
+		}
 	}
 }

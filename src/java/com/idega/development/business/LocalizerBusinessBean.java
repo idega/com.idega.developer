@@ -21,10 +21,10 @@ import com.idega.util.CoreConstants;
  * <p>
  * TODO laddi Describe Type LocalizerBusinessBean
  * </p>
- *  Last modified: $Date: 2008/10/16 20:41:07 $ by $Author: civilis $
+ *  Last modified: $Date: 2008/10/24 07:05:38 $ by $Author: laddi $
  * 
  * @author <a href="mailto:laddi@idega.com">laddi</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 @Scope("singleton")
 @Service("localizer")
@@ -113,7 +113,6 @@ public class LocalizerBusinessBean implements LocalizerBusiness {
 	}
 	
 	private IWMainApplication getIWMainApplication() {
-		
 		final IWContext iwc = IWContext.getCurrentInstance();
 		final IWMainApplication iwma;
 		

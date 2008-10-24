@@ -16,5 +16,13 @@
             <include method="removeLocalizedKey"/>
             <include method="storeLocalizedString"/>
         </create>
+
+        <create creator="jsf" javascript="ApplicationProperties">
+            <param name="managedBeanName" value="applicationProperties" />
+            <param name="class" value="com.idega.development.business.ApplicationPropertiesBusinessBean" />
+            <include method="getProperty"/>
+            <include method="removeProperty"/>
+            <include method="setProperty"/>
+        </create>
 	</allow>
 </dwr>
