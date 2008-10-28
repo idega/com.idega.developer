@@ -15,6 +15,8 @@
             <include method="getLocalizedStrings"/>
             <include method="removeLocalizedKey"/>
             <include method="storeLocalizedString"/>
+            <include method="setPriorityLevel"/>
+            <include method="setAutoInsert"/>
         </create>
 
         <create creator="jsf" javascript="ApplicationProperties">

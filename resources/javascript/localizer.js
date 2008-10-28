@@ -10,8 +10,9 @@ jQuery(document).ready(function() {
 		
 		var locale = dwr.util.getValue("localizerLocale");
 		var bundleIdentifier = dwr.util.getValue("localizerBundle");
+		var storageIdentifier = dwr.util.getValue("localizerStorage");
 		
-		Localizer.storeLocalizedString(key, newKey, value, bundleIdentifier, locale, {
+		Localizer.storeLocalizedString(key, newKey, value, bundleIdentifier, locale, storageIdentifier, {
 			callback: function(index) {
 				if (newKey.length > 0) {
 					var newValue = "<tr><td class=\"firstColumn\"><a class=\"keyLink\" href=\"#\">" + newKey + "</a></td><td class=\"lastColumn\"><span class=\"stringValue\">" + value + "</span></td></tr>";
@@ -22,7 +23,7 @@ jQuery(document).ready(function() {
 					}
 					
 					dwr.util.removeAllOptions("localizerKey");
-					Localizer.getLocalizedStrings(bundleIdentifier, {
+					Localizer.getLocalizedStrings(bundleIdentifier, storageIdentifier, locale, {
 						callback: function(values) {
 							dwr.util.addOptions("localizerKey", values);
 							dwr.util.setValue("localizerKey", newKey);
@@ -47,15 +48,17 @@ jQuery(document).ready(function() {
 	jQuery("#localizerDelete").click(function() {
 		var key = dwr.util.getValue("localizerKey");
 		var bundleIdentifier = dwr.util.getValue("localizerBundle");
+		var storageIdentifier = dwr.util.getValue("localizerStorage");
+		var locale = dwr.util.getValue("localizerLocale");
 		
-		Localizer.removeLocalizedKey(key, bundleIdentifier, {
+		Localizer.removeLocalizedKey(key, bundleIdentifier, storageIdentifier, locale, {
 			callback: function(index) {
 				if (index >= 0) {
 					jQuery("table tbody tr:eq(" + index + ")").fadeOut().remove();
 					initializeZebraColors();
 				}
 				dwr.util.removeAllOptions("localizerKey");
-				Localizer.getLocalizedStrings(bundleIdentifier, {
+				Localizer.getLocalizedStrings(bundleIdentifier, storageIdentifier, locale, {
 					callback: function(value) {
 						dwr.util.addOptions("localizerKey", value);
 						dwr.util.setValue("localizerValue", "");
@@ -74,10 +77,11 @@ jQuery(document).ready(function() {
 function initializeLinks() {
 	jQuery("a.keyLink").unbind("click").click(function() {
 		var bundleIdentifier = dwr.util.getValue("localizerBundle");
+		var storageIdentifier = dwr.util.getValue("localizerStorage");
 		var key = jQuery(this).text();
 
 		var locale = dwr.util.getValue("localizerLocale");
-		Localizer.getLocalizedString(key, bundleIdentifier, locale, {
+		Localizer.getLocalizedString(key, bundleIdentifier, locale, storageIdentifier, {
 			callback: function(value) {
 				dwr.util.setValue("localizerValue", value);
 				dwr.util.setValue("localizerKey", key);
@@ -120,10 +124,11 @@ function initializeLinks() {
 function initializeDropdown() {
 	jQuery("#localizerKey").change(function() {
 		var bundleIdentifier = dwr.util.getValue("localizerBundle");
+		var storageIdentifier = dwr.util.getValue("localizerStorage");
 		var key = dwr.util.getValue("localizerKey");
 
 		var locale = dwr.util.getValue("localizerLocale");
-		Localizer.getLocalizedString(key, bundleIdentifier, locale, {
+		Localizer.getLocalizedString(key, bundleIdentifier, locale, storageIdentifier, {
 			callback: function(value) {
 				dwr.util.setValue("localizerValue", value);
 				jQuery("#localizerDelete").fadeIn();
