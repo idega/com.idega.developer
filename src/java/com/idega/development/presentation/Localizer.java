@@ -1,5 +1,8 @@
 package com.idega.development.presentation;
 
+import java.util.List;
+import java.util.Set;
+
 import com.idega.block.web2.business.Web2Business;
 import com.idega.block.web2.business.Web2BusinessBean;
 import com.idega.business.IBOLookup;
@@ -9,7 +12,6 @@ import com.idega.core.localisation.presentation.LocalePresentationUtil;
 import com.idega.idegaweb.IWApplicationContext;
 import com.idega.idegaweb.IWBundle;
 import com.idega.idegaweb.IWMainApplication;
-import com.idega.idegaweb.IWResourceBundle;
 import com.idega.idegaweb.presentation.LocaleChanger;
 import com.idega.presentation.Block;
 import com.idega.presentation.IWContext;
@@ -33,7 +35,7 @@ import com.idega.presentation.ui.TextInput;
 import com.idega.util.CoreConstants;
 import com.idega.util.LocaleUtil;
 import com.idega.util.PresentationUtil;
-import com.idega.util.StringHandler;
+import com.idega.util.messages.MessageResource;
 import com.idega.util.text.TextSoap;
 
 /**
@@ -49,11 +51,12 @@ public class Localizer extends Block {
 
 	private static String bundlesParameter = "iw_availablebundles";
 	private static String localesParameter = "iw_locales";
+	private static String storageParameter = "iw_available_storage_resources";
 	private static String stringsParameter = "iw_localestrings";
 	private static String areaParameter = "iw_stringsarea";
 	private static String subAction = "iw_localizer_sub_action";
 	private static String newStringKeyParameter = "iw_new_string_key";
-
+	
 	private static String ACTION_SAVE="save";
 	private static String ACTION_DELETE="delete";
 	
@@ -76,6 +79,10 @@ public class Localizer extends Block {
 		
 		IWMainApplication iwma = iwc.getIWMainApplication();
 		
+		String selectedBundle = iwc.getParameter(bundlesParameter);
+		String selectedLocale = iwc.getParameter(localesParameter);
+		String selectedStorage = iwc.getParameter(storageParameter);
+		
 		Layer topLayer = new Layer(Layer.DIV);
 		topLayer.setStyleClass("developer");
 		topLayer.setID("localizer");
@@ -93,15 +100,19 @@ public class Localizer extends Block {
 		bundlesDrop.setID("localizerBundle");
 		bundlesDrop.keepStatusOnAction();
 		bundlesDrop.setToSubmit();
+		bundlesDrop.addMenuElementFirst(MessageResource.NO_BUNDLE, MessageResource.NO_BUNDLE);
 		
 		DropdownMenu localesDrop = LocalePresentationUtil.getAvailableLocalesDropdown(iwma, localesParameter);
 		localesDrop.setID("localizerLocale");
 		localesDrop.keepStatusOnAction();
 		localesDrop.setToSubmit();
-
+		
+		DropdownMenu storeDrop = getMessageStorageResources(iwma, storageParameter);
+		storeDrop.setID("localizerStorage");
+		storeDrop.keepStatusOnAction();
+		storeDrop.setToSubmit();
+		
 		DropdownMenu stringsDrop;
-
-		String selectedBundle = iwc.getParameter(bundlesParameter);
 
 		Layer formItem = new Layer(Layer.DIV);
 		formItem.setStyleClass("formItem");
@@ -116,17 +127,24 @@ public class Localizer extends Block {
 		formItem.add(label);
 		formItem.add(localesDrop);
 		form.add(formItem);
+		
+		formItem = new Layer(Layer.DIV);
+		formItem.setStyleClass("formItem");
+		label = new Label("Storage resource", storeDrop);
+		formItem.add(label);
+		formItem.add(storeDrop);
+		form.add(formItem);
 
 		if (selectedBundle != null) {
-			iwb = iwma.getBundle(selectedBundle);
-			IWResourceBundle iwrb = iwb.getResourceBundle(LocaleUtil.getLocale(iwc.getParameter(localesParameter)));
+//			iwb = iwma.getBundle(selectedBundle);
+//			IWResourceBundle iwrb = iwb.getResourceBundle(LocaleUtil.getLocale(iwc.getParameter(localesParameter)));
 
 			TextInput newInput = new TextInput(newStringKeyParameter);
 			newInput.setID("localizerNewKey");
 			TextArea area = new TextArea(areaParameter);
 			area.setID("localizerValue");
 
-			stringsDrop = Localizer.getLocalizeableStringsMenu(iwma, selectedBundle, stringsParameter);
+			stringsDrop = Localizer.getLocalizeableStringsMenu(iwma, selectedBundle, selectedStorage, selectedLocale, stringsParameter);
 			stringsDrop.addMenuElementFirst("", "");
 			stringsDrop.setID("localizerKey");
 
@@ -170,7 +188,8 @@ public class Localizer extends Block {
 			keySet.setStyleClass("stringsSet");
 			topLayer.add(keySet);
 
-			keySet.add(Localizer.getLocalizeableStringsTable(iwc, iwma, selectedBundle, iwrb, stringsParameter));
+//			keySet.add(getLocalizeableStringsTable(iwc, iwma, selectedBundle, iwrb));
+			keySet.add(getLocalizeableStringsTableByStorageType(iwma, selectedBundle, selectedLocale, selectedStorage));
 		}
 		else {
 			Layer buttonLayer = new Layer(Layer.DIV);
@@ -198,9 +217,74 @@ public class Localizer extends Block {
 		return myForm;
 	}
 
-	public static Table2 getLocalizeableStringsTable(IWContext iwc, IWMainApplication iwma, String bundleIdentifier, IWResourceBundle iwrb, String parameterName) {
-		IWBundle bundle = iwma.getBundle(bundleIdentifier);
-		String[] strings = bundle.getLocalizableStrings();
+//	private Table2 getLocalizeableStringsTable(IWContext iwc, IWMainApplication iwma, String bundleIdentifier, IWResourceBundle iwrb) {
+//		IWBundle bundle = iwma.getBundle(bundleIdentifier);
+//		String[] strings = bundle.getLocalizableStrings();
+//		
+//		Table2 table = new Table2();
+//		table.setCellpadding(0);
+//		table.setCellspacing(0);
+//		table.setWidth("100%");
+//		table.setStyleClass("developerTable");
+//		table.setStyleClass("ruler");
+//		
+//		TableRowGroup group = table.createHeaderRowGroup();
+//		TableRow row = group.createRow();
+//		
+//		TableCell2 cell = row.createHeaderCell();
+//		cell.setStyleClass("firstColumn");
+//		cell.add(new Text("Key"));
+//
+//		cell = row.createHeaderCell();
+//		cell.setStyleClass("lastColumn");
+//		cell.add(new Text("String"));
+//
+//		group = table.createBodyRowGroup();
+//		
+//		for (int i = 0; i < strings.length; i++) {
+//			String key = strings[i];
+//
+//			row = group.createRow();
+//
+//			cell = row.createCell();
+//			cell.setStyleClass("firstColumn");
+//
+//			Link keyLink = new Link(key);
+//			keyLink.setURL("#");
+//			keyLink.setStyleClass("keyLink");
+//			cell.add(keyLink);
+//
+//			cell = row.createCell();
+//			cell.setStyleClass("lastColumn");
+//			String localizedString = iwrb.getLocalizedString(key);
+//			if (localizedString == null || StringHandler.EMPTY_STRING.equals(localizedString)){
+//				String defaultString = bundle.getLocalizableStringDefaultValue(key);
+//				defaultString = TextSoap.formatText(defaultString);
+//				localizedString = defaultString;
+//				cell.setStyleClass("isEmpty");
+//			}
+//			else{
+//				localizedString = TextSoap.formatText(localizedString);
+//			}
+//			cell.add(new Text(localizedString));
+//
+//			if (i % 2 == 0) {
+//				row.setStyleClass("evenRow");
+//			}
+//			else {
+//				row.setStyleClass("oddRow");
+//			}
+//		}
+//
+//		return table;
+//	}
+	
+	private Table2 getLocalizeableStringsTableByStorageType(IWMainApplication iwma, String bundleIdentifier, String selectedLocale, String selectedStorageIdentifier) {
+		MessageResource resource = iwma.getMessageFactory().getResourceByIdentifier(selectedStorageIdentifier);
+
+		resource.setAutoInsert(false); 	//Overriding autoInsert settings
+		Set<Object> localisedKeys = resource.getAllLocalisedKeys(bundleIdentifier, LocaleUtil.getLocale(selectedLocale));
+		Object[] strings = localisedKeys.toArray();
 		
 		Table2 table = new Table2();
 		table.setCellpadding(0);
@@ -223,32 +307,33 @@ public class Localizer extends Block {
 		group = table.createBodyRowGroup();
 		
 		for (int i = 0; i < strings.length; i++) {
-			String key = strings[i];
+			Object key = strings[i];
 
 			row = group.createRow();
 
 			cell = row.createCell();
 			cell.setStyleClass("firstColumn");
 
-			Link keyLink = new Link(key);
+			Link keyLink = new Link(String.valueOf(key));
 			keyLink.setURL("#");
 			keyLink.setStyleClass("keyLink");
 			cell.add(keyLink);
 
 			cell = row.createCell();
 			cell.setStyleClass("lastColumn");
-			String localizedString = iwrb.getLocalizedString(key);
-			if (localizedString == null || StringHandler.EMPTY_STRING.equals(localizedString)){
-				String defaultString = bundle.getLocalizableStringDefaultValue(key);
+
+			Object localizedString = resource.getMessage(key, CoreConstants.EMPTY, bundleIdentifier, LocaleUtil.getLocale(selectedLocale));
+			if (localizedString == null){
+				String defaultString = CoreConstants.EMPTY;
 				defaultString = TextSoap.formatText(defaultString);
 				localizedString = defaultString;
 				cell.setStyleClass("isEmpty");
 			}
 			else{
-				localizedString = TextSoap.formatText(localizedString);
+				localizedString = TextSoap.formatText(String.valueOf(localizedString));
 			}
 			
-			Span span = new Span(new Text(localizedString));
+			Span span = new Span(new Text(String.valueOf(localizedString)));
 			span.setStyleClass("stringValue");
 			
 			cell.add(span);
@@ -263,17 +348,28 @@ public class Localizer extends Block {
 
 		return table;
 	}
-
+	
 	public static DropdownMenu getRegisteredDropdown(IWMainApplication iwma, String name) {
 		return BundlePropertySetter.getRegisteredBundlesDropdown(iwma, name);
 	}
 
-	public static DropdownMenu getLocalizeableStringsMenu(IWMainApplication iwma, String bundleIdentifier, String name) {
-		IWBundle bundle = iwma.getBundle(bundleIdentifier);
-		String[] strings = bundle.getLocalizableStrings();
+	public static DropdownMenu getMessageStorageResources(IWMainApplication iwma, String name) {
+		List<MessageResource> resources = iwma.getAvailableMessageStorageResources();
 		DropdownMenu down = new DropdownMenu(name);
-		for (int i = 0; i < strings.length; i++) {
-			down.addMenuElement(strings[i]);
+		for(MessageResource resource : resources) {
+			down.addMenuElement(resource.getIdentifier());
+		}
+		return down;
+	}
+
+	public static DropdownMenu getLocalizeableStringsMenu(IWMainApplication iwma, String bundleIdentifier, String storageIdentifier, String selectedLocale, String name) {
+		Set<Object> localisedKeys = iwma.getMessageFactory()
+										.getResourceByIdentifier(storageIdentifier)
+										.getAllLocalisedKeys(bundleIdentifier, LocaleUtil.getLocale(selectedLocale));
+
+		DropdownMenu down = new DropdownMenu(name);
+		for (Object key : localisedKeys) {
+			down.addMenuElement(String.valueOf(key));
 		}
 		return down;
 	}

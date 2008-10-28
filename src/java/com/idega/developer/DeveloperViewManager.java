@@ -26,6 +26,7 @@ import com.idega.development.presentation.FilesManager;
 import com.idega.development.presentation.HomePageGenerator;
 import com.idega.development.presentation.LocaleSetter;
 import com.idega.development.presentation.Localizer;
+import com.idega.development.presentation.LocalizerStorage;
 import com.idega.development.presentation.Logs;
 import com.idega.development.presentation.ObjectTypeManager;
 import com.idega.development.presentation.PageObjects;
@@ -42,10 +43,10 @@ import com.idega.workspace.view.WorkspaceClassViewNode;
  * <p>
  * TODO tryggvil Describe Type SchoolViewManager
  * </p>
- *  Last modified: $Date: 2008/10/23 12:29:54 $ by $Author: laddi $
+ *  Last modified: $Date: 2008/10/28 07:51:56 $ by $Author: anton $
  * 
  * @author <a href="mailto:tryggvil@idega.com">tryggvil</a>
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 public class DeveloperViewManager {
 
@@ -99,6 +100,11 @@ public class DeveloperViewManager {
 		//devNode.setName("#{localizedStrings['com.idega.developer']['developer']}");
 		devNode.setJspUri("/idegaweb/bundles/com.idega.developer.bundle/jsp/developer.jsp");
 		devNode.setKeyboardShortcut(new KeyboardShortcut("3"));
+		
+		WorkspaceClassViewNode localizerStorageNode = new WorkspaceClassViewNode("localizerstorage",devNode);
+		localizerStorageNode.setName("Localizer Storage");
+		localizerStorageNode.setComponentClass(LocalizerStorage.class);
+		localizerStorageNode.setMaximizeBlockVertically(true);
 		
 		WorkspaceClassViewNode localizerNode = new WorkspaceClassViewNode("localizer",devNode);
 		localizerNode.setName("Localizer");
