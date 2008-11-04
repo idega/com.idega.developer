@@ -237,7 +237,9 @@ public class LocaleSetter extends Block {
 					List bundleList = iwc.getIWMainApplication().getRegisteredBundles();
 					for (Iterator iter = bundleList.iterator(); iter.hasNext();) {
 						IWBundle bundle = (IWBundle) iter.next();
-						bundle.reloadBundle();
+						if (bundle != null) {
+							bundle.reloadBundle();
+						}
 					}
 				}
 			}
