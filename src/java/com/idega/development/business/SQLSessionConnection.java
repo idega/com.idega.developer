@@ -1,5 +1,5 @@
 /*
- * $Id: SQLSessionConnection.java,v 1.2 2006/04/09 11:53:57 laddi Exp $
+ * $Id: SQLSessionConnection.java,v 1.3 2008/11/05 16:39:11 laddi Exp $
  * Created on May 4, 2005
  *
  * Copyright (C) 2005 Idega Software hf. All Rights Reserved.
@@ -11,6 +11,8 @@ package com.idega.development.business;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.logging.Logger;
+
 import javax.servlet.http.HttpSessionBindingEvent;
 import javax.servlet.http.HttpSessionBindingListener;
 import com.idega.util.database.ConnectionBroker;
@@ -19,6 +21,7 @@ import com.idega.util.database.ConnectionBroker;
 public class SQLSessionConnection implements HttpSessionBindingListener {
 
 	private Connection connection;
+	private Logger logger = Logger.getLogger(this.getClass().getName());
 	
 	public SQLSessionConnection() {
 		this.connection = ConnectionBroker.getConnection();
@@ -28,7 +31,7 @@ public class SQLSessionConnection implements HttpSessionBindingListener {
 		catch (SQLException sql) {
 			sql.printStackTrace(System.err);
 		}
-		System.out.println("[SQLSessionConnection] Creating new connection.");
+		logger.info("[SQLSessionConnection] Creating new connection.");
 	}
 	
 	public void valueBound(HttpSessionBindingEvent arg0) {
@@ -45,7 +48,7 @@ public class SQLSessionConnection implements HttpSessionBindingListener {
 			}
 			ConnectionBroker.freeConnection(this.connection);
 		}
-		System.out.println("[SQLSessionConnection] Connection freed successfully.");
+		logger.info("[SQLSessionConnection] Connection freed successfully.");
 	}
 
 	public Connection getConnection() {
