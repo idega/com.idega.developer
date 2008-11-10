@@ -15,18 +15,20 @@ import com.idega.idegaweb.IWBundle;
 import com.idega.idegaweb.IWMainApplication;
 import com.idega.presentation.IWContext;
 import com.idega.util.CoreConstants;
+import com.idega.util.expression.ELUtil;
 import com.idega.util.messages.MessageResource;
 import com.idega.util.messages.MessageResourceImportanceLevel;
+import com.idega.util.messages.ResourceLevelChangeEvent;
 
 
 /**
  * <p>
  * TODO laddi Describe Type LocalizerBusinessBean
  * </p>
- *  Last modified: $Date: 2008/10/28 07:51:57 $ by $Author: anton $
+ *  Last modified: $Date: 2008/11/10 12:15:07 $ by $Author: anton $
  * 
  * @author <a href="mailto:laddi@idega.com">laddi</a>
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 @Scope("singleton")
 @Service("localizer")
@@ -213,6 +215,7 @@ public class LocalizerBusinessBean implements LocalizerBusiness {
 	public int setPriorityLevel(String storageIdentifier, String levelValue) {
 		MessageResource resource = getIWMainApplication().getMessageFactory().getResourceByIdentifier(storageIdentifier);
 		resource.setLevel(MessageResourceImportanceLevel.getLevel(Integer.parseInt(levelValue)));
+		ELUtil.getInstance().publishEvent(new ResourceLevelChangeEvent(this));
 		return SUCCESS;
 	}
 	
