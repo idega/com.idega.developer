@@ -77,8 +77,10 @@ jQuery(document).ready(function() {
 function initializeLinks() {
 	jQuery("a.keyLink").unbind("click").click(function() {
 		var bundleIdentifier = dwr.util.getValue("localizerBundle");
-		var storageIdentifier = dwr.util.getValue("localizerStorage");
+		var storageIdentifier = jQuery(this).parents("tr").find("span:last").text();
 		var key = jQuery(this).text();
+		
+		dwr.util.setValue("localizerStorage", storageIdentifier);
 
 		var locale = dwr.util.getValue("localizerLocale");
 		Localizer.getLocalizedString(key, bundleIdentifier, locale, storageIdentifier, {
