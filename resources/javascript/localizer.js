@@ -12,37 +12,42 @@ jQuery(document).ready(function() {
 		var bundleIdentifier = dwr.util.getValue("localizerBundle");
 		var storageIdentifier = dwr.util.getValue("localizerStorage");
 		
-		Localizer.storeLocalizedString(key, newKey, value, bundleIdentifier, locale, storageIdentifier, {
-			callback: function(index) {
-				if (newKey.length > 0) {
-					var newValue = "<tr><td class=\"firstColumn\"><a class=\"keyLink\" href=\"#\">" + newKey + "</a></td><td class=\"lastColumn\"><span class=\"stringValue\">" + value + "</span></td></tr>";
-					jQuery("table tbody").prepend(newValue);
-					if (index != 0) {
-						var beforeIndex = index;
-						jQuery("table tbody tr:first").insertAfter("table tbody tr:eq(" + beforeIndex + ")");
-					}
-					
-					dwr.util.removeAllOptions("localizerKey");
-					Localizer.getLocalizedStrings(bundleIdentifier, storageIdentifier, locale, {
-						callback: function(values) {
-							dwr.util.addOptions("localizerKey", values);
-							dwr.util.setValue("localizerKey", newKey);
-							dwr.util.setValue("localizerNewKey", "");
+		Localizer.storeLocalizedStrings(key, newKey, value, bundleIdentifier, locale, {
+			callback: function(strings) {
+				strings.forEach(
+					function(str) {
+						if (newKey.length > 0) {
+							var newValue = "<tr><td class=\"firstColumn\"><a class=\"keyLink\" href=\"#\">" + newKey + "</a></td><td><span class=\"stringValue\">" + str.value + "</span></td><td class=\"lastColumn\"><span class=\"storageKey\">" + str.storageIdentifier + "</span></td></tr>";
+							jQuery("table tbody").prepend(newValue);
+							if (str.index != 0) {
+								var beforeIndex = str.index;
+								jQuery("table tbody tr:first").insertAfter("table tbody tr:eq(" + beforeIndex + ")");
+							}
+		
+							initializeLinks();
+							initializeZebraColors();
+							humanMsg.displayMsg("New localized string added...");
 						}
-					});
-
-					initializeLinks();
-					initializeZebraColors();
-					humanMsg.displayMsg("Localized string added...");
-				}
-				else {
-					humanMsg.displayMsg("Localized string saved...");
-				}			
-
-				jQuery("table tbody tr:eq(" + index + ") td.lastColumn").removeClass("isEmpty").children("span").text(value);
-				jQuery("#localizerDelete").fadeIn();
+						else {
+							humanMsg.displayMsg("Localized string saved...");
+						}			
+		
+						jQuery("table tbody tr:eq(" + str.index + ") td:eq('1')").removeClass("isEmpty").children("span").text(str.value);
+						jQuery("#localizerDelete").fadeIn();
+					}
+				);
 			}
 		});
+		
+		dwr.util.removeAllOptions("localizerKey");
+		Localizer.getLocalizedStringProperties(bundleIdentifier, storageIdentifier, locale, {
+			callback: function(values) {
+				dwr.util.addOptions("localizerKey", values);
+				dwr.util.setValue("localizerKey", newKey);
+				dwr.util.setValue("localizerNewKey", "");
+			}
+		});
+							
 	});
 	
 	jQuery("#localizerDelete").click(function() {
@@ -52,18 +57,23 @@ jQuery(document).ready(function() {
 		var locale = dwr.util.getValue("localizerLocale");
 		
 		Localizer.removeLocalizedKey(key, bundleIdentifier, storageIdentifier, locale, {
-			callback: function(index) {
-				if (index >= 0) {
-					jQuery("table tbody tr:eq(" + index + ")").fadeOut().remove();
-					initializeZebraColors();
-				}
+			callback: function(indexes) {
+				indexes.forEach(
+					function(index, count) {
+						if (index >= 0) {
+							index = index - count; //decreasing index acccording to the number of already removed elements
+							jQuery("table tbody tr:eq(" + index + ")").fadeOut().remove();
+							initializeZebraColors();
+						}
+					}
+				);
 				dwr.util.removeAllOptions("localizerKey");
-				Localizer.getLocalizedStrings(bundleIdentifier, storageIdentifier, locale, {
-					callback: function(value) {
-						dwr.util.addOptions("localizerKey", value);
+				Localizer.getLocalizedStringProperties(bundleIdentifier, storageIdentifier, locale, {
+					callback: function(values) {
+						dwr.util.addOptions("localizerKey", values);
 						dwr.util.setValue("localizerValue", "");
 						jQuery("#localizerDelete").fadeOut();
-						humanMsg.displayMsg("Localized string deleted...");
+						humanMsg.displayMsg("Localized string deleted from all resources marked as autoinsert ...");
 					}
 				});
 			}
@@ -78,15 +88,16 @@ function initializeLinks() {
 	jQuery("a.keyLink").unbind("click").click(function() {
 		var bundleIdentifier = dwr.util.getValue("localizerBundle");
 		var storageIdentifier = jQuery(this).parents("tr").find("span:last").text();
+		//var storageIdentifier = dwr.util.getValue("localizerStorage");
 		var key = jQuery(this).text();
 		
-		dwr.util.setValue("localizerStorage", storageIdentifier);
+		//dwr.util.setValue("localizerStorage", storageIdentifier);
 
 		var locale = dwr.util.getValue("localizerLocale");
 		Localizer.getLocalizedString(key, bundleIdentifier, locale, storageIdentifier, {
-			callback: function(value) {
-				dwr.util.setValue("localizerValue", value);
-				dwr.util.setValue("localizerKey", key);
+			callback: function(foundString) {
+				dwr.util.setValue("localizerValue", foundString.value);
+				dwr.util.setValue("localizerKey", foundString.index + " (" + foundString.storageIdentifier + ")");
 				jQuery("#localizerDelete").fadeIn();
 			}
 		});
@@ -126,16 +137,21 @@ function initializeLinks() {
 function initializeDropdown() {
 	jQuery("#localizerKey").change(function() {
 		var bundleIdentifier = dwr.util.getValue("localizerBundle");
-		var storageIdentifier = dwr.util.getValue("localizerStorage");
 		var key = dwr.util.getValue("localizerKey");
-
-		var locale = dwr.util.getValue("localizerLocale");
-		Localizer.getLocalizedString(key, bundleIdentifier, locale, storageIdentifier, {
-			callback: function(value) {
-				dwr.util.setValue("localizerValue", value);
-				jQuery("#localizerDelete").fadeIn();
-			}
-		});
+		if(key != "") {
+			var storageIdentifier = key.substring(key.indexOf('(') + 1, key.indexOf(')'));
+			key = key.substring(0, key.indexOf(' '));
+	
+			var locale = dwr.util.getValue("localizerLocale");
+			Localizer.getLocalizedString(key, bundleIdentifier, locale, storageIdentifier, {
+				callback: function(foundString) {
+					dwr.util.setValue("localizerValue", foundString.value);
+					jQuery("#localizerDelete").fadeIn();
+				}
+			});
+		} else {
+			dwr.util.setValue("localizerValue", "");
+		}
 	});
 }
 

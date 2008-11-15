@@ -12,9 +12,9 @@
             <param name="class" value="com.idega.development.business.LocalizerBusinessBean" />
             <include method="getLocalizedKey"/>
             <include method="getLocalizedString"/>
-            <include method="getLocalizedStrings"/>
+            <include method="getLocalizedStringProperties"/>
             <include method="removeLocalizedKey"/>
-            <include method="storeLocalizedString"/>
+            <include method="storeLocalizedStrings"/>
             <include method="setPriorityLevel"/>
             <include method="setAutoInsert"/>
         </create>
@@ -26,5 +26,10 @@
             <include method="removeProperty"/>
             <include method="setProperty"/>
         </create>
+        
+        <convert converter="bean" match="com.idega.development.business.LocalisedString">
+  			<param name="include" value="index, value, storageIdentifier"/>
+		</convert>
+        
 	</allow>
 </dwr>
