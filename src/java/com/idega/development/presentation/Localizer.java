@@ -61,7 +61,7 @@ public class Localizer extends Block {
 	private static String ACTION_SAVE="save";
 	private static String ACTION_DELETE="delete";
 	
-	private static String ALL_RESOURCES = "All";
+	public static String ALL_RESOURCES = "All";
 	
 	public Localizer() {
 	}
@@ -191,7 +191,6 @@ public class Localizer extends Block {
 			keySet.setStyleClass("stringsSet");
 			topLayer.add(keySet);
 
-//			keySet.add(getLocalizeableStringsTable(iwc, iwma, selectedBundle, iwrb));
 			keySet.add(getLocalizeableStringsTableByStorageType(iwma, selectedBundle, selectedLocale, selectedStorage));
 		}
 		else {
@@ -282,6 +281,15 @@ public class Localizer extends Block {
 //		return table;
 //	}
 	
+//	public void refreshTebleData(String bundleIdentifier, String selectedLocale, String selectedStorageIdentifier) {
+//		FieldSet keySet = new FieldSet(new Legend("Available Strings"));
+//		keySet.setStyleClass("stringsSet");
+//		topLayer.add(keySet);
+//
+////		keySet.add(getLocalizeableStringsTable(iwc, iwma, selectedBundle, iwrb));
+//		keySet.add(getLocalizeableStringsTableByStorageType(iwma, selectedBundle, selectedLocale, selectedStorage));
+//	}
+	
 	private Table2 getLocalizeableStringsTableByStorageType(IWMainApplication iwma, String bundleIdentifier, String selectedLocale, String selectedStorageIdentifier) {
 		List<MessageResource> resourceList = getResourceList(iwma, selectedStorageIdentifier);
 
@@ -327,7 +335,7 @@ public class Localizer extends Block {
 	
 				cell = row.createCell();
 	
-				Object localizedString = resource.getMessage(key, CoreConstants.EMPTY, bundleIdentifier, LocaleUtil.getLocale(selectedLocale));
+				Object localizedString = resource.getMessage(key, bundleIdentifier, LocaleUtil.getLocale(selectedLocale));
 				if (localizedString == null){
 					String defaultString = CoreConstants.EMPTY;
 					defaultString = TextSoap.formatText(defaultString);
@@ -385,7 +393,7 @@ public class Localizer extends Block {
 	
 			
 			for (Object key : localisedKeys) {
-				down.addMenuElement(String.valueOf(key), String.valueOf(key) + " (" + resource.getIdentifier() + ")");
+				down.addMenuElement(String.valueOf(key) + " (" + resource.getIdentifier() + ")");
 			}
 		}
 		return down;
