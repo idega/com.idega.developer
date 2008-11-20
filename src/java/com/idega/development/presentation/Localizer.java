@@ -2,6 +2,7 @@ package com.idega.development.presentation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import com.idega.block.web2.business.Web2Business;
@@ -291,7 +292,7 @@ public class Localizer extends Block {
 //	}
 	
 	private Table2 getLocalizeableStringsTableByStorageType(IWMainApplication iwma, String bundleIdentifier, String selectedLocale, String selectedStorageIdentifier) {
-		List<MessageResource> resourceList = getResourceList(iwma, selectedStorageIdentifier);
+		List<MessageResource> resourceList = getResourceList(iwma, selectedStorageIdentifier, bundleIdentifier, LocaleUtil.getLocale(selectedLocale));
 
 		Table2 table = new Table2();
 		table.setCellpadding(0);
@@ -318,7 +319,7 @@ public class Localizer extends Block {
 		
 		for(MessageResource resource : resourceList) {
 		
-			Set<Object> localisedKeys = resource.getAllLocalisedKeys(bundleIdentifier, LocaleUtil.getLocale(selectedLocale));
+			Set<Object> localisedKeys = resource.getAllLocalisedKeys();
 			Object[] strings = localisedKeys.toArray();
 			for (int i = 0; i < strings.length; i++) {
 				Object key = strings[i];
@@ -335,7 +336,7 @@ public class Localizer extends Block {
 	
 				cell = row.createCell();
 	
-				Object localizedString = resource.getMessage(key, bundleIdentifier, LocaleUtil.getLocale(selectedLocale));
+				Object localizedString = resource.getMessage(key);
 				if (localizedString == null){
 					String defaultString = CoreConstants.EMPTY;
 					defaultString = TextSoap.formatText(defaultString);
@@ -385,11 +386,13 @@ public class Localizer extends Block {
 	}
 
 	public  DropdownMenu getLocalizeableStringsMenu(IWMainApplication iwma, String bundleIdentifier, String storageIdentifier, String selectedLocale, String name) {
-		List<MessageResource> resources = getResourceList(iwma, storageIdentifier);
+		List<MessageResource> resources = getResourceList(iwma, storageIdentifier, bundleIdentifier, LocaleUtil.getLocale(selectedLocale));
 		
 		DropdownMenu down = new DropdownMenu(name);
 		for(MessageResource resource : resources) {
-			Set<Object> localisedKeys = resource.getAllLocalisedKeys(bundleIdentifier, LocaleUtil.getLocale(selectedLocale));
+			if(resource == null)
+				continue;
+			Set<Object> localisedKeys = resource.getAllLocalisedKeys();
 	
 			
 			for (Object key : localisedKeys) {
@@ -399,18 +402,19 @@ public class Localizer extends Block {
 		return down;
 	}
 	
-	private List<MessageResource> getResourceList(IWMainApplication iwma, String selectedStorageIdentifier) {
+	private List<MessageResource> getResourceList(IWMainApplication iwma, String selectedStorageIdentifier, String bundleIdentifier, Locale locale) {
 		List<MessageResource> resourceList;
 		if(selectedStorageIdentifier.equals(ALL_RESOURCES)) {
-			resourceList = iwma.getMessageFactory().getResourceList();
+			resourceList = iwma.getMessageFactory().getResourceListByBundleAndLocale(bundleIdentifier, locale);
 		} else {
 			resourceList = new ArrayList<MessageResource>(1);
-			MessageResource resource = iwma.getMessageFactory().getResourceByIdentifier(selectedStorageIdentifier);
-			resourceList.add(resource);
+			MessageResource resource = iwma.getMessageFactory().getResource(selectedStorageIdentifier, bundleIdentifier, locale);
+			if(resource != null)
+				resourceList.add(resource);
 		}
 		return resourceList;
 	}
-	
+
 	private Web2Business getWeb2Business(IWApplicationContext iwac) {
 		try {
 			return (Web2Business) IBOLookup.getServiceInstance(iwac, Web2Business.class);

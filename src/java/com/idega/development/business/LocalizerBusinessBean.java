@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.idega.development.business;
 
 import java.util.ArrayList;
@@ -29,10 +26,10 @@ import com.idega.util.messages.ResourceLevelChangeEvent;
  * <p>
  * TODO laddi Describe Type LocalizerBusinessBean
  * </p>
- *  Last modified: $Date: 2008/11/15 15:35:12 $ by $Author: anton $
+ *  Last modified: $Date: 2008/11/20 16:15:10 $ by $Author: anton $
  * 
  * @author <a href="mailto:laddi@idega.com">laddi</a>
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 @Scope("singleton")
 @Service("localizer")
@@ -84,12 +81,12 @@ public class LocalizerBusinessBean implements LocalizerBusiness {
 		
 		Map<String, Object> setValues = getIWMainApplication().getMessageFactory().setLocalisedMessageToAutoInsertRes(key, value, bundleIdentifier, currentLocale);
 
-		List<MessageResource> resourceList = getIWMainApplication().getMessageFactory().getResourceList();
+		List<MessageResource> resourceList = getIWMainApplication().getMessageFactory().getUninitializedMessageResources();
 
 		List<LocalisedString> newStrings = new ArrayList<LocalisedString>();
 		int globalIndex = 0;
 		for(MessageResource resource: resourceList) {
-			Set<Object> messageKeys = getIWMainApplication().getMessageFactory().getResourceByIdentifier(resource.getIdentifier()).getAllLocalisedKeys(bundleIdentifier, currentLocale);
+			Set<Object> messageKeys = getIWMainApplication().getMessageFactory().getResource(resource.getIdentifier(), bundleIdentifier, currentLocale).getAllLocalisedKeys();
 			
 			Object[] keys = messageKeys.toArray();
 			for (int i = 0; i < keys.length; i++) {
@@ -129,16 +126,16 @@ public class LocalizerBusinessBean implements LocalizerBusiness {
 		Map<String, Set<Object>> messageKeysWithStorage = new LinkedHashMap<String, Set<Object>>();
 		Set<Object> messageKeys;
 		if(storageIdentifier.equals(Localizer.ALL_RESOURCES)) {
-			List<MessageResource> resourceList = getIWMainApplication().getMessageFactory().getResourceList();
+			List<MessageResource> resourceList = getIWMainApplication().getMessageFactory().getUninitializedMessageResources();
 			for(MessageResource resource : resourceList) {
 				messageKeys = new TreeSet<Object>();
 				String resourceIdentifier = resource.getIdentifier();
-				messageKeys.addAll(getIWMainApplication().getMessageFactory().getResourceByIdentifier(resourceIdentifier).getAllLocalisedKeys(bundleIdentifier, currentLocale));
+				messageKeys.addAll(getIWMainApplication().getMessageFactory().getResource(resourceIdentifier, bundleIdentifier, currentLocale).getAllLocalisedKeys());
 				messageKeysWithStorage.put(resourceIdentifier, messageKeys);
 			}
 		} else {
 			messageKeys = new TreeSet<Object>();
-			messageKeys.addAll(getIWMainApplication().getMessageFactory().getResourceByIdentifier(storageIdentifier).getAllLocalisedKeys(bundleIdentifier, currentLocale));
+			messageKeys.addAll(getIWMainApplication().getMessageFactory().getResource(storageIdentifier, bundleIdentifier, currentLocale).getAllLocalisedKeys());
 			messageKeysWithStorage.put(storageIdentifier, messageKeys);
 		}
 		
@@ -184,7 +181,7 @@ public class LocalizerBusinessBean implements LocalizerBusiness {
 		
 		String key = keyWithStorage.split(CoreConstants.SPACE)[0];
 		
-		List<MessageResource> resourceList = getIWMainApplication().getMessageFactory().getResourceList();
+		List<MessageResource> resourceList = getIWMainApplication().getMessageFactory().getUninitializedMessageResources();
 
 		int globalIndex = 0;
 		List<Integer> removedStrings = new ArrayList<Integer>();
@@ -192,7 +189,7 @@ public class LocalizerBusinessBean implements LocalizerBusiness {
 			if(!storageIdentifier.equals(Localizer.ALL_RESOURCES) && !resource.getIdentifier().equals(storageIdentifier)) {
 				continue;
 			}
-			Set<Object> messageKeys = getIWMainApplication().getMessageFactory().getResourceByIdentifier(resource.getIdentifier()).getAllLocalisedKeys(bundleIdentifier, currentLocale);
+			Set<Object> messageKeys = getIWMainApplication().getMessageFactory().getResource(resource.getIdentifier(), bundleIdentifier, currentLocale).getAllLocalisedKeys();
 			Object[] keys = messageKeys.toArray();
 
 			for (int i = 0; i < keys.length; i++) {
@@ -235,7 +232,7 @@ public class LocalizerBusinessBean implements LocalizerBusiness {
 			currentLocale = new Locale(locale);
 		}
 
-		String value = (String)getIWMainApplication().getMessageFactory().getResourceByIdentifier(storage).getMessage(key, bundleIdentifier, currentLocale);
+		String value = (String)getIWMainApplication().getMessageFactory().getResource(storage, bundleIdentifier, currentLocale).getMessage(key);
 		if (value == null) {
 			value = "";
 		}
@@ -244,16 +241,23 @@ public class LocalizerBusinessBean implements LocalizerBusiness {
 		return returnObj;
 	}
 	
+	//TODO change to make change to each resource specified by bundle and locale
 	public int setPriorityLevel(String storageIdentifier, String levelValue) {
-		MessageResource resource = getIWMainApplication().getMessageFactory().getResourceByIdentifier(storageIdentifier);
-		resource.setLevel(MessageResourceImportanceLevel.getLevel(Integer.parseInt(levelValue)));
+		
+		List<MessageResource> resources = getIWMainApplication().getMessageFactory().getResourceListByStorageIdentifier(storageIdentifier);
+		for(MessageResource resource : resources) {
+			resource.setLevel(MessageResourceImportanceLevel.getLevel(Integer.parseInt(levelValue)));
+		}
 		ELUtil.getInstance().publishEvent(new ResourceLevelChangeEvent(this));
 		return SUCCESS;
 	}
 	
+	//TODO change to make change to each resource specified by bundle and locale
 	public int setAutoInsert(String storageIdentifier, String value) {
-		MessageResource resource = getIWMainApplication().getMessageFactory().getResourceByIdentifier(storageIdentifier);
-		resource.setAutoInsert(Boolean.parseBoolean(value));
+		List<MessageResource> resources = getIWMainApplication().getMessageFactory().getResourceListByStorageIdentifier(storageIdentifier);
+		for(MessageResource resource : resources) {
+			resource.setAutoInsert(Boolean.parseBoolean(value));
+		}
 		return SUCCESS;
 	}
 	

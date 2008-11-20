@@ -98,7 +98,7 @@ public class LocalizerStorage extends Block {
 	}
 	
 	private void addAvailableMessageResources(IWContext iwc, TableRowGroup group) {
-		List<MessageResource> resources = iwc.getIWMainApplication().getMessageFactory().getResourceList();
+		List<MessageResource> resources = iwc.getIWMainApplication().getMessageFactory().getUninitializedMessageResources();
 		int count = 0;
 		for(MessageResource resource : resources) {
 			count++;

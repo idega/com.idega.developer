@@ -29,13 +29,12 @@ jQuery(document).ready(function() {
 							humanMsg.displayMsg("New localized string added...");
 						}
 						else {
+							jQuery("table tbody tr:eq(" + str.index + ") td:eq('1')").removeClass("isEmpty").children("span").text(str.value);
 							humanMsg.displayMsg("Localized string saved...");
 						}			
-		
-						jQuery("table tbody tr:eq(" + str.index + ") td:eq('1')").removeClass("isEmpty").children("span").text(str.value);
-						jQuery("#localizerDelete").fadeIn();
 					}
 				);
+				jQuery("#localizerDelete").fadeIn();
 			}
 		});
 		
