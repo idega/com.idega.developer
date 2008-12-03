@@ -14,7 +14,6 @@ import java.sql.Statement;
 import java.sql.Types;
 import java.util.StringTokenizer;
 
-import com.idega.block.web2.business.Web2Business;
 import com.idega.development.business.SQLSessionConnection;
 import com.idega.idegaweb.IWBundle;
 import com.idega.presentation.Block;
@@ -38,7 +37,6 @@ import com.idega.presentation.ui.TextArea;
 import com.idega.presentation.ui.TextInput;
 import com.idega.util.PresentationUtil;
 import com.idega.util.SQLDataDumper;
-import com.idega.util.expression.ELUtil;
 
 /**
  * 
@@ -130,8 +128,8 @@ public class SQLQueryer extends Block {
 			
 				querySet.add(form);
 				
-				Web2Business web2 = ELUtil.getInstance().getBean(Web2Business.class);
-				this.getParentPage().addJavascriptURL(web2.getCodePressScriptFilePath());
+//				Web2Business web2 = ELUtil.getInstance().getBean(Web2Business.class);
+//				this.getParentPage().addJavascriptURL(web2.getCodePressScriptFilePath());
 				
 				TextArea input = new TextArea(PARAM_QUERY);
 				input.setId(PARAM_QUERY);
