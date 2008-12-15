@@ -11,21 +11,21 @@ package com.idega.development.business;
  */
 
 public class LocalisedString {
-	String index;
+	String key;
 	String value;
 	String storageIdentifier;
 	
-	public LocalisedString(String index, String value, String storageIdentifier) {
-		this.index = index;
+	public LocalisedString(String key, String value, String storageIdentifier) {
+		this.key = key;
 		this.value = value;
 		this.storageIdentifier = storageIdentifier;
 	}
 	
-	public String getIndex() {
-		return index;
+	public String getKey() {
+		return key;
 	}
-	public void setIndex(String index) {
-		this.index = index;
+	public void setKey(String key) {
+		this.key = key;
 	}
 	public String getValue() {
 		return value;

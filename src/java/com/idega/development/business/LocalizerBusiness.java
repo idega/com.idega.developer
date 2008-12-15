@@ -8,7 +8,7 @@ public interface LocalizerBusiness {
 	/**
 	 * @see com.idega.development.business.LocalizerBusinessBean#storeLocalizedString
 	 */
-	public Object[] storeLocalizedStrings(String key, String newKey, String value, String bundleIdentifier, String locale);
+	public void storeLocalizedStrings(String key, String newKey, String value, String bundleIdentifier, String locale, String selectedStorageIdentifier);
 
 	/**
 	 * @see com.idega.development.business.LocalizerBusinessBean#getLocalizedKey
@@ -26,7 +26,7 @@ public interface LocalizerBusiness {
 	 */
 //	public int removeLocalizedKey(String key, String bundleIdentifier, String storeIdentifier, String locale);
 	
-	public Object[] removeLocalizedKey(String key, String bundleIdentifier, String storageIdentifier, String locale);
+	public void removeLocalizedKey(String key, String bundleIdentifier, String storageIdentifier, String locale);
 
 	/**
 	 * @see com.idega.development.business.LocalizerBusinessBean#getLocalizedString

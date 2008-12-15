@@ -12,41 +12,12 @@ jQuery(document).ready(function() {
 		var bundleIdentifier = dwr.util.getValue("localizerBundle");
 		var storageIdentifier = dwr.util.getValue("localizerStorage");
 		
-		Localizer.storeLocalizedStrings(key, newKey, value, bundleIdentifier, locale, {
-			callback: function(strings) {
-				strings.forEach(
-					function(str) {
-						if (newKey.length > 0) {
-							var newValue = "<tr><td class=\"firstColumn\"><a class=\"keyLink\" href=\"#\">" + newKey + "</a></td><td><span class=\"stringValue\">" + str.value + "</span></td><td class=\"lastColumn\"><span class=\"storageKey\">" + str.storageIdentifier + "</span></td></tr>";
-							jQuery("table tbody").prepend(newValue);
-							if (str.index != 0) {
-								var beforeIndex = str.index;
-								jQuery("table tbody tr:first").insertAfter("table tbody tr:eq(" + beforeIndex + ")");
-							}
+		Localizer.storeLocalizedStrings(key, newKey, value, bundleIdentifier, locale, storageIdentifier);
+		updateLocalizedStrings(storageIdentifier, bundleIdentifier, locale);
+		humanMsg.displayMsg("New localized string added...");
+		jQuery("#localizerDelete").fadeIn();
 		
-							initializeLinks();
-							initializeZebraColors();
-							humanMsg.displayMsg("New localized string added...");
-						}
-						else {
-							jQuery("table tbody tr:eq(" + str.index + ") td:eq('1')").removeClass("isEmpty").children("span").text(str.value);
-							humanMsg.displayMsg("Localized string saved...");
-						}			
-					}
-				);
-				jQuery("#localizerDelete").fadeIn();
-			}
-		});
-		
-		dwr.util.removeAllOptions("localizerKey");
-		Localizer.getLocalizedStringProperties(bundleIdentifier, storageIdentifier, locale, {
-			callback: function(values) {
-				dwr.util.addOptions("localizerKey", values);
-				dwr.util.setValue("localizerKey", newKey);
-				dwr.util.setValue("localizerNewKey", "");
-			}
-		});
-							
+		updateStringsDropDown(storageIdentifier, bundleIdentifier, locale, newKey);
 	});
 	
 	jQuery("#localizerDelete").click(function() {
@@ -55,33 +26,44 @@ jQuery(document).ready(function() {
 		var storageIdentifier = dwr.util.getValue("localizerStorage");
 		var locale = dwr.util.getValue("localizerLocale");
 		
-		Localizer.removeLocalizedKey(key, bundleIdentifier, storageIdentifier, locale, {
-			callback: function(indexes) {
-				indexes.forEach(
-					function(index, count) {
-						if (index >= 0) {
-							index = index - count; //decreasing index acccording to the number of already removed elements
-							jQuery("table tbody tr:eq(" + index + ")").fadeOut().remove();
-							initializeZebraColors();
-						}
-					}
-				);
-				dwr.util.removeAllOptions("localizerKey");
-				Localizer.getLocalizedStringProperties(bundleIdentifier, storageIdentifier, locale, {
-					callback: function(values) {
-						dwr.util.addOptions("localizerKey", values);
-						dwr.util.setValue("localizerValue", "");
-						jQuery("#localizerDelete").fadeOut();
-						humanMsg.displayMsg("Localized string deleted from all resources marked as autoinsert ...");
-					}
-				});
-			}
-		});
+		Localizer.removeLocalizedKey(key, bundleIdentifier, storageIdentifier, locale);
+		updateLocalizedStrings(storageIdentifier, bundleIdentifier, locale);
+		humanMsg.displayMsg("Localized string deleted...");
+		
+		updateStringsDropDown(storageIdentifier, bundleIdentifier, locale, "");
 	});
 	
 	initializeLinks();
 	initializeDropdown();
 });
+
+function updateLocalizedStrings(storageIdentifier, bundleIdentifier, locale) {
+	Localizer.updateLocalizedStringList(storageIdentifier, bundleIdentifier, locale, {
+			callback: function(strings) {
+				jQuery("table tbody").empty();
+				strings.forEach(
+					function(str) {
+						
+						var newValue = "<tr><td class=\"firstColumn\"><a class=\"keyLink\" href=\"#\">" + str.key + "</a></td><td><span class=\"stringValue\">" + str.value + "</span></td><td class=\"lastColumn\"><span class=\"storageKey\">" + str.storageIdentifier + "</span></td></tr>";
+						jQuery("table tbody").append(newValue);						
+					}
+				);
+				initializeLinks();
+				initializeZebraColors();
+			}
+		});
+}
+
+function updateStringsDropDown(storageIdentifier, bundleIdentifier, locale, newKey) {
+	dwr.util.removeAllOptions("localizerKey");
+		Localizer.getLocalizedStringProperties(bundleIdentifier, storageIdentifier, locale, {
+			callback: function(values) {
+				dwr.util.addOptions("localizerKey", values);
+				dwr.util.setValue("localizerKey", newKey);
+				dwr.util.setValue("localizerNewKey", "");
+			}
+		});
+}
 
 function initializeLinks() {
 	jQuery("a.keyLink").unbind("click").click(function() {
@@ -96,7 +78,7 @@ function initializeLinks() {
 		Localizer.getLocalizedString(key, bundleIdentifier, locale, storageIdentifier, {
 			callback: function(foundString) {
 				dwr.util.setValue("localizerValue", foundString.value);
-				dwr.util.setValue("localizerKey", foundString.index + " (" + foundString.storageIdentifier + ")");
+				dwr.util.setValue("localizerKey", foundString.key + " (" + foundString.storageIdentifier + ")");
 				jQuery("#localizerDelete").fadeIn();
 			}
 		});

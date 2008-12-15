@@ -48,6 +48,7 @@ public class LocalizerStorage extends Block {
 	@Override
 	public void main(IWContext iwc) {
 		IWBundle iwb = iwc.getIWMainApplication().getBundle("com.idega.developer");
+		//iwb.getRe
 		PresentationUtil.addStyleSheetToHeader(iwc, iwb.getVirtualPathWithFileNameString("style/developer.css"));
 		PresentationUtil.addStyleSheetToHeader(iwc, getWeb2Business(iwc).getBundleUriToHumanizedMessagesStyleSheet());
 		

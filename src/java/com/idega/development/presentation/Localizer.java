@@ -293,7 +293,7 @@ public class Localizer extends Block {
 	
 	private Table2 getLocalizeableStringsTableByStorageType(IWMainApplication iwma, String bundleIdentifier, String selectedLocale, String selectedStorageIdentifier) {
 		List<MessageResource> resourceList = getResourceList(iwma, selectedStorageIdentifier, bundleIdentifier, LocaleUtil.getLocale(selectedLocale));
-
+		
 		Table2 table = new Table2();
 		table.setCellpadding(0);
 		table.setCellspacing(0);
@@ -375,12 +375,12 @@ public class Localizer extends Block {
 	}
 
 	public static DropdownMenu getMessageStorageResources(IWMainApplication iwma, String name) {
-		List<MessageResource> resources = iwma.getAvailableMessageStorageResources();
+		List<String> resources = iwma.getAvailableMessageStorageTypes();
 		DropdownMenu down = new DropdownMenu(name);
 		
 		down.addMenuElement(ALL_RESOURCES);
-		for(MessageResource resource : resources) {
-			down.addMenuElement(resource.getIdentifier());
+		for(String resource : resources) {
+			down.addMenuElement(resource);
 		}
 		return down;
 	}
