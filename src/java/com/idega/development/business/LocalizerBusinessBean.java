@@ -27,10 +27,10 @@ import com.idega.util.messages.ResourceLevelChangeEvent;
  * <p>
  * TODO laddi Describe Type LocalizerBusinessBean
  * </p>
- *  Last modified: $Date: 2008/12/15 14:08:13 $ by $Author: anton $
+ *  Last modified: $Date: 2008/12/18 11:08:30 $ by $Author: anton $
  * 
  * @author <a href="mailto:laddi@idega.com">laddi</a>
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 @Scope("singleton")
 @Service("localizer")
@@ -293,6 +293,8 @@ public class LocalizerBusinessBean implements LocalizerBusiness {
 		ELUtil.getInstance().publishEvent(new ResourceLevelChangeEvent(this));
 		return SUCCESS;
 	}
+	
+
 	
 	//TODO change to make change to each resource specified by bundle and locale
 	public int setAutoInsert(String storageIdentifier, String value) {

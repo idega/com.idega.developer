@@ -30,9 +30,9 @@ import com.idega.util.messages.MessageResourceImportanceLevel;
 *
 * 
 * @author <a href="anton@idega.com">Anton Makarov</a>
-* @version Revision: 1.0 
+* @version $Revision: 1.4 $
 *
-* Last modified: Oct 27, 2008 by Author: Anton 
+* Last modified: $Date: 2008/12/18 11:08:30 $ by $Author: anton $
 *
 */
 
@@ -125,7 +125,7 @@ public class LocalizerStorage extends Block {
 
 			CheckBox checkBox = new CheckBox(resource.getIdentifier());
 			checkBox.setID(AUTO_INSERT + CoreConstants.UNDER + count);
-			checkBox.setChecked(resource.isAutoInsert());
+			checkBox.setChecked(getAutoInsert(iwc, resource.getIdentifier()));
 			checkBox.setOnChange(getAutoInsertChangeScript(count));
 			cell.add(checkBox);
 			
@@ -136,6 +136,15 @@ public class LocalizerStorage extends Block {
 				row.setStyleClass("oddRow");
 			}
 		}			
+	}
+	
+	public boolean getAutoInsert(IWContext iwc, String storageIdentifier) {
+		boolean autoInsert = true;
+		List<MessageResource> resources = iwc.getIWMainApplication().getMessageFactory().getResourceListByStorageIdentifier(storageIdentifier);
+		for(MessageResource resource : resources) {
+			autoInsert = autoInsert && resource.isAutoInsert();
+		}
+		return autoInsert;
 	}
 
 	public static DropdownMenu getAvailablePriorityLevels() {
