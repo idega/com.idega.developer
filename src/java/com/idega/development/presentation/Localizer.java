@@ -110,6 +110,7 @@ public class Localizer extends Block {
 		localesDrop.setID("localizerLocale");
 		localesDrop.keepStatusOnAction();
 		localesDrop.setToSubmit();
+		localesDrop.setSelectedOption(iwc.getCurrentLocale().toString());
 		
 		DropdownMenu storeDrop = getMessageStorageResources(iwma, storageParameter);
 		storeDrop.setID("localizerStorage");

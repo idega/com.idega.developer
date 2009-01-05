@@ -17,7 +17,12 @@ jQuery(document).ready(function() {
 		humanMsg.displayMsg("New localized string added...");
 		jQuery("#localizerDelete").fadeIn();
 		
-		updateStringsDropDown(storageIdentifier, bundleIdentifier, locale, newKey);
+		if(newKey != '') {
+			updateStringsDropDown(storageIdentifier, bundleIdentifier, locale, newKey);
+		} else {
+			updateStringsDropDown(storageIdentifier, bundleIdentifier, locale, key);
+		}
+		
 	});
 	
 	jQuery("#localizerDelete").click(function() {

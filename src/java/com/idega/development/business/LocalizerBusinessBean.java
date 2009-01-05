@@ -27,10 +27,10 @@ import com.idega.util.messages.ResourceLevelChangeEvent;
  * <p>
  * TODO laddi Describe Type LocalizerBusinessBean
  * </p>
- *  Last modified: $Date: 2008/12/18 11:08:30 $ by $Author: anton $
+ *  Last modified: $Date: 2009/01/05 10:27:23 $ by $Author: anton $
  * 
  * @author <a href="mailto:laddi@idega.com">laddi</a>
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 @Scope("singleton")
 @Service("localizer")
@@ -145,7 +145,7 @@ public class LocalizerBusinessBean implements LocalizerBusiness {
 		Map<String, Set<Object>> messageKeysWithStorage = new LinkedHashMap<String, Set<Object>>();
 		Set<Object> messageKeys;
 		if(storageIdentifier.equals(Localizer.ALL_RESOURCES)) {
-			List<String> resourceTypes = getIWMainApplication().getMessageFactory().getInitializedMessageResourceTypes();
+			List<String> resourceTypes = getIWMainApplication().getAvailableMessageStorageTypes();
 			for(String type : resourceTypes) {
 				messageKeys = new TreeSet<Object>();
 				MessageResource resource = getIWMainApplication().getMessageFactory().getResource(type, bundleIdentifier, currentLocale);
@@ -203,7 +203,7 @@ public class LocalizerBusinessBean implements LocalizerBusiness {
 		String key = keyWithStorage.split(CoreConstants.SPACE)[0];
 		getIWMainApplication().getMessageFactory().removeLocalisedMessageFromAutoInsertRes(key, bundleIdentifier, LocaleUtil.getLocale(locale));
 		
-		List<MessageResource> resourceList = getIWMainApplication().getMessageFactory().getUninitializedMessageResources();
+//		List<MessageResource> resourceList = getIWMainApplication().getMessageFactory().getAvailableUninitializedMessageResources();
 
 //		int globalIndex = 0;
 //		List<Integer> removedStrings = new ArrayList<Integer>();

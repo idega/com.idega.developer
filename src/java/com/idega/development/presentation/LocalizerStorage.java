@@ -7,6 +7,7 @@ import com.idega.block.web2.business.Web2Business;
 import com.idega.business.IBOLookup;
 import com.idega.business.IBOLookupException;
 import com.idega.business.IBORuntimeException;
+import com.idega.idegaweb.DefaultIWBundle;
 import com.idega.idegaweb.IWApplicationContext;
 import com.idega.idegaweb.IWBundle;
 import com.idega.presentation.Block;
@@ -30,9 +31,9 @@ import com.idega.util.messages.MessageResourceImportanceLevel;
 *
 * 
 * @author <a href="anton@idega.com">Anton Makarov</a>
-* @version $Revision: 1.4 $
+* @version $Revision: 1.5 $
 *
-* Last modified: $Date: 2008/12/18 11:08:30 $ by $Author: anton $
+* Last modified: $Date: 2009/01/05 10:27:23 $ by $Author: anton $
 *
 */
 
@@ -99,7 +100,7 @@ public class LocalizerStorage extends Block {
 	}
 	
 	private void addAvailableMessageResources(IWContext iwc, TableRowGroup group) {
-		List<MessageResource> resources = iwc.getIWMainApplication().getMessageFactory().getUninitializedMessageResources();
+		List<MessageResource> resources = iwc.getIWMainApplication().getMessageFactory().getAvailableUninitializedMessageResources();
 		int count = 0;
 		for(MessageResource resource : resources) {
 			count++;
@@ -115,7 +116,7 @@ public class LocalizerStorage extends Block {
 			cell.setStyleClass("inputColumn");
 			DropdownMenu priorityDrop = getAvailablePriorityLevels();
 			priorityDrop.setId(PRIORITY_LEVELS + CoreConstants.UNDER + count);
-			priorityDrop.setSelectedElement(resource.getLevel().intValue());
+			priorityDrop.setSelectedElement(getPriorityLevel(iwc, resource.getIdentifier()).intValue() /*resource.getLevel().intValue()*/);
 			priorityDrop.setOnChange(getPriorityChangeScript(count));
 			cell.add(priorityDrop);
 			
@@ -126,7 +127,13 @@ public class LocalizerStorage extends Block {
 			CheckBox checkBox = new CheckBox(resource.getIdentifier());
 			checkBox.setID(AUTO_INSERT + CoreConstants.UNDER + count);
 			checkBox.setChecked(getAutoInsert(iwc, resource.getIdentifier()));
-			checkBox.setOnChange(getAutoInsertChangeScript(count));
+			
+			if(!DefaultIWBundle.isProductionEnvironment()) {
+				checkBox.setOnChange(getAutoInsertChangeScript(count));
+			} else {
+				checkBox.setDisabled(true);
+			}
+			
 			cell.add(checkBox);
 			
 			if (count % 2 == 0) {
@@ -138,13 +145,21 @@ public class LocalizerStorage extends Block {
 		}			
 	}
 	
-	public boolean getAutoInsert(IWContext iwc, String storageIdentifier) {
+	private boolean getAutoInsert(IWContext iwc, String storageIdentifier) {
 		boolean autoInsert = true;
 		List<MessageResource> resources = iwc.getIWMainApplication().getMessageFactory().getResourceListByStorageIdentifier(storageIdentifier);
 		for(MessageResource resource : resources) {
 			autoInsert = autoInsert && resource.isAutoInsert();
 		}
 		return autoInsert;
+	}
+	
+	private Level getPriorityLevel(IWContext iwc, String storageIdentifier) {
+		List<MessageResource> resources = iwc.getIWMainApplication().getMessageFactory().getResourceListByStorageIdentifier(storageIdentifier);
+		//All resources should have the same level so we take first resource
+		if(!resources.isEmpty())
+			return resources.get(0).getLevel();
+		return null;
 	}
 
 	public static DropdownMenu getAvailablePriorityLevels() {
