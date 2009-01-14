@@ -43,10 +43,10 @@ import com.idega.workspace.view.WorkspaceClassViewNode;
  * <p>
  * TODO tryggvil Describe Type SchoolViewManager
  * </p>
- *  Last modified: $Date: 2008/10/28 07:51:56 $ by $Author: anton $
+ *  Last modified: $Date: 2009/01/14 15:07:16 $ by $Author: tryggvil $
  * 
  * @author <a href="mailto:tryggvil@idega.com">tryggvil</a>
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 public class DeveloperViewManager {
 
@@ -233,6 +233,11 @@ public class DeveloperViewManager {
 		WorkspaceClassViewNode filesManager = new WorkspaceClassViewNode("icfilesmanager", devNode);
 		filesManager.setName("Files Manager");
 		filesManager.setComponentClass(FilesManager.class);
+		filesManager.setMaximizeBlockVertically(true);
+
+		DefaultViewNode converters = new DefaultViewNode("converters", devNode);
+		converters.setName("Converters");
+		converters.setFaceletUri(iwb.getFaceletURI("converters.xhtml"));
 		filesManager.setMaximizeBlockVertically(true);
 		
 		//oldDeveloperNode.setJspUri(workspace.getResourceURI());
