@@ -3,7 +3,7 @@
  */
 package com.idega.development.business;
 
-import java.util.Collection;
+import java.util.ArrayList;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -17,10 +17,10 @@ import com.idega.presentation.IWContext;
  * <p>
  * TODO laddi Describe Type ApplicationPropertiesBusinessBean
  * </p>
- *  Last modified: $Date: 2008/10/24 07:05:38 $ by $Author: laddi $
+ *  Last modified: $Date: 2009/01/23 15:19:19 $ by $Author: laddi $
  * 
  * @author <a href="mailto:laddi@idega.com">laddi</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 @Scope("singleton")
 @Service("applicationProperties")
@@ -32,13 +32,15 @@ public class ApplicationPropertiesBusinessBean implements ApplicationPropertiesB
 	public String getProperty(String key) {
 		return getIWMainApplication().getSettings().getProperty(key, "");
 	}
+	
+	public boolean doesPropertyExist(String key) {
+		return getIWMainApplication().getSettings().keySet().contains(key);
+	}
 
 	/* (non-Javadoc)
 	 * @see com.idega.development.business.ApplicationPropertiesBusiness#setProperty(java.lang.String, java.lang.String)
 	 */
 	public int setProperty(String key, String value) {
-		int index = -1;
-		
 		if (key.equals(IWMainApplicationSettings.ENTITY_AUTO_CREATE)) {
 			getIWMainApplication().getSettings().setEntityAutoCreation(value != null);
 		}
@@ -64,28 +66,12 @@ public class ApplicationPropertiesBusinessBean implements ApplicationPropertiesB
 			getIWMainApplication().getSettings().setDebug(value != null);
 		}
 		else {
-			Collection<String> keys = getIWMainApplication().getSettings().keySet();
-			if (keys.contains(key)) {
-				getIWMainApplication().getSettings().setProperty(key, value);
-				getIWMainApplication().storeStatus();
-			}
-			else {
-				getIWMainApplication().getSettings().setProperty(key, value);
-				getIWMainApplication().storeStatus();
-
-				keys = getIWMainApplication().getSettings().keySet();
-				int i = 0;
-				for (String oldKey : keys) {
-					if (oldKey.equals(key)) {
-						index = i;
-						break;
-					}
-					i++;
-				}
-			}
+			getIWMainApplication().getSettings().setProperty(key, value);
 		}
-		
-		return index;
+		getIWMainApplication().storeStatus();
+
+		ArrayList<String> keys = new ArrayList(getIWMainApplication().getSettings().keySet());
+		return keys.indexOf(key);
 	}
 
 	/* (non-Javadoc)

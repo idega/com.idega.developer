@@ -23,6 +23,7 @@
         <create creator="jsf" javascript="ApplicationProperties">
             <param name="managedBeanName" value="applicationProperties" />
             <param name="class" value="com.idega.development.business.ApplicationPropertiesBusinessBean" />
+            <include method="doesPropertyExist"/>
             <include method="getProperty"/>
             <include method="removeProperty"/>
             <include method="setProperty"/>

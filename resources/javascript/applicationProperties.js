@@ -5,26 +5,30 @@ jQuery(document).ready(function() {
 		var key = dwr.util.getValue("applicationPropertyKey");
 		var value = dwr.util.getValue("applicationPropertyValue");
 		
-		ApplicationProperties.setProperty(key, value, {
-			callback: function(index) {
-				if (index > -1) {
-					var newValue = "<tr><td class=\"firstColumn\"><a class=\"keyLink\" href=\"#\">" + key + "</a></td><td><span class=\"keyValue\">" + value + "</span></td><td class=\"lastColumn\"><input type=\"checkbox\" name=\"property\" class=\"removeApplicationPropertyCheck\" value=\"" + key + "\" /></td></tr>";
-					
-					jQuery("table tbody").prepend(newValue);
-					if (index != 0) {
-						var beforeIndex = index;
-						jQuery("table tbody tr:first").insertAfter("table tbody tr:eq(" + beforeIndex + ")");
+		ApplicationProperties.doesPropertyExist(key, {
+			callback: function(doesExist) {
+				ApplicationProperties.setProperty(key, value, {
+					callback: function(index) {
+						if (!doesExist) {
+							var newValue = "<tr><td class=\"firstColumn\"><a class=\"keyLink\" href=\"#\">" + key + "</a></td><td><span class=\"keyValue\">" + value + "</span></td><td class=\"lastColumn\"><input type=\"checkbox\" name=\"property\" class=\"removeApplicationPropertyCheck\" value=\"" + key + "\" /></td></tr>";
+							
+							jQuery("table tbody").prepend(newValue);
+							if (index != 0) {
+								var beforeIndex = index;
+								jQuery("table tbody tr:first").insertAfter("table tbody tr:eq(" + beforeIndex + ")");
+							}
+							
+							initializeLinks();
+							initializeZebraColors();
+							humanMsg.displayMsg("Application property created...");
+						}
+						else {
+							humanMsg.displayMsg("Application property stored...");
+						}
+						
+						jQuery("table tbody tr:eq(" + index + ") td:eq(1) span").text(value);
 					}
-					
-					initializeLinks();
-					initializeZebraColors();
-					humanMsg.displayMsg("Application property created...");
-				}
-				else {
-					humanMsg.displayMsg("Application property stored...");
-				}			
-
-				jQuery("table tbody tr:eq(" + index + ") td:eq(1) span").text(value);
+				});
 			}
 		});
 	});
@@ -94,9 +98,14 @@ function initializeLinks() {
 				jQuery(this).parent().children('span').fadeIn('fast');
 				jQuery(".newStringValue").remove();
 				initializeZebraColors();
-			})
+			}).keypress(function(event) {
+				if (isEnterEvent(event)) {
+					jQuery(this).blur();
+				}
+			});
 		});
 	});
+;
 }
 
 function initializeZebraColors() {
