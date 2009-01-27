@@ -4,12 +4,12 @@
   <parent>
   	<groupId>com.idega.block.platform</groupId>
   	<artifactId>com.idega.block.platform</artifactId>
-  	<version>4.0.2-SNAPSHOT</version>
+  	<version>4.1.0</version>
   </parent>
   <packaging>jar</packaging>
   <groupId>com.idega.block.platform</groupId>
   <artifactId>com.idega.developer</artifactId>
-  <version>4.0.2-SNAPSHOT</version>
+  <version>4.1.0</version>
   <name>idegaWeb Developer</name>
   <inceptionYear>2000</inceptionYear>
   <description>Developer Application contains tools for developing, debugging and managing within an idegaWeb Application</description>
@@ -22,6 +22,7 @@
     <connection>scm:cvs:ext:idegaweb@code.idega.com:/idega/cvs:com.idega.block.platform/com.idega.developer/</connection>
     <developerConnection>scm:cvs:ext:idegaweb@code.idega.com:/idega/cvs:com.idega.block.platform/com.idega.developer/</developerConnection>
     -->
+    <tag>com_idega_block_platform-4_1_0</tag>
   </scm>
 
   <developers>
