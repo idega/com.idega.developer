@@ -43,10 +43,10 @@ import com.idega.workspace.view.WorkspaceClassViewNode;
  * <p>
  * TODO tryggvil Describe Type SchoolViewManager
  * </p>
- *  Last modified: $Date: 2009/01/14 15:07:16 $ by $Author: tryggvil $
+ *  Last modified: $Date: 2009/03/11 08:17:16 $ by $Author: valdas $
  * 
  * @author <a href="mailto:tryggvil@idega.com">tryggvil</a>
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  */
 public class DeveloperViewManager {
 
@@ -98,7 +98,7 @@ public class DeveloperViewManager {
 		
 		DefaultViewNode devNode = new WorkspaceApplicationNode("developer",workspace,roles);
 		//devNode.setName("#{localizedStrings['com.idega.developer']['developer']}");
-		devNode.setJspUri("/idegaweb/bundles/com.idega.developer.bundle/jsp/developer.jsp");
+		devNode.setJspUri(iwb.getJSPURI("developer.jsp"));
 		devNode.setKeyboardShortcut(new KeyboardShortcut("3"));
 		
 		WorkspaceClassViewNode localizerStorageNode = new WorkspaceClassViewNode("localizerstorage",devNode);
