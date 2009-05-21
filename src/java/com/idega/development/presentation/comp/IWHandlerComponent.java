@@ -32,7 +32,7 @@ public class IWHandlerComponent extends IWBaseComponent implements BundleCompone
 	/* (non-Javadoc)
 	 * @see com.idega.development.presentation.comp.BundleComponent#type()
 	 */
-	public String type() {
+	public String getType() {
 		return ICObjectBMPBean.COMPONENT_TYPE_PROPERTYHANDLER;
 	}
 

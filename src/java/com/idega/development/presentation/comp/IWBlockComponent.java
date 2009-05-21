@@ -22,7 +22,7 @@ public class IWBlockComponent extends IWPresentationComponent implements BundleC
 	/* (non-Javadoc)
 	 * @see com.idega.development.presentation.comp.BundleComponent#type()
 	 */
-	public String type() {
+	public String getType() {
 		// TODO Auto-generated method stub
 		return ICObjectBMPBean.COMPONENT_TYPE_BLOCK;
 	}

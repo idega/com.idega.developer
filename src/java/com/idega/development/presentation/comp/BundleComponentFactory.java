@@ -98,21 +98,21 @@ public class BundleComponentFactory {
 	
 	private void createLookupTableOld(){
 		BundleComponent comp = new IWBlockComponent();
-		lookup.put(comp.type(),comp);
+		lookup.put(comp.getType(),comp);
 		comp = new IWElementComponent();
-		lookup.put(comp.type(),comp);
+		lookup.put(comp.getType(),comp);
 		comp = new IWApplicationComponent();
-		lookup.put(comp.type(),comp);
+		lookup.put(comp.getType(),comp);
 		comp = new IWAppCompComponent();
-		lookup.put(comp.type(),comp);
+		lookup.put(comp.getType(),comp);
 		comp = new IWDataComponent();
-		lookup.put(comp.type(),comp);
+		lookup.put(comp.getType(),comp);
 		comp = new IWHomeComponent();
-		lookup.put(comp.type(),comp);
+		lookup.put(comp.getType(),comp);
 		comp = new IWHandlerComponent();
-		lookup.put(comp.type(),comp);
+		lookup.put(comp.getType(),comp);
 		comp = new IWSearchPluginComponent();
-		lookup.put(comp.type(),comp);
+		lookup.put(comp.getType(),comp);
 	}
 	
 }

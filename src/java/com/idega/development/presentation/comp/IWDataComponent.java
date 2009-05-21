@@ -22,7 +22,7 @@ public class IWDataComponent extends IWBaseComponent implements BundleComponent 
 	/* (non-Javadoc)
 	 * @see com.idega.development.presentation.comp.BundleComponent#type()
 	 */
-	public String type() {
+	public String getType() {
 		return ICObjectBMPBean.COMPONENT_TYPE_DATA;
 	}
 	/* (non-Javadoc)

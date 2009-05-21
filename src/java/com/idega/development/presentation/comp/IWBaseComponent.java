@@ -20,7 +20,7 @@ public class IWBaseComponent implements BundleComponent {
 	/* (non-Javadoc)
 	 * @see com.idega.development.presentation.comp.BundleComponent#type()
 	 */
-	public String type() {
+	public String getType() {
 		return null;
 	}
 	/* (non-Javadoc)

@@ -20,7 +20,7 @@ public class IWSearchPluginComponent extends IWBaseComponent implements BundleCo
 	/* (non-Javadoc)
 	 * @see com.idega.development.presentation.comp.BundleComponent#type()
 	 */
-	public String type() {
+	public String getType() {
 		return ICObjectBMPBean.COMPONENT_TYPE_SEARCH_PLUGIN;
 	}
 

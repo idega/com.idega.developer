@@ -22,7 +22,7 @@ public class IWElementComponent extends IWPresentationComponent implements Bundl
 	/* (non-Javadoc)
 	 * @see com.idega.development.presentation.comp.BundleComponent#type()
 	 */
-	public String type() {
+	public String getType() {
 		return ICObjectBMPBean.COMPONENT_TYPE_ELEMENT;
 	}
 	
