@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import com.idega.builder.business.IBPropertyHandler;
 import com.idega.core.component.data.BundleComponent;
@@ -56,6 +57,8 @@ public class NewComponentPropertyWindow extends Window {
 
 	private IWBundle selectedBundle = null;
 	private String component = null;
+	
+	private static final Logger logger = Logger.getLogger(NewComponentPropertyWindow.class.getName());
 
 	public NewComponentPropertyWindow() {
 		setWidth(700);
@@ -256,17 +259,17 @@ public class NewComponentPropertyWindow extends Window {
 		String description = this.getDescription(iwc);
 		boolean multivalued = this.isMultiValued(iwc);
 
-		System.out.println("description: " + description);
-		System.out.println("Multivalued: " + multivalued);
+		logger.fine("description: " + description);
+		logger.fine("Multivalued: " + multivalued);
 
 		String[] handlers = getHandlers(iwc);
 		String[] descriptions = getDescriptions(iwc);
 		boolean[] primaryKeys = getPrimaryKeys(iwc);
-		System.out.println("  newproperty = Handlers,Descriptions,PrimaryKeys:");
+		logger.fine("  newproperty = Handlers,Descriptions,PrimaryKeys:");
 		for (int i = 0; i < handlers.length; i++) {
-			System.out.println("handler[" + i + "]: " + handlers[i]);
-			System.out.println("descriptions[" + i + "]: " + descriptions[i]);
-			System.out.println("primaryKeys[" + i + "]: " + primaryKeys[i]);
+			logger.fine("handler[" + i + "]: " + handlers[i]);
+			logger.fine("descriptions[" + i + "]: " + descriptions[i]);
+			logger.fine("primaryKeys[" + i + "]: " + primaryKeys[i]);
 		}
 
 		propertySave(iwb, component, method, description, multivalued, handlers, descriptions, primaryKeys);
@@ -369,7 +372,7 @@ public class NewComponentPropertyWindow extends Window {
 			//if(name.startsWith("set")){
 			if (name.startsWith(methodStartFilter)) {
 				m.put(name, method);
-				System.out.println("Putting method for " + name);
+				logger.fine("Putting method for " + name);
 			}
 		}
 	}
