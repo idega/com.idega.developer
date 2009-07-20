@@ -4,6 +4,7 @@ import com.idega.block.web2.business.Web2Business;
 import com.idega.business.IBOLookup;
 import com.idega.business.IBOLookupException;
 import com.idega.business.IBORuntimeException;
+import com.idega.development.business.DeveloperConstants;
 import com.idega.idegaweb.IWApplicationContext;
 import com.idega.idegaweb.IWBundle;
 import com.idega.idegaweb.IWMainApplication;
@@ -50,7 +51,7 @@ public class ApplicationPropertySetter extends Block {
 
 	@Override
 	public void main(IWContext iwc) throws Exception {
-		IWBundle iwb = iwc.getIWMainApplication().getBundle("com.idega.developer");
+		IWBundle iwb = iwc.getIWMainApplication().getBundle(DeveloperConstants.BUNDLE_IDENTIFIER);
 		PresentationUtil.addStyleSheetToHeader(iwc, iwb.getVirtualPathWithFileNameString("style/developer.css"));
 		PresentationUtil.addStyleSheetToHeader(iwc, getWeb2Business(iwc).getBundleUriToHumanizedMessagesStyleSheet());
 
