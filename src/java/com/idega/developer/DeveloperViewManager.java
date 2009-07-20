@@ -28,6 +28,7 @@ import com.idega.development.presentation.LocaleSetter;
 import com.idega.development.presentation.Localizer;
 import com.idega.development.presentation.LocalizerStorage;
 import com.idega.development.presentation.Logs;
+import com.idega.development.presentation.NotificationsManager;
 import com.idega.development.presentation.ObjectTypeManager;
 import com.idega.development.presentation.PageObjects;
 import com.idega.development.presentation.SQLQueryer;
@@ -93,7 +94,7 @@ public class DeveloperViewManager {
 		ViewManager viewManager = ViewManager.getInstance(this.iwma);
 		ViewNode workspace = viewManager.getWorkspaceRoot();
 		
-		Collection roles = new ArrayList();
+		Collection<String> roles = new ArrayList<String>();
 		roles.add(StandardRoles.ROLE_KEY_DEVELOPER);
 		
 		DefaultViewNode devNode = new WorkspaceApplicationNode("developer",workspace,roles);
@@ -202,7 +203,7 @@ public class DeveloperViewManager {
 		scriptmanager.setMaximizeBlockVertically(true);
 		
 		try{
-			Class ldapmanagerClass = Class.forName("com.idega.block.ldap.manager.LDAPManager");
+			Class<?> ldapmanagerClass = Class.forName("com.idega.block.ldap.manager.LDAPManager");
 
 			WorkspaceClassViewNode ldap = new WorkspaceClassViewNode("ldap",devNode);
 			ldap.setName("LDAP Manager");
@@ -214,7 +215,7 @@ public class DeveloperViewManager {
 		}
 		
 		try{
-			Class siteInfoClass = Class.forName("com.idega.content.themes.presentation.SiteInfo");
+			Class<?> siteInfoClass = Class.forName("com.idega.content.themes.presentation.SiteInfo");
 
 			WorkspaceClassViewNode siteInfo = new WorkspaceClassViewNode("siteinfo",devNode);
 			siteInfo.setName("Site Info");
@@ -240,7 +241,10 @@ public class DeveloperViewManager {
 		converters.setFaceletUri(iwb.getFaceletURI("converters.xhtml"));
 		filesManager.setMaximizeBlockVertically(true);
 		
-		//oldDeveloperNode.setJspUri(workspace.getResourceURI());
+		WorkspaceClassViewNode notifications = new WorkspaceClassViewNode("notification", devNode);
+		notifications.setName("Notifications");
+		notifications.setComponentClass(NotificationsManager.class);
+		notifications.setMaximizeBlockVertically(true);
 
 		return devNode;
 	}
