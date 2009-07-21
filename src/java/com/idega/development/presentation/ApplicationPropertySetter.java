@@ -223,6 +223,20 @@ public class ApplicationPropertySetter extends Block {
 		formItem.add(box9);
 		formItem.add(label);
 		form.add(formItem);
+		
+		CheckBox box10 = new CheckBox(IWMainApplicationSettings.REVERSE_AJAX_KEY);
+		box10.setStyleClass("setApplicationPropertyCheck");
+		if (iwma.getSettings().isReverseAjaxEnabled()) {
+			box10.setChecked(true);
+		}
+
+		formItem = new Layer(Layer.DIV);
+		formItem.setStyleClass("formItem");
+		formItem.setStyleClass("checkBoxItem");
+		label = new Label("Enable reverse Ajax for ALL pages", box8);
+		formItem.add(box10);
+		formItem.add(label);
+		form.add(formItem);
 
 		Layer buttonLayer = new Layer(Layer.DIV);
 		buttonLayer.setStyleClass("buttonLayer");
