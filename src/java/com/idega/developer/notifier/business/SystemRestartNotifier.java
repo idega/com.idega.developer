@@ -1,6 +1,8 @@
 package com.idega.developer.notifier.business;
 
 import java.sql.Timestamp;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.faces.component.UIComponent;
 import javax.servlet.http.HttpSession;
@@ -70,7 +72,7 @@ public class SystemRestartNotifier extends BasicNotifier implements Notifier, DW
 	}
 
 	@Override
-	public BasicNotification getNotification(HttpSession session) {
+	public List<BasicNotification> getNotifications(HttpSession session) {
 		if (!canShow(session)) {
 			return null;
 		}
@@ -79,11 +81,15 @@ public class SystemRestartNotifier extends BasicNotifier implements Notifier, DW
 		
 		session.setAttribute(getNotificationKey(), String.valueOf(Boolean.TRUE));
 		
-		return notification;
+		return Arrays.asList(notification);
 	}
 	
 	@RemoteMethod
 	public String getTextAndTimeLeftToRestart() {
+		if (!isActive()) {
+			return null;
+		}
+		
 		IWContext iwc = CoreUtil.getIWContext();
 		if (iwc == null) {
 			return null;
@@ -100,7 +106,7 @@ public class SystemRestartNotifier extends BasicNotifier implements Notifier, DW
 	}
 	
 	public int getTimeLeftToRestart() {
-		if (restartInSetAt == null) {
+		if (restartIn == -1 || restartInSetAt == null) {
 			return -1;
 		}
 		
@@ -119,7 +125,7 @@ public class SystemRestartNotifier extends BasicNotifier implements Notifier, DW
 		Layer layer = new Layer();
 		
 		int leftTillRestart = getTimeLeftToRestart();
-		TextInput restartInValue = new TextInput("setRestartIn" + getValueIdentifier(),
+		TextInput restartInValue = new TextInput("setRestartIn" + getClassNameIdentifier(),
 				leftTillRestart < 0 ? CoreConstants.EMPTY : String.valueOf(leftTillRestart));
 		Label restartInLabel = new Label("Set time (minutes) till system will be restarted", restartInValue);
 		layer.add(restartInLabel);
@@ -136,6 +142,14 @@ public class SystemRestartNotifier extends BasicNotifier implements Notifier, DW
 	@Override
 	public String getNotificationIdentifier() {
 		return String.valueOf(serialVersionUID);
+	}
+
+	@Override
+	public void setActive(boolean active) {
+		super.setActive(active);
+		
+		this.restartIn = -1;
+		this.restartInSetAt = null;
 	}
 
 }

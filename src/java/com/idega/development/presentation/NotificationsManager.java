@@ -103,39 +103,43 @@ public class NotificationsManager extends Block {
 		activeContainer.add(setActiveLabel);
 		activeContainer.add(setActiveBox);
 		
-		Enumeration<String> keys = iwc.getParameterNames();
-		if (keys == null) {
-			return;
-		}
-		
-		List<AdvancedProperty> properties = new ArrayList<AdvancedProperty>();
-		String activeNotifierClass = activeNotifier.getClass().getName();
-		String needless = activeNotifier.getValueIdentifier();
-		while (keys.hasMoreElements()) {
-			String key = keys.nextElement();
-			if (key.indexOf(activeNotifierClass) == -1) {
-				continue;
+		if (activeNotifier.isActive()) {
+			Enumeration<String> keys = iwc.getParameterNames();
+			if (keys == null) {
+				return;
 			}
 			
-			String value = iwc.getParameter(key);
-			properties.add(new AdvancedProperty(key.replaceFirst(needless, CoreConstants.EMPTY), value));
-		}
-		Method[] methods = activeNotifier.getClass().getMethods();
-		for (AdvancedProperty property: properties) {
-			Method toInvoke = getMethod(methods, property.getId());
-			if (toInvoke == null) {
-				continue;
-			} else {
-				try {
-					toInvoke.invoke(activeNotifier, property.getValue());
-				} catch (IllegalArgumentException e) {
-					e.printStackTrace();
-				} catch (IllegalAccessException e) {
-					e.printStackTrace();
-				} catch (InvocationTargetException e) {
-					e.printStackTrace();
+			List<AdvancedProperty> properties = new ArrayList<AdvancedProperty>();
+			String activeNotifierClass = activeNotifier.getClass().getName();
+			String needless = activeNotifier.getClassNameIdentifier();
+			while (keys.hasMoreElements()) {
+				String key = keys.nextElement();
+				if (key.indexOf(activeNotifierClass) == -1) {
+					continue;
+				}
+				
+				String value = iwc.getParameter(key);
+				properties.add(new AdvancedProperty(key.replaceFirst(needless, CoreConstants.EMPTY), value));
+			}
+			Method[] methods = activeNotifier.getClass().getMethods();
+			for (AdvancedProperty property: properties) {
+				Method toInvoke = getMethod(methods, property.getId());
+				if (toInvoke == null) {
+					continue;
+				} else {
+					try {
+						toInvoke.invoke(activeNotifier, property.getValue());
+					} catch (IllegalArgumentException e) {
+						e.printStackTrace();
+					} catch (IllegalAccessException e) {
+						e.printStackTrace();
+					} catch (InvocationTargetException e) {
+						e.printStackTrace();
+					}
 				}
 			}
+			
+			activeNotifier.dispatchNotifications(iwc);
 		}
 		
 		UIComponent managementPanel = activeNotifier.getManagementPanel();
@@ -144,11 +148,9 @@ public class NotificationsManager extends Block {
 			form.add(managementContainer);
 			managementContainer.add(managementPanel);
 			
-			SubmitButton save = new SubmitButton(iwrb.getLocalizedString("save", "Save"));
+			SubmitButton save = new SubmitButton("notifications_manager_save", iwrb.getLocalizedString("save", "Save"));
 			form.add(save);
 		}
-		
-		
 	}
 	
 	private Method getMethod(Method[] methods, String name) {
