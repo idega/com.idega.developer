@@ -271,8 +271,8 @@ public class LocalizerBusinessBean implements LocalizerBusiness {
 		//creating a full list of localized strings
 		for(MessageResource resource : resourceList) {
 			
-			Set<Object> localisedKeys = resource.getAllLocalisedKeys();
-			for(Object localizedKey : localisedKeys) {
+			Set<String> localisedKeys = resource.getAllLocalisedKeys();
+			for(String localizedKey : localisedKeys) {
 				
 				String localizedValue = String.valueOf(resource.getMessage(localizedKey));
 				LocalisedString str = new LocalisedString(String.valueOf(localizedKey), localizedValue, resource.getIdentifier());
