@@ -51,7 +51,6 @@ private static String styleName = "iwdClass";
     addToList(getClassLink(iwc, Caches.class,"Caches"),(Image) image.clone());
     addToList(getClassLink(iwc, Logs.class,"Logs"),(Image) image.clone());
     addToList(getClassLink(iwc, Versions.class,"Versions"),(Image) image.clone());
-	addToList(getClassLink(iwc, UpdateManager.class,"UpdateManager"),(Image) image.clone());
 	addToList(getClassLink(iwc, HomePageGenerator.class,"Homepage Generator"),(Image) image.clone());
 	addToList(getClassLink(iwc, PageObjects.class,"Page Object Viewer"),(Image) image.clone());
 	addToList(getClassLink(iwc, ScriptManager.class,"Script Manager"),(Image) image.clone());

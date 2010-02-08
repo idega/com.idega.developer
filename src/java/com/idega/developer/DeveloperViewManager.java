@@ -182,11 +182,6 @@ public class DeveloperViewManager {
 		versions.setComponentClass(Versions.class);
 		versions.setMaximizeBlockVertically(true);
 		
-		/*WorkspaceClassViewNode updateManager = new WorkspaceClassViewNode("updatemanager",devNode);
-		updateManager.setName("Update manager");
-		updateManager.setComponentClass(UpdateManager.class);
-		updateManager.setMaximizeBlockVertically(true);*/
-		
 		WorkspaceClassViewNode homepageGenerator = new WorkspaceClassViewNode("homepagegenerator",devNode);
 		homepageGenerator.setName("Generate Homepages");
 		homepageGenerator.setComponentClass(HomePageGenerator.class);
