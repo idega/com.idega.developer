@@ -61,12 +61,6 @@ private static String styleName = "iwdClass";
 	}
 	catch(ClassNotFoundException cnfe){
 	}
-	try{
-		Class siteInfo = Class.forName("com.idega.content.themes.presentation.SiteInfo");
-		addToList(getClassLink(iwc, siteInfo, "Site Info"), (Image) image.clone());
-	}
-	catch(ClassNotFoundException cnfe){
-	}
 	
     setZebraColors("#B0B29D","#B0B29D");
   }

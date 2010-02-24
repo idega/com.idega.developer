@@ -5,8 +5,9 @@ package com.idega.developer;
 
 import java.util.ArrayList;
 import java.util.Collection;
+
 import com.idega.core.accesscontrol.business.StandardRoles;
-import com.idega.core.localisation.presentation.LocaleSwitcher;
+import com.idega.core.localisation.business.LocaleSwitcher;
 import com.idega.core.view.DefaultViewNode;
 import com.idega.core.view.KeyboardShortcut;
 import com.idega.core.view.ViewManager;
@@ -39,10 +40,10 @@ import com.idega.workspace.view.WorkspaceClassViewNode;
  * <p>
  * TODO tryggvil Describe Type SchoolViewManager
  * </p>
- *  Last modified: $Date: 2007/01/23 19:06:30 $ by $Author: tryggvil $
+ *  Last modified: $Date: 2006/06/02 15:16:26 $ by $Author: laddi $
  * 
  * @author <a href="mailto:tryggvil@idega.com">tryggvil</a>
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.6 $
  */
 public class DeveloperViewManager {
 
@@ -197,17 +198,6 @@ public class DeveloperViewManager {
 			Class ldapmanagerClass = Class.forName("com.idega.block.ldap.manager.LDAPManager");
 			ldap.setComponentClass(ldapmanagerClass);
 			ldap.setMaximizeBlockVertically(true);
-		}
-		catch(ClassNotFoundException cnfe){
-			
-		}
-		
-		try{
-			WorkspaceClassViewNode siteInfo = new WorkspaceClassViewNode("siteinfo",devNode);
-			siteInfo.setName("Site Info");
-			Class siteInfoClass = Class.forName("com.idega.content.themes.presentation.SiteInfo");
-			siteInfo.setComponentClass(siteInfoClass);
-			siteInfo.setMaximizeBlockVertically(true);
 		}
 		catch(ClassNotFoundException cnfe){
 			
