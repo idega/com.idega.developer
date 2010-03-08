@@ -6,6 +6,8 @@ package com.idega.developer;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import javax.faces.component.UIComponent;
+
 import com.idega.core.accesscontrol.business.StandardRoles;
 import com.idega.core.localisation.presentation.LocaleSwitcher;
 import com.idega.core.view.DefaultViewNode;
@@ -42,7 +44,6 @@ import com.idega.workspace.view.WorkspaceClassViewNode;
 
 /**
  * <p>
- * TODO tryggvil Describe Type SchoolViewManager
  * </p>
  *  Last modified: $Date: 2009/03/11 08:17:16 $ by $Author: valdas $
  * 
@@ -55,7 +56,6 @@ public class DeveloperViewManager {
 	private IWMainApplication iwma;
 	/**
 	 * <p>
-	 * TODO tryggvil describe method getInstance
 	 * </p>
 	 * @param iwma
 	 * @return
@@ -85,11 +85,11 @@ public class DeveloperViewManager {
 
 	/**
 	 * <p>
-	 * TODO tryggvil describe method initalizeSchoolNode
 	 * </p>
 	 * @param iwb
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	private ViewNode initalizeDeveloperNode(IWBundle iwb) {
 		ViewManager viewManager = ViewManager.getInstance(this.iwma);
 		ViewNode workspace = viewManager.getWorkspaceRoot();
@@ -98,7 +98,6 @@ public class DeveloperViewManager {
 		roles.add(StandardRoles.ROLE_KEY_DEVELOPER);
 		
 		DefaultViewNode devNode = new WorkspaceApplicationNode("developer",workspace,roles);
-		//devNode.setName("#{localizedStrings['com.idega.developer']['developer']}");
 		devNode.setJspUri(iwb.getJSPURI("developer.jsp"));
 		devNode.setKeyboardShortcut(new KeyboardShortcut("3"));
 		
@@ -197,29 +196,23 @@ public class DeveloperViewManager {
 		scriptmanager.setComponentClass(ScriptManager.class);
 		scriptmanager.setMaximizeBlockVertically(true);
 		
-		try{
-			Class<?> ldapmanagerClass = Class.forName("com.idega.block.ldap.manager.LDAPManager");
+		try {
+			Class<UIComponent> ldapmanagerClass = (Class<UIComponent>) Class.forName("com.idega.block.ldap.manager.LDAPManager");
 
 			WorkspaceClassViewNode ldap = new WorkspaceClassViewNode("ldap",devNode);
 			ldap.setName("LDAP Manager");
 			ldap.setComponentClass(ldapmanagerClass);
 			ldap.setMaximizeBlockVertically(true);
-		}
-		catch(ClassNotFoundException cnfe){
-			
-		}
+		} catch(ClassNotFoundException cnfe) {}
 		
-		try{
-			Class<?> siteInfoClass = Class.forName("com.idega.content.themes.presentation.SiteInfo");
+		try {
+			Class<UIComponent> siteInfoClass = (Class<UIComponent>) Class.forName("com.idega.content.themes.presentation.SiteInfo");
 
 			WorkspaceClassViewNode siteInfo = new WorkspaceClassViewNode("siteinfo",devNode);
 			siteInfo.setName("Site Info");
 			siteInfo.setComponentClass(siteInfoClass);
 			siteInfo.setMaximizeBlockVertically(true);
-		}
-		catch(ClassNotFoundException cnfe){
-			
-		}
+		} catch(ClassNotFoundException cnfe) {}
 		
 		WorkspaceClassViewNode appPropertiesNode = new WorkspaceClassViewNode("applicationproperties",devNode);
 		appPropertiesNode.setName("Application Properties");
@@ -243,5 +236,4 @@ public class DeveloperViewManager {
 
 		return devNode;
 	}
-	
 }
