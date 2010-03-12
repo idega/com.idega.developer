@@ -101,7 +101,7 @@ public class SystemRestartNotifier extends BasicNotifier implements Notifier, DW
 		}
 		
 		IWResourceBundle iwrb = iwc.getIWMainApplication().getBundle(DeveloperConstants.BUNDLE_IDENTIFIER).getResourceBundle(iwc);
-		return new StringBuilder(iwrb.getLocalizedString("system_restart.text", "Due to maintenance issues ePlatform will be re-started in"))
+		return new StringBuilder(iwrb.getLocalizedString("system_restart.text_content", "Due to maintenance issues system will be re-started in"))
 		.append(" ").append(restartIn).append(" min.").toString();
 	}
 	

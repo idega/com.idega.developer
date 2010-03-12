@@ -29,7 +29,7 @@ public class SystemRestartNotification extends BasicNotification {
 		
 		IWResourceBundle iwrb = getResourceBundle(iwc);
 		
-		setTitle(iwrb.getLocalizedString("system_restart.title", "ePlatform will be re-started"));
+		setTitle(iwrb.getLocalizedString("system_restart.title_content", "System will be re-started"));
 		setText(text);
 		setSticky(true);
 		
