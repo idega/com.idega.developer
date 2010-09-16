@@ -37,7 +37,7 @@ public class FilesManager extends Block {
 		main.add(failureTextContainer);
 		
 		Layer exportButtonContainer = new Layer();
-		GenericButton exportButton = new GenericButton(iwrb.getLocalizedString("export_ic_files", "Copy files"));
+		GenericButton exportButton = new GenericButton(iwrb.getLocalizedString("export_ic_files_from_db", "Copy files from DB to repository"));
 		exportButton.setStyleClass("button");
 		StringBuffer action = new StringBuffer("copyFilesToSlide(['").append(iwrb.getLocalizedString("copying", "Copying..."));
 		action.append("', '").append(successTextContainer.getId()).append("', '").append(failureTextContainer.getId()).append("']);");
