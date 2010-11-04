@@ -52,13 +52,13 @@ public class IWDeveloper extends com.idega.presentation.app.IWApplication {
 			}
 				
 			Layer topLayer = new Layer(Layer.DIV);
-			topLayer.setZIndex(3);
-			topLayer.setPositionType(Layer.FIXED);
-			topLayer.setTopPosition(0);
-			topLayer.setLeftPosition(0);
-			topLayer.setBackgroundColor("#0E2456");
-			topLayer.setWidth(Table.HUNDRED_PERCENT);
-			topLayer.setHeight(25);
+			topLayer.setStyleAttribute("z-index", "3");
+			topLayer.setStyleAttribute("position", "fixed");
+			topLayer.setStyleAttribute("top", "0");
+			topLayer.setStyleAttribute("left", "0");
+			topLayer.setStyleAttribute("background-color", "#0E2456");
+			topLayer.setStyleAttribute("width", Table.HUNDRED_PERCENT);
+			topLayer.setStyleAttribute("height", "25px");
 			add(topLayer);
 			
 			Table headerTable = new Table();
@@ -77,32 +77,32 @@ public class IWDeveloper extends com.idega.presentation.app.IWApplication {
 
 			
 			Layer leftLayer = new Layer(Layer.DIV);
-			leftLayer.setZIndex(2);
-			leftLayer.setPositionType(Layer.FIXED);
-			leftLayer.setTopPosition(25);
-			leftLayer.setLeftPosition(0);
-			leftLayer.setPadding(5);
-			leftLayer.setBackgroundColor("#B0B29D");
-			leftLayer.setWidth(180);
-			leftLayer.setHeight(Table.HUNDRED_PERCENT);
+			leftLayer.setStyleAttribute("z-index", "2");
+			leftLayer.setStyleAttribute("position", "fixed");
+			leftLayer.setStyleAttribute("top", "25px");
+			leftLayer.setStyleAttribute("left", "0");
+			leftLayer.setStyleAttribute("padding", "5px");
+			leftLayer.setStyleAttribute("background-color", "#B0B29D");
+			leftLayer.setStyleAttribute("width", "180px");
+			leftLayer.setStyleAttribute("height", Table.HUNDRED_PERCENT);
 			add(leftLayer);
 			
 			DeveloperList list = new DeveloperList();
 			leftLayer.add(list);
 
 			Layer rightLayer = new Layer(Layer.DIV);
-			rightLayer.setZIndex(1);
-			rightLayer.setPositionType(Layer.ABSOLUTE);
-			rightLayer.setTopPosition(25);
-			rightLayer.setPadding(5);
+			rightLayer.setStyleAttribute("z-index", "1");
+			rightLayer.setStyleAttribute("position", "absolute");
+			rightLayer.setStyleAttribute("top", "25px");
+			rightLayer.setStyleAttribute("padding", "5px");
 			if (iwc.isIE()) {
-				rightLayer.setBackgroundColor("#FFFFFF");
-				rightLayer.setWidth(Table.HUNDRED_PERCENT);
-				rightLayer.setHeight(Table.HUNDRED_PERCENT);
-				rightLayer.setLeftPosition(180);
+				rightLayer.setStyleAttribute("background-color", "#FFFFFF");
+				rightLayer.setStyleAttribute("width", Table.HUNDRED_PERCENT);
+				rightLayer.setStyleAttribute("height", Table.HUNDRED_PERCENT);
+				rightLayer.setStyleAttribute("left", "180px");
 			}
 			else {
-				rightLayer.setLeftPosition(190);
+				rightLayer.setStyleAttribute("left", "190px");
 			}
 			add(rightLayer);
 			
