@@ -9,11 +9,9 @@ import java.util.List;
 
 import javax.ejb.FinderException;
 
-import com.idega.business.IBOLookupException;
 import com.idega.business.IBOSessionBean;
 import com.idega.core.file.data.ICFile;
 import com.idega.core.file.data.ICFileHome;
-import com.idega.slide.business.IWSlideService;
 import com.idega.util.CoreConstants;
 import com.idega.util.IOUtil;
 import com.idega.util.ListUtil;
@@ -22,9 +20,10 @@ import com.idega.util.StringUtil;
 public class FilesManagerBusinessBean extends IBOSessionBean implements FilesManagerBusiness {
 
 	private static final long serialVersionUID = -4600940859804313580L;
-	
+
 	private List<String> copiedFiles = null;
-	
+
+	@Override
 	@SuppressWarnings("unchecked")
 	public boolean copyFilesToSlide() {
 		ICFileHome icFileHome = null;
@@ -36,56 +35,46 @@ public class FilesManagerBusinessBean extends IBOSessionBean implements FilesMan
 		if (icFileHome == null) {
 			return false;
 		}
-		
+
 		Collection<ICFile> files = null;
 		try {
 			files = icFileHome.findAllDescendingOrdered();
 		} catch (FinderException e) {
 			e.printStackTrace();
 		}
-		
+
 		copiedFiles = new ArrayList<String>();
-		
+
 		return copyFiles(files, DeveloperConstants.OLD_FILES_FOLDER);
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private boolean copyFiles(Collection<ICFile> files, String basePath) {
 		if (ListUtil.isEmpty(files)) {
 			return true;	//	Nothing to copy
 		}
-		
-		IWSlideService slide = null;
-		try {
-			slide = getServiceInstance(IWSlideService.class);
-		} catch (IBOLookupException e) {
-			e.printStackTrace();
-		}
-		if (slide == null) {
-			return false;
-		}
-		
+
 		ICFile file = null;
 		boolean result = true;
 		for (Iterator<ICFile> it = files.iterator(); (it.hasNext() && result);) {
 			file = it.next();
 			if (file.isLeaf()) {
-				result = copyFile(file, slide, DeveloperConstants.OLD_FILES_FOLDER_FOR_OTHER_FILES, true);
+				result = copyFile(file, DeveloperConstants.OLD_FILES_FOLDER_FOR_OTHER_FILES, true);
 			} else if (file.isFolder() || !file.isLeaf()) {
 				basePath = StringUtil.isEmpty(basePath) ? DeveloperConstants.OLD_FILES_FOLDER : basePath;
 				result = copyFiles(file.getChildren(), new StringBuffer(basePath).append(file.getName()).append(CoreConstants.SLASH).toString());
 			}
 		}
-		
+
 		return result;
 	}
-	
-	private boolean copyFile(ICFile file, IWSlideService slide, String basePath, boolean checkName) {
+
+	private boolean copyFile(ICFile file, String basePath, boolean checkName) {
 		String name = file.getName();
 		if (name == null) {
 			name = "Untitled";
 		}
-		
+
 		if (checkName) {
 			int index = 1;
 			String tempName = name;
@@ -96,15 +85,15 @@ public class FilesManagerBusinessBean extends IBOSessionBean implements FilesMan
 			name = tempName;
 			copiedFiles.add(name);
 		}
-		
+
 		InputStream stream = file.getFileValue();
 		if (stream == null) {
 			return true;	//	Skipping
 		}
-		
+
 		boolean result = true;
 		try {
-			result = slide.uploadFile(basePath, name, file.getMimeType(), stream);
+			result = getRepositoryService().uploadFile(basePath, name, file.getMimeType(), stream);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
