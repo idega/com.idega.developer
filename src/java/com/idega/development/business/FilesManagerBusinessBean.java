@@ -62,7 +62,8 @@ public class FilesManagerBusinessBean extends IBOSessionBean implements FilesMan
 				result = copyFile(file, DeveloperConstants.OLD_FILES_FOLDER_FOR_OTHER_FILES, true);
 			} else if (file.isFolder() || !file.isLeaf()) {
 				basePath = StringUtil.isEmpty(basePath) ? DeveloperConstants.OLD_FILES_FOLDER : basePath;
-				result = copyFiles(file.getChildren(), new StringBuffer(basePath).append(file.getName()).append(CoreConstants.SLASH).toString());
+				Collection<ICFile> children = file.getChildren();
+				result = copyFiles(children, new StringBuffer(basePath).append(file.getName()).append(CoreConstants.SLASH).toString());
 			}
 		}
 
