@@ -176,12 +176,11 @@ public class BundlePropertySetter extends Block {
 	}
 
 	public static DropdownMenu getRegisteredBundlesDropdown(IWMainApplication iwma, String name) {
-		List bundles = iwma.getRegisteredBundles();
+		List<IWBundle> bundles = iwma.getRegisteredBundles();
 		Collections.sort(bundles);
 		DropdownMenu down = new DropdownMenu(name);
-		Iterator iter = bundles.iterator();
-		while (iter.hasNext()) {
-			IWBundle item = (IWBundle) iter.next();
+		for (Iterator<IWBundle> iter = bundles.iterator(); iter.hasNext();) {
+			IWBundle item = iter.next();
 			down.addMenuElement(item.getBundleIdentifier());
 		}
 		return down;
@@ -189,7 +188,7 @@ public class BundlePropertySetter extends Block {
 
 	public static Form getParametersTable(IWBundle bundle, String bundleIdentifier) {
 		String[] strings = bundle.getAvailableProperties();
-		List list = Arrays.asList(strings);
+		List<String> list = Arrays.asList(strings);
 		Collections.sort(list);
 
 		Form form = new Form();
@@ -222,11 +221,10 @@ public class BundlePropertySetter extends Block {
 		
 		int i = 0;
 
-		Iterator iter = list.iterator();
-		while (iter.hasNext()) {
+		for (Iterator<String> iter = list.iterator(); iter.hasNext();) {
 			row = group.createRow();
 			
-			String name = (String) iter.next();
+			String name = iter.next();
 			String localizedString = bundle.getProperty(strings[i]);
 			if (localizedString == null) {
 				localizedString = "";
