@@ -1,10 +1,11 @@
 /**
- * 
+ *
  */
 package com.idega.development.business;
 
 import java.util.ArrayList;
 
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
@@ -18,21 +19,23 @@ import com.idega.presentation.IWContext;
  * TODO laddi Describe Type ApplicationPropertiesBusinessBean
  * </p>
  *  Last modified: $Date: 2009/01/23 15:19:19 $ by $Author: laddi $
- * 
+ *
  * @author <a href="mailto:laddi@idega.com">laddi</a>
  * @version $Revision: 1.2 $
  */
-@Scope("singleton")
+@Scope(BeanDefinition.SCOPE_SINGLETON)
 @Service("applicationProperties")
 public class ApplicationPropertiesBusinessBean implements ApplicationPropertiesBusiness {
 
 	/* (non-Javadoc)
 	 * @see com.idega.development.business.ApplicationPropertiesBusiness#getProperty(java.lang.String)
 	 */
+	@Override
 	public String getProperty(String key) {
 		return getIWMainApplication().getSettings().getProperty(key, "");
 	}
-	
+
+	@Override
 	public boolean doesPropertyExist(String key) {
 		return getIWMainApplication().getSettings().keySet().contains(key);
 	}
@@ -40,6 +43,7 @@ public class ApplicationPropertiesBusinessBean implements ApplicationPropertiesB
 	/* (non-Javadoc)
 	 * @see com.idega.development.business.ApplicationPropertiesBusiness#setProperty(java.lang.String, java.lang.String)
 	 */
+	@Override
 	public int setProperty(String key, String value) {
 		if (key.equals(IWMainApplicationSettings.ENTITY_AUTO_CREATE)) {
 			getIWMainApplication().getSettings().setEntityAutoCreation(value != null);
@@ -77,20 +81,21 @@ public class ApplicationPropertiesBusinessBean implements ApplicationPropertiesB
 	/* (non-Javadoc)
 	 * @see com.idega.development.business.ApplicationPropertiesBusiness#removeProperty(java.lang.String)
 	 */
+	@Override
 	public void removeProperty(String key) {
 		getIWMainApplication().getSettings().removeProperty(key);
 		getIWMainApplication().storeStatus();
 	}
-	
+
 	private IWMainApplication getIWMainApplication() {
 		final IWContext iwc = IWContext.getCurrentInstance();
 		final IWMainApplication iwma;
-		
+
 		if(iwc != null)
 			iwma = iwc.getIWMainApplication();
 		else
 			iwma = IWMainApplication.getDefaultIWMainApplication();
-		
+
 		return iwma;
 	}
 }
