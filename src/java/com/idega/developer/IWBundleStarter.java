@@ -5,6 +5,7 @@ package com.idega.developer;
 
 import com.idega.idegaweb.IWBundle;
 import com.idega.idegaweb.IWBundleStartable;
+import com.idega.util.CoreConstants;
 
 
 /**
@@ -24,6 +25,9 @@ public class IWBundleStarter implements IWBundleStartable{
 	public void start(IWBundle starterBundle) {
 		DeveloperViewManager viewMan = DeveloperViewManager.getInstance(starterBundle.getApplication());
 		viewMan.getDeveloperViewNode();
+		
+		starterBundle.getApplication().getSettings().getBoolean(
+				CoreConstants.DEVELOPEMENT_STATE_PROPERTY, false);
 	}
 
 	/* (non-Javadoc)
