@@ -319,8 +319,8 @@ public class Localizer extends Block {
 		
 		for(MessageResource resource : resourceList) {
 		
-			Set<String> localisedKeys = resource.getAllLocalisedKeys();
-			Object[] strings = localisedKeys.toArray();
+			Set<String> localizedKeys = resource.getAllLocalizedKeys();
+			Object[] strings = localizedKeys.toArray();
 			for (int i = 0; i < strings.length; i++) {
 				Object key = strings[i];
 	
@@ -393,8 +393,8 @@ public class Localizer extends Block {
 			if(resource == null)
 				continue;
 			
-			Set<String> localisedKeys = resource.getAllLocalisedKeys();
-			for (String key : localisedKeys) {
+			Set<String> localizedKeys = resource.getAllLocalizedKeys();
+			for (String key : localizedKeys) {
 				down.addMenuElement(new StringBuilder(key).append(CoreConstants.SPACE).append(CoreConstants.BRACKET_LEFT).append(resource.getIdentifier())
 						.append(CoreConstants.BRACKET_RIGHT).toString());
 			}

@@ -29,7 +29,7 @@
             <include method="setProperty"/>
         </create>
         
-        <convert converter="bean" match="com.idega.development.business.LocalisedString">
+        <convert converter="bean" match="com.idega.development.business.LocalizedString">
   			<param name="include" value="key, value, storageIdentifier"/>
 		</convert>
         
