@@ -28,6 +28,7 @@ import com.idega.presentation.ui.Parameter;
 import com.idega.presentation.ui.SubmitButton;
 import com.idega.presentation.ui.TextInput;
 import com.idega.repository.data.RefactorClassRegistry;
+import com.idega.util.CoreConstants;
 import com.idega.util.PresentationUtil;
 import com.idega.util.reflect.MethodFinder;
 
@@ -92,11 +93,10 @@ public class ComponentManager extends Block {
 
 			yindex++;
 
-			List componentNames = iwb.getComponentKeys();
+			List<String> componentNames = iwb.getComponentKeys();
 			Map<String, String> names = new TreeMap<String, String>();
-			Iterator iter = componentNames.iterator();
-			while (iter.hasNext()) {
-				String element = (String) iter.next();
+			for (Iterator<String> iter = componentNames.iterator(); iter.hasNext();) {
+				String element = iter.next();
 				names.put(element.substring(element.lastIndexOf(".") + 1), element);
 			}
 
@@ -104,9 +104,8 @@ public class ComponentManager extends Block {
 			componentsDrop.keepStatusOnAction();
 			componentsDrop.setToSubmit();
 
-			iter = names.keySet().iterator();
-			while (iter.hasNext()) {
-				String display = (String) iter.next();
+			for (Iterator<String> iter = names.keySet().iterator(); iter.hasNext();) {
+				String display = iter.next();
 				String component = names.get(display);
 
 				componentsDrop.addMenuElement(component, display);
@@ -154,7 +153,7 @@ public class ComponentManager extends Block {
 								multivalued = true;
 							}*/
 							String parameterString = OPTIONS_PARAMETER;
-							Map m = parseOptions(iwc, parameterString);
+							Map<String, Object> m = parseOptions(iwc, parameterString);
 							doBusiness(iwb, selectedComponentKey, selectedMethodIdentifier, selectedMethodDesc, m);
 						}
 					}
@@ -164,12 +163,12 @@ public class ComponentManager extends Block {
 				if (methodsToDelete != null) {
 					deleteMethods(iwb, selectedComponentKey, methodsToDelete);
 				}
-				
+
 				IWPropertyList methodsList = IBPropertyHandler.getInstance().getMethods(iwb, selectedComponentKey);
-				
+
 				manageMethodProperties(iwb, selectedComponentKey, iwc.getParameterValues(USER_FRIENDLY_PARAMETER), methodsList, iwc, true);
 				manageMethodProperties(iwb, selectedComponentKey, iwc.getParameterValues(METHOD_NEEDS_RELOAD_PARAMETER), methodsList, iwc, false);
-				
+
 				if (methodsList != null) {
 
 					IWPropertyListIterator methodsIter = methodsList.getIWPropertyListIterator();
@@ -186,7 +185,7 @@ public class ComponentManager extends Block {
 						propertyTable.add(IWDeveloper.getText("Needs reload"), 3, yindex);
 						propertyTable.add(IWDeveloper.getText("Property"), 4, yindex);
 						propertyTable.add(IWDeveloper.getText("Method used"), 5, yindex);
-						
+
 						String simpleAction = null;
 						String reloadAction = null;
 						while (methodsIter.hasNext()) {
@@ -196,7 +195,7 @@ public class ComponentManager extends Block {
 							String identifier = IBPropertyHandler.getInstance().getMethodIdentifier(prop);
 							String description = IBPropertyHandler.getInstance().getMethodDescription(prop, iwc.getCurrentLocale());
 							Method method = null;
-							Class selectedClass = RefactorClassRegistry.forName(selectedComponentKey);
+							Class<?> selectedClass = RefactorClassRegistry.forName(selectedComponentKey);
 							try {
 								//System.out.println("ComponentManager: "+identifier);
 								method = MethodFinder.getInstance().getMethod(identifier, selectedClass);
@@ -221,14 +220,14 @@ public class ComponentManager extends Block {
 							CheckBox rowBox = new CheckBox(DELETE_CHECKBOX_NAME);
 							rowBox.setContent(identifier);
 							propertyTable.add(rowBox, 1, yindex);
-							
+
 							CheckBox manageSimpleProperty = new CheckBox();
 							manageSimpleProperty.setContent(identifier);
 							simpleAction = new StringBuffer("addComponentPropertyToList(null, '").append(USER_FRIENDLY_PARAMETER).append("', this)").toString();
 							manageSimpleProperty.setOnClick(simpleAction);
 							manageSimpleProperty.setChecked(prop.isPropertySimple());
 							propertyTable.add(manageSimpleProperty, 2, yindex);
-							
+
 							CheckBox manageNeedsReloadProperty = new CheckBox();
 							manageNeedsReloadProperty.setContent(identifier);
 							reloadAction = new StringBuffer("addComponentPropertyToList(null, '").append(METHOD_NEEDS_RELOAD_PARAMETER).append("', this)").toString();
@@ -248,7 +247,7 @@ public class ComponentManager extends Block {
 		table.setWidth(1, "160");
 	}
 
-	private void doBusiness(IWBundle iwb, String selectedComponentKey, String selectedMethodIdentifier, String selectedMethodDesc, Map options) {
+	private void doBusiness(IWBundle iwb, String selectedComponentKey, String selectedMethodIdentifier, String selectedMethodDesc, Map<String, Object> options) {
 		IBPropertyHandler handler = IBPropertyHandler.getInstance();
 		handler.setMethod(iwb, selectedComponentKey, selectedMethodIdentifier, selectedMethodDesc, options);
 		iwb.storeState();
@@ -258,10 +257,10 @@ public class ComponentManager extends Block {
 		return inputParameter + "_type";
 	}
 
-	public Map parseOptions(IWContext iwc, String parameterName) {
+	public Map<String, Object> parseOptions(IWContext iwc, String parameterName) {
 		String[] parameters = iwc.getParameterValues(parameterName);
 
-		Map theReturn = new Hashtable();
+		Map<String, Object> theReturn = new Hashtable<String, Object>();
 		for (int i = 0; i < parameters.length; i++) {
 			String parameter = parameters[i];
 			String sValue = iwc.getParameter(parameter);
@@ -272,10 +271,10 @@ public class ComponentManager extends Block {
 			}
 			if (parameterType.equals("java.lang.Boolean")) {
 				if (sValue != null) {
-					if (sValue.equals("Y")) {
+					if (sValue.equals(CoreConstants.Y)) {
 						oValue = Boolean.TRUE;
 					}
-					else if (sValue.equals("N")) {
+					else if (sValue.equals(CoreConstants.N)) {
 						oValue = Boolean.FALSE;
 					}
 					else {
@@ -323,7 +322,7 @@ public class ComponentManager extends Block {
 			}
 
 		}
-		
+
 		return theReturn;
 	}
 
@@ -336,7 +335,7 @@ public class ComponentManager extends Block {
 		}
 
 	}
-	
+
 	private void manageMethodProperties(IWBundle iwb, String selectedComponentKey, String[] markedMethods, IWPropertyList methods, IWContext iwc, boolean manageSimple) {
 		if (iwb == null || selectedComponentKey == null || markedMethods == null || methods == null) {
 			return;
