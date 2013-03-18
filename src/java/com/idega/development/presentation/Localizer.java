@@ -35,6 +35,7 @@ import com.idega.presentation.ui.TextArea;
 import com.idega.presentation.ui.TextInput;
 import com.idega.util.ArrayUtil;
 import com.idega.util.CoreConstants;
+import com.idega.util.ListUtil;
 import com.idega.util.LocaleUtil;
 import com.idega.util.PresentationUtil;
 import com.idega.util.messages.MessageResource;
@@ -141,9 +142,6 @@ public class Localizer extends Block {
 		form.add(formItem);
 
 		if (selectedBundle != null) {
-//			iwb = iwma.getBundle(selectedBundle);
-//			IWResourceBundle iwrb = iwb.getResourceBundle(LocaleUtil.getLocale(iwc.getParameter(localesParameter)));
-
 			TextInput newInput = new TextInput(newStringKeyParameter);
 			newInput.setID("localizerNewKey");
 			TextArea area = new TextArea(areaParameter);
@@ -221,77 +219,6 @@ public class Localizer extends Block {
 		return myForm;
 	}
 
-//	private Table2 getLocalizeableStringsTable(IWContext iwc, IWMainApplication iwma, String bundleIdentifier, IWResourceBundle iwrb) {
-//		IWBundle bundle = iwma.getBundle(bundleIdentifier);
-//		String[] strings = bundle.getLocalizableStrings();
-//
-//		Table2 table = new Table2();
-//		table.setCellpadding(0);
-//		table.setCellspacing(0);
-//		table.setWidth("100%");
-//		table.setStyleClass("developerTable");
-//		table.setStyleClass("ruler");
-//
-//		TableRowGroup group = table.createHeaderRowGroup();
-//		TableRow row = group.createRow();
-//
-//		TableCell2 cell = row.createHeaderCell();
-//		cell.setStyleClass("firstColumn");
-//		cell.add(new Text("Key"));
-//
-//		cell = row.createHeaderCell();
-//		cell.setStyleClass("lastColumn");
-//		cell.add(new Text("String"));
-//
-//		group = table.createBodyRowGroup();
-//
-//		for (int i = 0; i < strings.length; i++) {
-//			String key = strings[i];
-//
-//			row = group.createRow();
-//
-//			cell = row.createCell();
-//			cell.setStyleClass("firstColumn");
-//
-//			Link keyLink = new Link(key);
-//			keyLink.setURL("#");
-//			keyLink.setStyleClass("keyLink");
-//			cell.add(keyLink);
-//
-//			cell = row.createCell();
-//			cell.setStyleClass("lastColumn");
-//			String localizedString = iwrb.getLocalizedString(key);
-//			if (localizedString == null || StringHandler.EMPTY_STRING.equals(localizedString)){
-//				String defaultString = bundle.getLocalizableStringDefaultValue(key);
-//				defaultString = TextSoap.formatText(defaultString);
-//				localizedString = defaultString;
-//				cell.setStyleClass("isEmpty");
-//			}
-//			else{
-//				localizedString = TextSoap.formatText(localizedString);
-//			}
-//			cell.add(new Text(localizedString));
-//
-//			if (i % 2 == 0) {
-//				row.setStyleClass("evenRow");
-//			}
-//			else {
-//				row.setStyleClass("oddRow");
-//			}
-//		}
-//
-//		return table;
-//	}
-
-//	public void refreshTebleData(String bundleIdentifier, String selectedLocale, String selectedStorageIdentifier) {
-//		FieldSet keySet = new FieldSet(new Legend("Available Strings"));
-//		keySet.setStyleClass("stringsSet");
-//		topLayer.add(keySet);
-//
-////		keySet.add(getLocalizeableStringsTable(iwc, iwma, selectedBundle, iwrb));
-//		keySet.add(getLocalizeableStringsTableByStorageType(iwma, selectedBundle, selectedLocale, selectedStorage));
-//	}
-
 	private Table2 getLocalizeableStringsTableByStorageType(IWMainApplication iwma, String bundleIdentifier, String selectedLocale, String selectedStorageIdentifier) {
 		List<MessageResource> resourceList = getResourceList(iwma, selectedStorageIdentifier, bundleIdentifier, LocaleUtil.getLocale(selectedLocale));
 
@@ -318,10 +245,15 @@ public class Localizer extends Block {
 
 		group = table.createBodyRowGroup();
 
-		for(MessageResource resource : resourceList) {
-
+		for (MessageResource resource : resourceList) {
 			Set<String> localizedKeys = resource.getAllLocalizedKeys();
+			if (ListUtil.isEmpty(localizedKeys))
+				continue;
+
 			String[] strings = ArrayUtil.convertListToArray(localizedKeys);
+			if (ArrayUtil.isEmpty(strings))
+				continue;
+
 			for (int i = 0; i < strings.length; i++) {
 				String key = strings[i];
 
@@ -343,8 +275,7 @@ public class Localizer extends Block {
 					defaultString = TextSoap.formatText(defaultString);
 					localizedString = defaultString;
 					cell.setStyleClass("isEmpty");
-				}
-				else{
+				} else {
 					localizedString = TextSoap.formatText(String.valueOf(localizedString));
 				}
 
@@ -361,8 +292,7 @@ public class Localizer extends Block {
 
 				if (i % 2 == 0) {
 					row.setStyleClass("evenRow");
-				}
-				else {
+				} else {
 					row.setStyleClass("oddRow");
 				}
 			}
