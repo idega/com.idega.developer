@@ -1,6 +1,7 @@
 package com.idega.development.business;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -17,6 +18,7 @@ import com.idega.idegaweb.IWBundle;
 import com.idega.idegaweb.IWMainApplication;
 import com.idega.presentation.IWContext;
 import com.idega.util.CoreConstants;
+import com.idega.util.ListUtil;
 import com.idega.util.LocaleUtil;
 import com.idega.util.expression.ELUtil;
 import com.idega.util.messages.MessageResource;
@@ -117,7 +119,7 @@ public class LocalizerBusinessBean implements LocalizerBusiness {
 			currentLocale = new Locale(locale);
 		}
 
-		String value = (String)getIWMainApplication().getMessageFactory().getResource(storage, bundleIdentifier, currentLocale).getMessage(key);
+		String value = getIWMainApplication().getMessageFactory().getResource(storage, bundleIdentifier, currentLocale).getMessage(key);
 		if (value == null) {
 			value = CoreConstants.EMPTY;
 		}
@@ -131,12 +133,14 @@ public class LocalizerBusinessBean implements LocalizerBusiness {
 
 		List<MessageResource> resourceList = getResourceList(getIWMainApplication(), selectedStorageIdentifier, bundleIdentifier, LocaleUtil.getLocale(locale));
 
-		//creating a full list of localized strings
-		for(MessageResource resource : resourceList) {
-
+		//	Creating a full list of localized strings
+		for (MessageResource resource : resourceList) {
 			Set<String> localizedKeys = resource.getAllLocalizedKeys();
-			for(String localizedKey : localizedKeys) {
+			if (ListUtil.isEmpty(localizedKeys))
+				continue;
 
+			Set<String> keysCopy = new HashSet<String>(localizedKeys);
+			for (String localizedKey: keysCopy) {
 				String localizedValue = String.valueOf(resource.getMessage(localizedKey));
 				LocalizedString str = new LocalizedString(String.valueOf(localizedKey), localizedValue, resource.getIdentifier());
 				stringListForView.add(str);
