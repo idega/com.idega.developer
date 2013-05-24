@@ -1,8 +1,8 @@
 // idega 2001 - Tryggvi Larusson
 /*
- * 
+ *
  * Copyright 2001 idega.is All Rights Reserved.
- * 
+ *
  */
 package com.idega.development.presentation;
 
@@ -35,15 +35,16 @@ import com.idega.presentation.ui.Legend;
 import com.idega.presentation.ui.SubmitButton;
 import com.idega.presentation.ui.TextArea;
 import com.idega.presentation.ui.TextInput;
+import com.idega.util.CoreConstants;
 import com.idega.util.PresentationUtil;
 import com.idega.util.SQLDataDumper;
 
 /**
- * 
+ *
  * @author <a href="mailto:tryggvi@idega.is">Tryggvi Larusson</a>
- * 
+ *
  * @version 1.0
- * 
+ *
  */
 public class SQLQueryer extends Block {
 
@@ -80,13 +81,13 @@ public class SQLQueryer extends Block {
 
 	@Override
 	public void main(IWContext iwc) throws Exception {
-		IWBundle iwb = this.getBundle(iwc);	
+		IWBundle iwb = this.getBundle(iwc);
 		PresentationUtil.addStyleSheetToHeader(iwc, iwb.getVirtualPathWithFileNameString("style/developer.css"));
 
 		Layer topLayer = new Layer(Layer.DIV);
 		topLayer.setStyleClass("developer");
 		add(topLayer);
-		
+
 		FieldSet querySet = new FieldSet(new Legend("Query"));
 		querySet.setStyleClass("querySet");
 		topLayer.add(querySet);
@@ -125,12 +126,12 @@ public class SQLQueryer extends Block {
 				form.setID("sqlQuerier");
 				form.setStyleClass("developerForm");
 				form.maintainParameter(IWDeveloper.PARAMETER_CLASS_NAME);
-			
+
 				querySet.add(form);
-				
+
 //				Web2Business web2 = ELUtil.getInstance().getBean(Web2Business.class);
 //				this.getParentPage().addJavascriptURL(web2.getCodePressScriptFilePath());
-				
+
 				TextArea input = new TextArea(PARAM_QUERY);
 				input.setId(PARAM_QUERY);
 				input.keepStatusOnAction(true);
@@ -225,7 +226,7 @@ public class SQLQueryer extends Block {
 				buttonLayer.add(commit);
 				buttonLayer.add(rollback);
 			}
-			
+
 			try {
 				if (queryString != null) {
 					Connection conn = getConnection(iwc);
@@ -256,22 +257,22 @@ public class SQLQueryer extends Block {
 								table.setStyleClass("developerTable");
 								table.setStyleClass("ruler");
 								resultSet.add(table);
-								
+
 								TableRowGroup group = table.createHeaderRowGroup();
 								TableRow row = group.createRow();
-								
+
 								long time = System.currentTimeMillis();
 								ResultSet rs = stmt.executeQuery(queryString);
 								long queryTime = System.currentTimeMillis() - time;
 								ResultSetMetaData rsMeta = rs.getMetaData();
-								
+
 								// Get the N of Cols in the ResultSet
 								int noCols = rsMeta.getColumnCount();
-								
+
 								TableCell2 cell = row.createHeaderCell();
 								cell.setStyleClass("firstColumn");
-								cell.add(new Text("#"));
-								
+								cell.add(new Text(CoreConstants.HASH));
+
 								for (int c = 1; c <= noCols; c++) {
 									String el = rsMeta.getColumnLabel(c);
 									int type = rsMeta.getColumnType(c);
@@ -292,22 +293,22 @@ public class SQLQueryer extends Block {
 								}
 
 								group = table.createBodyRowGroup();
-								
+
 								int counter = 0;
 								while (rs.next() && (counter < this.numberOfViewedResults)) {
 									row = group.createRow();
-									
+
 									cell = row.createCell();
 									cell.setStyleClass("firstColumn");
 									cell.add(new Text(String.valueOf(counter + 1)));
-									
+
 									for (int c = 1; c <= noCols; c++) {
 										String el = rs.getString(c);
 										int type = rsMeta.getColumnType(c);
 
 										cell = row.createCell();
 										cell.add(new Text(el));
-										
+
 										if (c == noCols) {
 											cell.setStyleClass("lastColumn");
 										}
@@ -320,7 +321,7 @@ public class SQLQueryer extends Block {
 										}
 									}
 									counter++;
-									
+
 									if (counter % 2 == 0) {
 										row.setStyleClass("evenRow");
 									}
@@ -328,7 +329,7 @@ public class SQLQueryer extends Block {
 										row.setStyleClass("oddRow");
 									}
 								}
-								
+
 								group = table.createFooterRowGroup();
 								row = group.createRow();
 

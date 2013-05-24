@@ -62,19 +62,19 @@ public class ApplicationPropertySetter extends Block {
 		PresentationUtil.addJavaScriptSourceLineToHeader(iwc, iwb.getVirtualPathWithFileNameString("javascript/jquery.scrollTo-min.js"));
 		PresentationUtil.addJavaScriptSourceLineToHeader(iwc, iwb.getVirtualPathWithFileNameString("javascript/applicationProperties.js"));
 		PresentationUtil.addJavaScriptSourceLineToHeader(iwc, getWeb2Business(iwc).getBundleUriToHumanizedMessagesScript());
-		
+
 		Layer topLayer = new Layer(Layer.DIV);
 		topLayer.setStyleClass("developer");
 		topLayer.setID("applicationPropertySetter");
 		add(topLayer);
 
 		//doBusiness(iwc, topLayer);
-		
+
 		IWMainApplication iwma = iwc.getIWMainApplication();
 
 		FieldSet fieldSet = new FieldSet("Create application property");
 		topLayer.add(fieldSet);
-		
+
 		Form form = new Form();
 		fieldSet.add(form);
 
@@ -187,7 +187,7 @@ public class ApplicationPropertySetter extends Block {
 		if (iwma.getSettings().getIfEntityQueryCaching()) {
 			box7.setChecked(true);
 		}
-		
+
 		formItem = new Layer(Layer.DIV);
 		formItem.setStyleClass("formItem");
 		formItem.setStyleClass("checkBoxItem");
@@ -209,7 +209,7 @@ public class ApplicationPropertySetter extends Block {
 		formItem.add(box8);
 		formItem.add(label);
 		form.add(formItem);
-		
+
 		CheckBox box9 = new CheckBox(IWMainApplicationSettings.SESSION_POLLING_KEY);
 		box9.setStyleClass("setApplicationPropertyCheck");
 		if (iwma.getSettings().getIfUseSessionPolling()) {
@@ -223,7 +223,7 @@ public class ApplicationPropertySetter extends Block {
 		formItem.add(box9);
 		formItem.add(label);
 		form.add(formItem);
-		
+
 		CheckBox box10 = new CheckBox(IWMainApplicationSettings.REVERSE_AJAX_KEY);
 		box10.setStyleClass("setApplicationPropertyCheck");
 		if (iwma.getSettings().isReverseAjaxEnabled()) {
@@ -264,10 +264,10 @@ public class ApplicationPropertySetter extends Block {
 		table.setCellspacing(0);
 		table.setStyleClass("developerTable");
 		table.setStyleClass("ruler");
-		
+
 		TableRowGroup group = table.createHeaderRowGroup();
 		TableRow row = group.createRow();
-		
+
 		TableCell2 cell = row.createHeaderCell();
 		cell.setStyleClass("firstColumn");
 		cell.add(new Text("Property key"));
@@ -280,7 +280,7 @@ public class ApplicationPropertySetter extends Block {
 		cell.add(new Text("Delete"));
 
 		group = table.createBodyRowGroup();
-		
+
 		int i = 0;
 		while (iter.hasNext()) {
 			row = group.createRow();
@@ -292,9 +292,9 @@ public class ApplicationPropertySetter extends Block {
 			}
 
 			Link link = new Link(key);
-			link.setURL("#");
+			link.setURL(CoreConstants.HASH);
 			link.setStyleClass("keyLink");
-			
+
 			cell = row.createCell();
 			cell.setStyleClass("firstColumn");
 			cell.add(link);
@@ -302,13 +302,13 @@ public class ApplicationPropertySetter extends Block {
 			Span span = new Span();
 			span.setStyleClass("keyValue");
 			span.add(new Text(value));
-			
+
 			cell = row.createCell();
 			cell.add(span);
 
 			CheckBox checkbox = new CheckBox("property", key);
 			checkbox.setStyleClass("removeApplicationPropertyCheck");
-			
+
 			cell = row.createCell();
 			cell.setStyleClass("lastColumn");
 			cell.add(checkbox);
