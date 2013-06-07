@@ -219,8 +219,6 @@ public class Localizer extends Block {
 		return myForm;
 	}
 
-<<<<<<< HEAD
-=======
 //	private Table2 getLocalizeableStringsTable(IWContext iwc, IWMainApplication iwma, String bundleIdentifier, IWResourceBundle iwrb) {
 //		IWBundle bundle = iwma.getBundle(bundleIdentifier);
 //		String[] strings = bundle.getLocalizableStrings();
@@ -292,7 +290,6 @@ public class Localizer extends Block {
 //		keySet.add(getLocalizeableStringsTableByStorageType(iwma, selectedBundle, selectedLocale, selectedStorage));
 //	}
 
->>>>>>> ae9c6202c97bcc12814972826d82e88765936928
 	private Table2 getLocalizeableStringsTableByStorageType(IWMainApplication iwma, String bundleIdentifier, String selectedLocale, String selectedStorageIdentifier) {
 		List<MessageResource> resourceList = getResourceList(iwma, selectedStorageIdentifier, bundleIdentifier, LocaleUtil.getLocale(selectedLocale));
 
@@ -319,7 +316,6 @@ public class Localizer extends Block {
 
 		group = table.createBodyRowGroup();
 
-<<<<<<< HEAD
 		for (MessageResource resource : resourceList) {
 			Set<String> localizedKeys = resource.getAllLocalizedKeys();
 			if (ListUtil.isEmpty(localizedKeys))
@@ -331,14 +327,6 @@ public class Localizer extends Block {
 
 			for (int i = 0; i < strings.length; i++) {
 				String key = strings[i];
-=======
-		for(MessageResource resource : resourceList) {
-
-			Set<String> localisedKeys = resource.getAllLocalisedKeys();
-			Object[] strings = localisedKeys.toArray();
-			for (int i = 0; i < strings.length; i++) {
-				Object key = strings[i];
->>>>>>> ae9c6202c97bcc12814972826d82e88765936928
 
 				row = group.createRow();
 
@@ -352,11 +340,7 @@ public class Localizer extends Block {
 
 				cell = row.createCell();
 
-<<<<<<< HEAD
 				String localizedString = resource.getMessage(key);
-=======
-				Object localizedString = resource.getMessage(key);
->>>>>>> ae9c6202c97bcc12814972826d82e88765936928
 				if (localizedString == null){
 					String defaultString = CoreConstants.EMPTY;
 					defaultString = TextSoap.formatText(defaultString);
@@ -411,13 +395,8 @@ public class Localizer extends Block {
 			if(resource == null)
 				continue;
 
-<<<<<<< HEAD
 			Set<String> localizedKeys = resource.getAllLocalizedKeys();
 			for (String key : localizedKeys) {
-=======
-			Set<String> localisedKeys = resource.getAllLocalisedKeys();
-			for (String key : localisedKeys) {
->>>>>>> ae9c6202c97bcc12814972826d82e88765936928
 				down.addMenuElement(new StringBuilder(key).append(CoreConstants.SPACE).append(CoreConstants.BRACKET_LEFT).append(resource.getIdentifier())
 						.append(CoreConstants.BRACKET_RIGHT).toString());
 			}
