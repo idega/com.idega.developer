@@ -1,6 +1,6 @@
 var ACTIVE_CONTAINER_ID = null;
 
-function copyFilesToSlide(parameters) {
+function copyFilesToRepository(parameters) {
 	if (parameters == null) {
 		return false;
 	}
@@ -15,14 +15,14 @@ function copyFilesToSlide(parameters) {
 		}
 	}
 	
-	FilesManagerBusiness.copyFilesToSlide({
+	FilesManagerBusiness.copyFilesToRepository({
 		callback: function(result) {
-			copyFilesToSlideCallback(result, parameters);
+			copyFilesToRepositoryCallback(result, parameters);
 		}
 	});
 }
 
-function copyFilesToSlideCallback(result, parameters) {
+function copyFilesToRepositoryCallback(result, parameters) {
 	closeLoadingMessage();
 	
 	var containerToShow = null;

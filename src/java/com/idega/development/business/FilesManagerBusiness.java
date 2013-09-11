@@ -1,12 +1,13 @@
 package com.idega.development.business;
 
 
-import com.idega.business.IBOSession;
 import java.rmi.RemoteException;
+
+import com.idega.business.IBOSession;
 
 public interface FilesManagerBusiness extends IBOSession {
 	/**
-	 * @see com.idega.development.business.FilesManagerBusinessBean#copyFilesToSlide
+	 * @see com.idega.development.business.FilesManagerBusinessBean#copyFilesToRepository
 	 */
-	public boolean copyFilesToSlide() throws RemoteException;
+	public boolean copyFilesToRepository() throws RemoteException;
 }

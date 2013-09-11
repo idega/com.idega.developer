@@ -25,7 +25,7 @@ public class FilesManagerBusinessBean extends IBOSessionBean implements FilesMan
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public boolean copyFilesToSlide() {
+	public boolean copyFilesToRepository() {
 		ICFileHome icFileHome = null;
 		try {
 			icFileHome = (ICFileHome) getIDOHome(ICFile.class);
@@ -48,7 +48,6 @@ public class FilesManagerBusinessBean extends IBOSessionBean implements FilesMan
 		return copyFiles(files, DeveloperConstants.OLD_FILES_FOLDER);
 	}
 
-	@SuppressWarnings("unchecked")
 	private boolean copyFiles(Collection<ICFile> files, String basePath) {
 		if (ListUtil.isEmpty(files)) {
 			return true;	//	Nothing to copy
