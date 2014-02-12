@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.idega.block.web2.business.JQuery;
 import com.idega.block.web2.business.Web2Business;
 import com.idega.business.IBOLookup;
 import com.idega.business.IBOLookupException;
@@ -38,6 +41,7 @@ import com.idega.util.CoreConstants;
 import com.idega.util.ListUtil;
 import com.idega.util.LocaleUtil;
 import com.idega.util.PresentationUtil;
+import com.idega.util.expression.ELUtil;
 import com.idega.util.messages.MessageResource;
 import com.idega.util.text.TextSoap;
 
@@ -68,13 +72,18 @@ public class Localizer extends Block {
 	public Localizer() {
 	}
 
+	@Autowired
+	private JQuery jQuery;
+
 	@Override
 	public void main(IWContext iwc) throws Exception {
+		ELUtil.getInstance().autowire(this);
+
 		IWBundle iwb = iwc.getIWMainApplication().getBundle("com.idega.developer");
 		PresentationUtil.addStyleSheetToHeader(iwc, iwb.getVirtualPathWithFileNameString("style/developer.css"));
 		PresentationUtil.addStyleSheetToHeader(iwc, getWeb2Business(iwc).getBundleUriToHumanizedMessagesStyleSheet());
 
-		PresentationUtil.addJavaScriptSourceLineToHeader(iwc, getWeb2Business(iwc).getBundleURIToJQueryLib());
+		PresentationUtil.addJavaScriptSourceLineToHeader(iwc, jQuery.getBundleURIToJQueryLib());
 		PresentationUtil.addJavaScriptSourceLineToHeader(iwc, CoreConstants.DWR_ENGINE_SCRIPT);
 		PresentationUtil.addJavaScriptSourceLineToHeader(iwc, CoreConstants.DWR_UTIL_SCRIPT);
 		PresentationUtil.addJavaScriptSourceLineToHeader(iwc, "/dwr/interface/Localizer.js");
@@ -419,7 +428,7 @@ public class Localizer extends Block {
 
 	private Web2Business getWeb2Business(IWApplicationContext iwac) {
 		try {
-			return (Web2Business) IBOLookup.getServiceInstance(iwac, Web2Business.class);
+			return IBOLookup.getServiceInstance(iwac, Web2Business.class);
 		}
 		catch (IBOLookupException ile) {
 			throw new IBORuntimeException(ile);
