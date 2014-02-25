@@ -19,6 +19,7 @@ import com.idega.util.PresentationUtil;
  * @author <a href=mailto:"eiki@idega.is">Eirikur Hrafnsson</a>
  * @version 1.0
  */
+@SuppressWarnings("deprecation")
 public class Caches extends Block {
 	private static final String PARAM_IB_PAGES = "iw_cache_ib_pages";
 	private static final String PARAM_LOOKUP = "iw_cache_lookup";
@@ -26,7 +27,7 @@ public class Caches extends Block {
 	private static final String PARAM_IDO_QUERY = "iw_cache_ido_query";
 	private static final String PARAM_IWCACHEMANAGER = "iw_cache_iwcachemanager";
 	private static final String PARAM_IWCACHEMANAGER_OLD = "iw_cache_iwcachemanager_old";
-	
+
 	public Caches() {
 	}
 	@Override
@@ -48,7 +49,7 @@ public class Caches extends Block {
 		SubmitButton ido_bean = new SubmitButton(PARAM_IDO_BEAN, "Clear IDO Bean Cache");
 		SubmitButton ido_query = new SubmitButton(PARAM_IDO_QUERY, "Clear IDO Query Cache");
 		SubmitButton iw_cacheman_old = new SubmitButton(PARAM_IWCACHEMANAGER_OLD, "Clear Block content Cache (IWCachemanager)");
-		
+
 		table.add(iw_cacheman, 3, 1);
 		table.add(ib_pages, 3, 3);
 		//table.add(lookup, 3, 3);
@@ -58,6 +59,7 @@ public class Caches extends Block {
 
 		processBusiness(iwc);
 	}
+
 	private void processBusiness(IWContext iwc) throws Exception {
 		String clearIBPages = iwc.getParameter(PARAM_IB_PAGES);
 		if (clearIBPages != null) {
