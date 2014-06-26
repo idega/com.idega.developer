@@ -24,7 +24,6 @@ public class FilesManagerBusinessBean extends IBOSessionBean implements FilesMan
 	private List<String> copiedFiles = null;
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public boolean copyFilesToRepository() {
 		ICFileHome icFileHome = null;
 		try {

@@ -33,15 +33,14 @@ public class NotificationsManager extends Block {
 
 	private static final String PARAMETER_SELECTED_NOTIFIER = "selectedNotifier";
 	private static final String PARAMETER_SET_ACTIVE = "setActiveNotifier";
-	
-	@SuppressWarnings("unchecked")
+
 	@Override
 	public void main(IWContext iwc) {
 		PresentationUtil.addStyleSheetToHeader(iwc, getBundle(iwc).getVirtualPathWithFileNameString("style/developer.css"));
 		PresentationUtil.addJavaScriptSourceLineToHeader(iwc, CoreConstants.DWR_UTIL_SCRIPT);
-		
+
 		IWResourceBundle iwrb = getResourceBundle(iwc);
-		
+
 		Layer topLayer = new Layer(Layer.DIV);
 		topLayer.setStyleClass("developer");
 		topLayer.setID("notificationsManager");
@@ -49,33 +48,33 @@ public class NotificationsManager extends Block {
 
 		FieldSet fieldSet = new FieldSet(iwrb.getLocalizedString("manage_notifiers", "Manage notifiers"));
 		topLayer.add(fieldSet);
-		
+
 		Form form = new Form();
 		fieldSet.add(form);
-		
+
 		String selectedNotifier = iwc.getParameter(PARAMETER_SELECTED_NOTIFIER);
 		form.addParameter(PARAMETER_SELECTED_NOTIFIER, StringUtil.isEmpty(selectedNotifier) ? String.valueOf(-1) : selectedNotifier);
 		String setActiveNotifier = iwc.getParameter(PARAMETER_SET_ACTIVE);
-		
+
 		DropdownMenu notifiers = new DropdownMenu("notifier");
 		notifiers.setFirstSelectOption(new SelectOption(iwrb.getLocalizedString("choose_notifier", "Select notifier"), -1));
 		notifiers.setOnChange(new StringBuilder("this.form['").append(PARAMETER_SELECTED_NOTIFIER).append("'].value = dwr.util.getValue('")
 				.append(notifiers.getId()).append("'); this.form.submit();").toString());
-		
+
 		Label label = new Label(iwrb.getLocalizedString("choose_notifier", "Select notifier"), notifiers);
 		form.add(label);
 		form.add(notifiers);
-		
+
 		Map<String, ? extends Notifier> beans = WebApplicationContextUtils.getWebApplicationContext(iwc.getServletContext()).getBeansOfType(Notifier.class);
 		if (beans == null || beans.isEmpty()) {
 			return;
 		}
-		
+
 		Notifier activeNotifier = null;
 		for (String notifierKey: beans.keySet()) {
 			Notifier notifier = beans.get(notifierKey);
 			notifiers.addOption(new SelectOption(notifierKey, notifier.getClass().getName()));
-			
+
 			if (activeNotifier == null && !StringUtil.isEmpty(selectedNotifier) && selectedNotifier.equals(notifier.getClass().getName())) {
 				activeNotifier = notifier;
 			}
@@ -83,16 +82,16 @@ public class NotificationsManager extends Block {
 		if (!StringUtil.isEmpty(selectedNotifier)) {
 			notifiers.setSelectedOption(selectedNotifier);
 		}
-		
+
 		if (activeNotifier == null) {
 			return;
 		}
-		
+
 		if (!StringUtil.isEmpty(setActiveNotifier)) {
 			activeNotifier.setActive(Boolean.TRUE.toString().equals(setActiveNotifier));
 		}
 		form.addParameter(PARAMETER_SET_ACTIVE, String.valueOf(activeNotifier.isActive()));
-		
+
 		Layer activeContainer = new Layer();
 		form.add(activeContainer);
 		CheckBox setActiveBox = new CheckBox();
@@ -102,13 +101,13 @@ public class NotificationsManager extends Block {
 		Label setActiveLabel = new Label(iwrb.getLocalizedString("set_active_notifier", "Active"), setActiveBox);
 		activeContainer.add(setActiveLabel);
 		activeContainer.add(setActiveBox);
-		
+
 		if (activeNotifier.isActive()) {
 			Enumeration<String> keys = iwc.getParameterNames();
 			if (keys == null) {
 				return;
 			}
-			
+
 			List<AdvancedProperty> properties = new ArrayList<AdvancedProperty>();
 			String activeNotifierClass = activeNotifier.getClass().getName();
 			String needless = activeNotifier.getClassNameIdentifier();
@@ -117,7 +116,7 @@ public class NotificationsManager extends Block {
 				if (key.indexOf(activeNotifierClass) == -1) {
 					continue;
 				}
-				
+
 				String value = iwc.getParameter(key);
 				properties.add(new AdvancedProperty(key.replaceFirst(needless, CoreConstants.EMPTY), value));
 			}
@@ -138,21 +137,21 @@ public class NotificationsManager extends Block {
 					}
 				}
 			}
-			
+
 			activeNotifier.dispatchNotifications(iwc);
 		}
-		
+
 		UIComponent managementPanel = activeNotifier.getManagementPanel();
 		if (managementPanel != null) {
 			Layer managementContainer = new Layer();
 			form.add(managementContainer);
 			managementContainer.add(managementPanel);
-			
+
 			SubmitButton save = new SubmitButton("notifications_manager_save", iwrb.getLocalizedString("save", "Save"));
 			form.add(save);
 		}
 	}
-	
+
 	private Method getMethod(Method[] methods, String name) {
 		for (Method method: methods) {
 			if (name.equals(method.getName())) {
@@ -161,10 +160,10 @@ public class NotificationsManager extends Block {
 		}
 		return null;
 	}
-	
+
 	@Override
 	public String getBundleIdentifier() {
 		return DeveloperConstants.BUNDLE_IDENTIFIER;
 	}
-	
+
 }
