@@ -6,6 +6,10 @@
  */
 package com.idega.development.presentation;
 
+import java.io.InputStream;
+import java.io.Reader;
+import java.sql.Blob;
+import java.sql.Clob;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -36,8 +40,10 @@ import com.idega.presentation.ui.SubmitButton;
 import com.idega.presentation.ui.TextArea;
 import com.idega.presentation.ui.TextInput;
 import com.idega.util.CoreConstants;
+import com.idega.util.IOUtil;
 import com.idega.util.PresentationUtil;
 import com.idega.util.SQLDataDumper;
+import com.idega.util.StringHandler;
 
 /**
  *
@@ -303,8 +309,33 @@ public class SQLQueryer extends Block {
 									cell.add(new Text(String.valueOf(counter + 1)));
 
 									for (int c = 1; c <= noCols; c++) {
-										String el = rs.getString(c);
 										int type = rsMeta.getColumnType(c);
+										String el = null;
+										if (type == Types.BLOB) {
+											Blob blob = rs.getBlob(c);
+											if (blob == null) {
+												el = CoreConstants.EMPTY;
+											} else {
+												InputStream stream = blob.getBinaryStream(1, (int) blob.length());
+												el = StringHandler.getContentFromInputStream(stream);
+												IOUtil.close(stream);
+											}
+										} else if (type == Types.CLOB) {
+											Clob clob = rs.getClob(c);
+											if (clob == null) {
+												el = CoreConstants.EMPTY;
+											} else {
+												long length = clob.length();
+												Reader chrInstream = clob.getCharacterStream();
+												int intLength = (length < Integer.MAX_VALUE) ? (int) length : Integer.MAX_VALUE;
+												char chrBuffer[] = new char[intLength];
+												chrInstream.read(chrBuffer);
+												el = new String(chrBuffer);
+												IOUtil.close(chrInstream);
+											}
+										} else {
+											el = rs.getString(c);
+										}
 
 										cell = row.createCell();
 										cell.add(new Text(el));
@@ -358,6 +389,9 @@ public class SQLQueryer extends Block {
 
 			} // end of try
 			catch (SQLException ex) {
+				if (iwc.getIWMainApplication().getSettings().getBoolean("print_sql_querier_error", Boolean.FALSE)) {
+					ex.printStackTrace();
+				}
 				while (ex != null) {
 					add("Message:   " + ex.getMessage());
 					this.addBreak();
