@@ -327,12 +327,16 @@ public class Localizer extends Block {
 
 		for (MessageResource resource : resourceList) {
 			Set<String> localizedKeys = resource.getAllLocalizedKeys();
-			if (ListUtil.isEmpty(localizedKeys))
+			if (ListUtil.isEmpty(localizedKeys)) {
+				getLogger().warning("There are no keys for localization in " + resource + ", locale: " + selectedLocale);
 				continue;
+			}
 
 			String[] strings = ArrayUtil.convertListToArray(localizedKeys);
-			if (ArrayUtil.isEmpty(strings))
+			if (ArrayUtil.isEmpty(strings)) {
+				getLogger().warning("There are no keys for localization after converstion from Array to List in " + resource + ", locale: " + selectedLocale);
 				continue;
+			}
 
 			for (int i = 0; i < strings.length; i++) {
 				String key = strings[i];
