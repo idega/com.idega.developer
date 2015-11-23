@@ -1,5 +1,9 @@
 package com.idega.development.presentation;
 
+import java.util.Iterator;
+
+import org.apache.myfaces.component.html.ext.HtmlOutputText;
+
 import com.idega.block.web2.business.Web2Business;
 import com.idega.business.IBOLookup;
 import com.idega.business.IBOLookupException;
@@ -257,7 +261,7 @@ public class ApplicationPropertySetter extends Block {
 
 	public static Table2 getParametersTable(IWMainApplication iwma) {
 		IWMainApplicationSettings applicationSettings  = iwma.getSettings();
-		java.util.Iterator iter = applicationSettings.keySet().iterator();
+		Iterator<String> iter = applicationSettings.keySet().iterator();
 
 		Table2 table = new Table2();
 		table.setCellpadding(0);
@@ -285,7 +289,7 @@ public class ApplicationPropertySetter extends Block {
 		while (iter.hasNext()) {
 			row = group.createRow();
 
-			String key = (String) iter.next();
+			String key = iter.next();
 			String value = applicationSettings.getProperty(key);
 			if (value == null) {
 				value = Text.NON_BREAKING_SPACE;
@@ -301,7 +305,10 @@ public class ApplicationPropertySetter extends Block {
 
 			Span span = new Span();
 			span.setStyleClass("keyValue");
-			span.add(new Text(value));
+			HtmlOutputText text = (HtmlOutputText) iwma.createComponent(HtmlOutputText.COMPONENT_TYPE);
+			text.setValue(value);
+			text.setEscape(true);
+			span.add(text);
 
 			cell = row.createCell();
 			cell.add(span);
@@ -328,7 +335,7 @@ public class ApplicationPropertySetter extends Block {
 
 	private Web2Business getWeb2Business(IWApplicationContext iwac) {
 		try {
-			return (Web2Business) IBOLookup.getServiceInstance(iwac, Web2Business.class);
+			return IBOLookup.getServiceInstance(iwac, Web2Business.class);
 		}
 		catch (IBOLookupException ile) {
 			throw new IBORuntimeException(ile);
