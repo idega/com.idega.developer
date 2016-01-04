@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.idega.developer;
 
@@ -46,7 +46,7 @@ import com.idega.workspace.view.WorkspaceClassViewNode;
  * <p>
  * </p>
  *  Last modified: $Date: 2009/03/11 08:17:16 $ by $Author: valdas $
- * 
+ *
  * @author <a href="mailto:tryggvil@idega.com">tryggvil</a>
  * @version $Revision: 1.15 $
  */
@@ -69,12 +69,12 @@ public class DeveloperViewManager {
 		}
 		return instance;
 	}
-	
+
 	public ViewManager getViewManager(){
 		return ViewManager.getInstance(this.iwma);
 	}
-	
-	
+
+
 	public ViewNode getDeveloperViewNode(){
 		IWBundle iwb = this.iwma.getBundle(DeveloperConstants.BUNDLE_IDENTIFIER);
 		if(this.developerNode==null){
@@ -93,54 +93,54 @@ public class DeveloperViewManager {
 	private ViewNode initalizeDeveloperNode(IWBundle iwb) {
 		ViewManager viewManager = ViewManager.getInstance(this.iwma);
 		ViewNode workspace = viewManager.getWorkspaceRoot();
-		
+
 		Collection<String> roles = new ArrayList<String>();
 		roles.add(StandardRoles.ROLE_KEY_DEVELOPER);
-		
+
 		DefaultViewNode devNode = new WorkspaceApplicationNode("developer",workspace,roles);
-		devNode.setJspUri(iwb.getJSPURI("developer.jsp"));
+		devNode.setFaceletUri(iwb.getFaceletURI("developer.xhtml"));
 		devNode.setKeyboardShortcut(new KeyboardShortcut("3"));
-		
+
 		WorkspaceClassViewNode localizerStorageNode = new WorkspaceClassViewNode("localizerstorage",devNode);
 		localizerStorageNode.setName("Localizer Storage");
 		localizerStorageNode.setComponentClass(LocalizerStorage.class);
 		localizerStorageNode.setMaximizeBlockVertically(true);
-		
+
 		WorkspaceClassViewNode localizerNode = new WorkspaceClassViewNode("localizer",devNode);
 		localizerNode.setName("Localizer");
 		localizerNode.setComponentClass(Localizer.class);
 		localizerNode.setMaximizeBlockVertically(true);
-		
+
 		WorkspaceClassViewNode localeSwitcher = new WorkspaceClassViewNode("localswitcher",devNode);
 		localeSwitcher.setName("Switch Current Locale");
 		localeSwitcher.setComponentClass(LocaleSwitcher.class);
 		localeSwitcher.setMaximizeBlockVertically(true);
-		
+
 		WorkspaceClassViewNode localeSetter = new WorkspaceClassViewNode("localesetter",devNode);
 		localeSetter.setName("Set Locale");
 		localeSetter.setComponentClass(LocaleSetter.class);
 		localeSetter.setMaximizeBlockVertically(true);
-		
+
 		WorkspaceClassViewNode objectTypes = new WorkspaceClassViewNode("objecttypes",devNode);
 		objectTypes.setName("Object Types");
 		objectTypes.setComponentClass(ObjectTypeManager.class);
 		objectTypes.setMaximizeBlockVertically(true);
-		
+
 		WorkspaceClassViewNode bundleCreator = new WorkspaceClassViewNode("bundlecreator",devNode);
 		bundleCreator.setName("Create Bundle");
 		bundleCreator.setComponentClass(BundleCreator.class);
 		bundleCreator.setMaximizeBlockVertically(true);
-		
+
 		WorkspaceClassViewNode bundlepropertysetter = new WorkspaceClassViewNode("bundleproperties",devNode);
 		bundlepropertysetter.setComponentClass(BundlePropertySetter.class);
 		bundlepropertysetter.setName("Bundle Properties");
 		bundlepropertysetter.setMaximizeBlockVertically(true);
-		
+
 		WorkspaceClassViewNode bundleresourcemanager = new WorkspaceClassViewNode("bundleresources",devNode);
 		bundleresourcemanager.setName("Bundle Resources");
 		bundleresourcemanager.setComponentClass(BundleResourceManager.class);
 		bundleresourcemanager.setMaximizeBlockVertically(true);
-		
+
 		WorkspaceClassViewNode componentmanager = new WorkspaceClassViewNode("componentmanager",devNode);
 		componentmanager.setName("Component Manager");
 		componentmanager.setComponentClass(ComponentManager.class);
@@ -155,17 +155,17 @@ public class DeveloperViewManager {
 		dbpool.setName("Database Pool");
 		dbpool.setComponentClass(DBPoolStatusViewer.class);
 		dbpool.setMaximizeBlockVertically(true);
-		
+
 		WorkspaceClassViewNode sqlquery = new WorkspaceClassViewNode("sqlquery",devNode);
 		sqlquery.setName("Query Database (SQL)");
 		sqlquery.setComponentClass(SQLQueryer.class);
 		sqlquery.setMaximizeBlockVertically(true);
-		
+
 		WorkspaceClassViewNode appstatus = new WorkspaceClassViewNode("applicationstatus",devNode);
 		appstatus.setName("Application Status");
 		appstatus.setComponentClass(ApplicationStatus.class);
 		appstatus.setMaximizeBlockVertically(true);
-		
+
 		WorkspaceClassViewNode caches = new WorkspaceClassViewNode("caches",devNode);
 		caches.setName("Caches");
 		caches.setComponentClass(Caches.class);
@@ -175,17 +175,17 @@ public class DeveloperViewManager {
 		logs.setName("Logs");
 		logs.setComponentClass(Logs.class);
 		logs.setMaximizeBlockVertically(true);
-		
+
 		WorkspaceClassViewNode versions = new WorkspaceClassViewNode("versions",devNode);
 		versions.setName("Module Versions");
 		versions.setComponentClass(Versions.class);
 		versions.setMaximizeBlockVertically(true);
-		
+
 		WorkspaceClassViewNode homepageGenerator = new WorkspaceClassViewNode("homepagegenerator",devNode);
 		homepageGenerator.setName("Generate Homepages");
 		homepageGenerator.setComponentClass(HomePageGenerator.class);
 		homepageGenerator.setMaximizeBlockVertically(true);
-		
+
 		WorkspaceClassViewNode pageobjects = new WorkspaceClassViewNode("pageobjects",devNode);
 		pageobjects.setName("Page Objects");
 		pageobjects.setComponentClass(PageObjects.class);
@@ -195,7 +195,7 @@ public class DeveloperViewManager {
 		scriptmanager.setName("Script Manager");
 		scriptmanager.setComponentClass(ScriptManager.class);
 		scriptmanager.setMaximizeBlockVertically(true);
-		
+
 		try {
 			Class<UIComponent> ldapmanagerClass = (Class<UIComponent>) Class.forName("com.idega.block.ldap.manager.LDAPManager");
 
@@ -204,7 +204,7 @@ public class DeveloperViewManager {
 			ldap.setComponentClass(ldapmanagerClass);
 			ldap.setMaximizeBlockVertically(true);
 		} catch(ClassNotFoundException cnfe) {}
-		
+
 		try {
 			Class<UIComponent> siteInfoClass = (Class<UIComponent>) Class.forName("com.idega.content.themes.presentation.SiteInfo");
 
@@ -213,12 +213,12 @@ public class DeveloperViewManager {
 			siteInfo.setComponentClass(siteInfoClass);
 			siteInfo.setMaximizeBlockVertically(true);
 		} catch(ClassNotFoundException cnfe) {}
-		
+
 		WorkspaceClassViewNode appPropertiesNode = new WorkspaceClassViewNode("applicationproperties",devNode);
 		appPropertiesNode.setName("Application Properties");
 		appPropertiesNode.setComponentClass(ApplicationPropertySetter.class);
 		appPropertiesNode.setMaximizeBlockVertically(true);
-		
+
 		WorkspaceClassViewNode filesManager = new WorkspaceClassViewNode("icfilesmanager", devNode);
 		filesManager.setName("Files Manager");
 		filesManager.setComponentClass(FilesManager.class);
@@ -228,7 +228,7 @@ public class DeveloperViewManager {
 		converters.setName("Converters");
 		converters.setFaceletUri(iwb.getFaceletURI("converters.xhtml"));
 		filesManager.setMaximizeBlockVertically(true);
-		
+
 		WorkspaceClassViewNode notifications = new WorkspaceClassViewNode("notification", devNode);
 		notifications.setName("Notifications");
 		notifications.setComponentClass(NotificationsManager.class);
