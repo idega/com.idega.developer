@@ -102,11 +102,11 @@ function initializeLinks() {
 			jQuery(".newStringValue").focus().blur(function() {
 				var value = jQuery(this).val();
 				if (value.length > 0) {
-					var key = jQuery(this).parents('tr').children('td.firstColumn').text();
+					var key = jQuery(this).parents('tr').children('td.firstColumn').children('a.keyLink').text();
 					var locale = dwr.util.getValue("localizerLocale");
 					var bundleIdentifier = dwr.util.getValue("localizerBundle");
 					
-					Localizer.storeLocalizedString(key, '', value, bundleIdentifier, locale);
+					Localizer.storeLocalizedStrings(key, '', value, bundleIdentifier, locale);
 					humanMsg.displayMsg("Localized string saved...");
 					jQuery(this).parent().removeClass('isEmpty').children('span').text(value);
 				}
