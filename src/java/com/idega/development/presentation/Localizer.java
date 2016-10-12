@@ -1,9 +1,14 @@
 package com.idega.development.presentation;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -36,13 +41,15 @@ import com.idega.presentation.ui.Legend;
 import com.idega.presentation.ui.SubmitButton;
 import com.idega.presentation.ui.TextArea;
 import com.idega.presentation.ui.TextInput;
-import com.idega.util.ArrayUtil;
 import com.idega.util.CoreConstants;
 import com.idega.util.ListUtil;
 import com.idega.util.LocaleUtil;
 import com.idega.util.PresentationUtil;
+import com.idega.util.StringUtil;
+import com.idega.util.datastructures.map.MapUtil;
 import com.idega.util.expression.ELUtil;
 import com.idega.util.messages.MessageResource;
+import com.idega.util.messages.MessageResourceFactory;
 import com.idega.util.text.TextSoap;
 
 /**
@@ -68,9 +75,30 @@ public class Localizer extends Block {
 	private static String ACTION_DELETE="delete";
 
 	public static String ALL_RESOURCES = "All";
+	
+	@Autowired 
+	private MessageResourceFactory messageFactory;
 
-	public Localizer() {
+	private IWMainApplication application;
+
+	private IWMainApplication getApplication() {
+		if (this.application == null) {
+			this.application = IWMainApplication.getDefaultIWMainApplication();
+		}
+
+		return this.application;
 	}
+
+
+	private MessageResourceFactory getMessageResourceFactory() {
+		if (this.messageFactory == null) {
+			ELUtil.getInstance().autowire(this);
+		}
+
+		return this.messageFactory;
+	}
+
+	public Localizer() {}
 
 	@Autowired
 	private JQuery jQuery;
@@ -156,7 +184,7 @@ public class Localizer extends Block {
 			TextArea area = new TextArea(areaParameter);
 			area.setID("localizerValue");
 
-			stringsDrop = getLocalizeableStringsMenu(iwma, selectedBundle, selectedStorage, selectedLocale, stringsParameter);
+			stringsDrop = getLocalizeableStringsMenu(selectedBundle, selectedStorage, selectedLocale, stringsParameter);
 			stringsDrop.addMenuElementFirst("", "");
 			stringsDrop.setID("localizerKey");
 
@@ -200,7 +228,7 @@ public class Localizer extends Block {
 			keySet.setStyleClass("stringsSet");
 			topLayer.add(keySet);
 
-			keySet.add(getLocalizeableStringsTableByStorageType(iwma, selectedBundle, selectedLocale, selectedStorage));
+			keySet.add(getLocalizeableStringsTableByStorageType(selectedBundle, selectedLocale, selectedStorage));
 		}
 		else {
 			Layer buttonLayer = new Layer(Layer.DIV);
@@ -228,84 +256,41 @@ public class Localizer extends Block {
 		return myForm;
 	}
 
-//	private Table2 getLocalizeableStringsTable(IWContext iwc, IWMainApplication iwma, String bundleIdentifier, IWResourceBundle iwrb) {
-//		IWBundle bundle = iwma.getBundle(bundleIdentifier);
-//		String[] strings = bundle.getLocalizableStrings();
-//
-//		Table2 table = new Table2();
-//		table.setCellpadding(0);
-//		table.setCellspacing(0);
-//		table.setWidth("100%");
-//		table.setStyleClass("developerTable");
-//		table.setStyleClass("ruler");
-//
-//		TableRowGroup group = table.createHeaderRowGroup();
-//		TableRow row = group.createRow();
-//
-//		TableCell2 cell = row.createHeaderCell();
-//		cell.setStyleClass("firstColumn");
-//		cell.add(new Text("Key"));
-//
-//		cell = row.createHeaderCell();
-//		cell.setStyleClass("lastColumn");
-//		cell.add(new Text("String"));
-//
-//		group = table.createBodyRowGroup();
-//
-//		for (int i = 0; i < strings.length; i++) {
-//			String key = strings[i];
-//
-//			row = group.createRow();
-//
-//			cell = row.createCell();
-//			cell.setStyleClass("firstColumn");
-//
-//			Link keyLink = new Link(key);
-//			keyLink.setURL(CoreConstants.NUMBER_SIGN);
-//			keyLink.setStyleClass("keyLink");
-//			cell.add(keyLink);
-//
-//			cell = row.createCell();
-//			cell.setStyleClass("lastColumn");
-//			String localizedString = iwrb.getLocalizedString(key);
-//			if (localizedString == null || StringHandler.EMPTY_STRING.equals(localizedString)){
-//				String defaultString = bundle.getLocalizableStringDefaultValue(key);
-//				defaultString = TextSoap.formatText(defaultString);
-//				localizedString = defaultString;
-//				cell.setStyleClass("isEmpty");
-//			}
-//			else{
-//				localizedString = TextSoap.formatText(localizedString);
-//			}
-//			cell.add(new Text(localizedString));
-//
-//			if (i % 2 == 0) {
-//				row.setStyleClass("evenRow");
-//			}
-//			else {
-//				row.setStyleClass("oddRow");
-//			}
-//		}
-//
-//		return table;
-//	}
+	private TreeMap<String, Map<MessageResource, String>> getLocalizedStrings(List<MessageResource> resources) {
+		TreeMap<String, Map<MessageResource, String>> localizedStrings = new TreeMap<>();
+	
+		if (!ListUtil.isEmpty(resources)) {
+			for (MessageResource resource : resources) {
+				Set<String> keys = resource.getAllLocalizedKeys();
+				if (!ListUtil.isEmpty(keys)) {
+					for (String key : keys) {
+						String value = resource.getMessage(key);
+						if (!StringUtil.isEmpty(value)) {
+							Map<MessageResource, String> valueMap = localizedStrings.get(key);
+							if (MapUtil.isEmpty(valueMap)) {
+								valueMap = new HashMap<>();
+								localizedStrings.put(key, valueMap);
+							}
 
-//	public void refreshTebleData(String bundleIdentifier, String selectedLocale, String selectedStorageIdentifier) {
-//		FieldSet keySet = new FieldSet(new Legend("Available Strings"));
-//		keySet.setStyleClass("stringsSet");
-//		topLayer.add(keySet);
-//
-////		keySet.add(getLocalizeableStringsTable(iwc, iwma, selectedBundle, iwrb));
-//		keySet.add(getLocalizeableStringsTableByStorageType(iwma, selectedBundle, selectedLocale, selectedStorage));
-//	}
+							valueMap.put(resource, value);
+						}
+					}
+				}
+			}
+		}
 
-	private Table2 getLocalizeableStringsTableByStorageType(IWMainApplication iwma, String bundleIdentifier, String selectedLocale, String selectedStorageIdentifier) {
-		List<MessageResource> resourceList = getResourceList(iwma, selectedStorageIdentifier, bundleIdentifier, LocaleUtil.getLocale(selectedLocale));
+		return localizedStrings;
+	}
+
+	private Table2 getLocalizeableStringsTableByStorageType(
+			String bundleIdentifier, 
+			String selectedLocale, 
+			String selectedStorageIdentifier) {
+
 
 		Table2 table = new Table2();
 		table.setCellpadding(0);
 		table.setCellspacing(0);
-		table.setWidth("100%");
 		table.setStyleClass("developerTable");
 		table.setStyleClass("ruler");
 
@@ -325,63 +310,90 @@ public class Localizer extends Block {
 
 		group = table.createBodyRowGroup();
 
-		for (MessageResource resource : resourceList) {
-			Set<String> localizedKeys = resource.getAllLocalizedKeys();
-			if (ListUtil.isEmpty(localizedKeys)) {
-				getLogger().warning("There are no keys for localization in " + resource + ", locale: " + selectedLocale);
-				continue;
-			}
+		boolean isEven = Boolean.FALSE;
+		List<MessageResource> resourceList = getResourceList(selectedStorageIdentifier, bundleIdentifier, LocaleUtil.getLocale(selectedLocale));
+		TreeMap<String, Map<MessageResource, String>> localizedStrings = getLocalizedStrings(resourceList);
+		for (String key: localizedStrings.keySet()) {
+			Map<MessageResource, String> valueMap = localizedStrings.get(key);
+			if (!MapUtil.isEmpty(valueMap)) {
+				ArrayList<MessageResource> resources = new ArrayList<>(valueMap.keySet());
+				Collections.sort(resources, new Comparator<MessageResource>() {
 
-			String[] strings = ArrayUtil.convertListToArray(localizedKeys);
-			if (ArrayUtil.isEmpty(strings)) {
-				getLogger().warning("There are no keys for localization after converstion from Array to List in " + resource + ", locale: " + selectedLocale);
-				continue;
-			}
+					@Override
+					public int compare(MessageResource o1, MessageResource o2) {
+						if (o1.getLevel().intValue() > o2.getLevel().intValue()) {
+							return -1;
+						}
 
-			for (int i = 0; i < strings.length; i++) {
-				String key = strings[i];
+						if (o2.getLevel().intValue() > o1.getLevel().intValue()) {
+							return 1;
+						}
+						
+						return 0;
+					}
+				});
 
-				row = group.createRow();
+				for (MessageResource resource : resources) {
+					row = group.createRow();
+					boolean isModificationDisabled = !resource.isModificationAllowed();
+					if (isModificationDisabled) {
+						row.setStyleClass("disabled");
+					}
 
-				cell = row.createCell();
-				cell.setStyleClass("firstColumn");
+					cell = row.createCell();
+					cell.setStyleClass("firstColumn");
 
-				Link keyLink = new Link(String.valueOf(key));
-				keyLink.setURL(CoreConstants.HASH);
-				keyLink.setStyleClass("keyLink");
-				cell.add(keyLink);
+					if (!isModificationDisabled) {
+						Link keyLink = new Link(String.valueOf(key));
+						keyLink.setURL(CoreConstants.HASH);
+						keyLink.setStyleClass("keyLink");
+						cell.add(keyLink);
+					} else {
+						cell.add(new Span(new Text(String.valueOf(key))));
+					}
 
-				cell = row.createCell();
+					if (resources.indexOf(resource) == 0 && resources.size() > 1) {
+						Text usageText = new Text("in use");
+						usageText.setStyleClass("green-label");
+						cell.add(usageText);
+					}
 
-				String localizedString = resource.getMessage(key);
-				if (localizedString == null){
-					String defaultString = CoreConstants.EMPTY;
-					defaultString = TextSoap.formatText(defaultString);
-					localizedString = defaultString;
-					cell.setStyleClass("isEmpty");
-				} else {
-					localizedString = TextSoap.formatText(String.valueOf(localizedString));
+					cell = row.createCell();
+
+					String localizedString = valueMap.get(resource);
+					if (localizedString == null){
+						String defaultString = CoreConstants.EMPTY;
+						defaultString = TextSoap.formatText(defaultString);
+						localizedString = defaultString;
+						cell.setStyleClass("isEmpty");
+					} else {
+						localizedString = TextSoap.formatText(localizedString);
+					}
+
+					Span span = new Span(new Text(String.valueOf(localizedString)));
+					if (!isModificationDisabled) {
+						span.setStyleClass("stringValue");
+					}
+
+					cell.add(span);
+
+					cell = row.createCell();
+					cell.setStyleClass("lastColumn");
+					span = new Span(new Text(resource.getIdentifier()));
+					span.setStyleClass("storageKey");
+					cell.add(span);
+
+					if (isEven) {
+						row.setStyleClass("evenRow");
+						isEven = Boolean.FALSE;
+					} else {
+						row.setStyleClass("oddRow");
+						isEven = Boolean.TRUE;
+					}
 				}
-
-				Span span = new Span(new Text(String.valueOf(localizedString)));
-				span.setStyleClass("stringValue");
-
-				cell.add(span);
-
-				cell = row.createCell();
-				cell.setStyleClass("lastColumn");
-				span = new Span(new Text(resource.getIdentifier()));
-				span.setStyleClass("storageKey");
-				cell.add(span);
-
-				if (i % 2 == 0) {
-					row.setStyleClass("evenRow");
-				} else {
-					row.setStyleClass("oddRow");
-				}
 			}
-
 		}
+
 		return table;
 	}
 
@@ -400,41 +412,58 @@ public class Localizer extends Block {
 		return down;
 	}
 
-	public  DropdownMenu getLocalizeableStringsMenu(IWMainApplication iwma, String bundleIdentifier, String storageIdentifier, String selectedLocale, String name) {
-		List<MessageResource> resources = getResourceList(iwma, storageIdentifier, bundleIdentifier, LocaleUtil.getLocale(selectedLocale));
-
+	public DropdownMenu getLocalizeableStringsMenu(
+			String bundleIdentifier, 
+			String storageIdentifier, 
+			String selectedLocale, 
+			String name) {
 		DropdownMenu down = new DropdownMenu(name);
+
+		List<MessageResource> resources = getResourceList(
+				storageIdentifier, 
+				bundleIdentifier, 
+				LocaleUtil.getLocale(selectedLocale));
 		for(MessageResource resource : resources) {
-			if(resource == null)
+			if(resource == null) {
 				continue;
+			}
 
 			Set<String> localizedKeys = resource.getAllLocalizedKeys();
 			for (String key : localizedKeys) {
-				down.addMenuElement(new StringBuilder(key).append(CoreConstants.SPACE).append(CoreConstants.BRACKET_LEFT).append(resource.getIdentifier())
+				down.addMenuElement(new StringBuilder(key)
+						.append(CoreConstants.SPACE)
+						.append(CoreConstants.BRACKET_LEFT)
+						.append(resource.getIdentifier())
 						.append(CoreConstants.BRACKET_RIGHT).toString());
 			}
 		}
+
 		return down;
 	}
 
-	private List<MessageResource> getResourceList(IWMainApplication iwma, String selectedStorageIdentifier, String bundleIdentifier, Locale locale) {
+	private List<MessageResource> getResourceList(
+			String selectedStorageIdentifier, 
+			String bundleIdentifier, 
+			Locale locale) {
 		List<MessageResource> resourceList;
+
 		if(selectedStorageIdentifier.equals(ALL_RESOURCES)) {
-			resourceList = iwma.getMessageFactory().getResourceListByBundleAndLocale(bundleIdentifier, locale);
+			resourceList = getMessageResourceFactory().getResourceListByBundleAndLocale(bundleIdentifier, locale);
 		} else {
 			resourceList = new ArrayList<MessageResource>(1);
-			MessageResource resource = iwma.getMessageFactory().getResource(selectedStorageIdentifier, bundleIdentifier, locale);
-			if(resource != null)
+			MessageResource resource = getMessageResourceFactory().getResource(selectedStorageIdentifier, bundleIdentifier, locale);
+			if(resource != null) {
 				resourceList.add(resource);
+			}
 		}
+
 		return resourceList;
 	}
 
 	private Web2Business getWeb2Business(IWApplicationContext iwac) {
 		try {
 			return IBOLookup.getServiceInstance(iwac, Web2Business.class);
-		}
-		catch (IBOLookupException ile) {
+		} catch (IBOLookupException ile) {
 			throw new IBORuntimeException(ile);
 		}
 	}
