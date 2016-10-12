@@ -425,3 +425,25 @@ table.developerTable tr td.number {
 .maximizedvertically .wf_blockmainarea{
 	top: 23px !important;
 }
+
+.disabled {
+	-webkit-touch-callout:	none;	/* iOS Safari */
+	-webkit-user-select:	none;	/* Chrome/Safari/Opera */
+	-khtml-user-select:		none;	/* Konqueror */
+	-moz-user-select:		none;	/* Firefox */
+	-ms-user-select:		none;	/* Internet Explorer/Edge */
+	user-select:			none;	/* Non-prefixed version, currently not supported by any browser */
+	font-style: 			italic;
+	color:					gray;
+}
+
+.green-label {
+	background-color: #04262d;
+    color: white;
+    font-weight: bold;
+    margin-left: 1em;
+    margin-right: 1em;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+    border-radius: 5px;
+}
