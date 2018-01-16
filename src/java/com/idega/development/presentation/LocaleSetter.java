@@ -220,7 +220,9 @@ public class LocaleSetter extends Block {
 
 			String sDefLocale = iwc.getParameter("default_locale");
 			if (sDefLocale != null) {
-				iwc.getApplicationSettings().setDefaultLocale(ICLocaleBusiness.getLocaleFromLocaleString(sDefLocale));
+				Locale defaultLocale = ICLocaleBusiness.getLocaleFromLocaleString(sDefLocale);
+				iwc.getApplicationSettings().setDefaultLocale(defaultLocale);
+				iwc.getIWMainApplication().setDefaultLocale(defaultLocale);
 			}
 
 			String localeVariant = iwc.getParameter("com.idega.core.localevariant");
@@ -237,9 +239,9 @@ public class LocaleSetter extends Block {
 				}
 				boolean update = !localeVariant.equals(setLocaleVariant);
 				if(update){
-					List bundleList = iwc.getIWMainApplication().getRegisteredBundles();
-					for (Iterator iter = bundleList.iterator(); iter.hasNext();) {
-						IWBundle bundle = (IWBundle) iter.next();
+					List<IWBundle> bundleList = iwc.getIWMainApplication().getRegisteredBundles();
+					for (Iterator<IWBundle> iter = bundleList.iterator(); iter.hasNext();) {
+						IWBundle bundle = iter.next();
 						if (bundle != null) {
 							bundle.reloadBundle();
 						}
