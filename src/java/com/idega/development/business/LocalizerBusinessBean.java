@@ -13,6 +13,7 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
+import com.idega.development.event.LocalizationChangedEvent;
 import com.idega.development.presentation.Localizer;
 import com.idega.idegaweb.IWBundle;
 import com.idega.idegaweb.IWMainApplication;
@@ -51,7 +52,13 @@ public class LocalizerBusinessBean implements LocalizerBusiness {
 		}
 
 		//after inserting to all autoinsert resources we should get map<'modified storage_resource', 'new_value'>
-		getIWMainApplication().getMessageFactory().setLocalizedMessageToAutoInsertRes(key, value, bundleIdentifier, LocaleUtil.getLocale(locale));
+		Map<String, String> localizations = getIWMainApplication().getMessageFactory().setLocalizedMessageToAutoInsertRes(
+				key,
+				value,
+				bundleIdentifier,
+				LocaleUtil.getLocale(locale)
+		);
+		ELUtil.getInstance().publishEvent(new LocalizationChangedEvent(this, localizations));
 	}
 
 	@Override
@@ -80,8 +87,9 @@ public class LocalizerBusinessBean implements LocalizerBusiness {
 			for(String type : resourceTypes) {
 				messageKeys = new TreeSet<Object>();
 				MessageResource resource = getIWMainApplication().getMessageFactory().getResource(type, bundleIdentifier, currentLocale);
-				if(resource == null)
+				if(resource == null) {
 					continue;
+				}
 				messageKeys.addAll(resource.getAllLocalizedKeys());
 				messageKeysWithStorage.put(type, messageKeys);
 			}
@@ -136,8 +144,9 @@ public class LocalizerBusinessBean implements LocalizerBusiness {
 		//	Creating a full list of localized strings
 		for (MessageResource resource : resourceList) {
 			Set<String> localizedKeys = resource.getAllLocalizedKeys();
-			if (ListUtil.isEmpty(localizedKeys))
+			if (ListUtil.isEmpty(localizedKeys)) {
 				continue;
+			}
 
 			Set<String> keysCopy = new HashSet<String>(localizedKeys);
 			for (String localizedKey: keysCopy) {
@@ -180,10 +189,11 @@ public class LocalizerBusinessBean implements LocalizerBusiness {
 		final IWContext iwc = IWContext.getCurrentInstance();
 		final IWMainApplication iwma;
 
-		if(iwc != null)
+		if(iwc != null) {
 			iwma = iwc.getIWMainApplication();
-		else
+		} else {
 			iwma = IWMainApplication.getDefaultIWMainApplication();
+		}
 
 		return iwma;
 	}
@@ -195,8 +205,9 @@ public class LocalizerBusinessBean implements LocalizerBusiness {
 		} else {
 			resourceList = new ArrayList<MessageResource>(1);
 			MessageResource resource = iwma.getMessageFactory().getResource(selectedStorageIdentifier, bundleIdentifier, locale);
-			if(resource != null)
+			if(resource != null) {
 				resourceList.add(resource);
+			}
 		}
 		return resourceList;
 	}
