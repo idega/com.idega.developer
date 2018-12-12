@@ -45,7 +45,7 @@ public class LocalizerBusinessBean implements LocalizerBusiness {
 	@Override
 	public void storeLocalizedStrings(String keyWithStorage, String newKey, String value, String bundleIdentifier, String locale, String selectedStorageIdentifier) {
 		//key comes as a 'key (storage_identifier)' string
-		String key = keyWithStorage.split(CoreConstants.SPACE)[0];
+		String key = keyWithStorage == null ? null : keyWithStorage.split(CoreConstants.SPACE)[0];
 
 		if (newKey != null && newKey.length() > 0) {
 			key = newKey;
