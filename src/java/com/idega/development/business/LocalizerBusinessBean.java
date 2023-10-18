@@ -1,13 +1,13 @@
 package com.idega.development.business;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -143,14 +143,12 @@ public class LocalizerBusinessBean implements LocalizerBusiness {
 
 		//	Creating a full list of localized strings
 		for (MessageResource resource: resourceList) {
-			Set<String> localizedKeys = resource.getAllLocalizedKeys();
+			Set<String> localizedKeys = new HashSet<>(resource.getAllLocalizedKeys());
 			if (ListUtil.isEmpty(localizedKeys)) {
 				continue;
 			}
 
-			Set<String> keysCopy = ConcurrentHashMap.newKeySet(localizedKeys.size());
-			keysCopy.addAll(localizedKeys);
-			for (String localizedKey: keysCopy) {
+			for (String localizedKey: localizedKeys) {
 				String localizedValue = String.valueOf(resource.getMessage(localizedKey));
 				LocalizedString str = new LocalizedString(String.valueOf(localizedKey), localizedValue, resource.getIdentifier());
 				stringListForView.add(str);
