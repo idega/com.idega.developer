@@ -18,8 +18,12 @@ import java.sql.Statement;
 import java.sql.Types;
 import java.util.StringTokenizer;
 
+import javax.faces.component.UIComponent;
+import javax.faces.component.html.HtmlOutputText;
+
 import com.idega.development.business.SQLSessionConnection;
 import com.idega.idegaweb.IWBundle;
+import com.idega.idegaweb.IWMainApplication;
 import com.idega.presentation.Block;
 import com.idega.presentation.IWContext;
 import com.idega.presentation.Layer;
@@ -237,6 +241,8 @@ public class SQLQueryer extends Block {
 				if (queryString != null) {
 					Connection conn = getConnection(iwc);
 
+					IWMainApplication iwma = iwc.getIWMainApplication();
+
 					Statement stmt = conn.createStatement();
 					StringTokenizer tokener = new StringTokenizer(queryString, ";");
 					int alterCount = 0;
@@ -338,7 +344,16 @@ public class SQLQueryer extends Block {
 										}
 
 										cell = row.createCell();
-										cell.add(new Text(el));
+										UIComponent ui = null;
+										if (StringHandler.isHTML(el)) {
+											HtmlOutputText outputText = (HtmlOutputText) iwma.createComponent(HtmlOutputText.COMPONENT_TYPE);
+											outputText.setValue(el);
+											outputText.setEscape(true);
+											ui = outputText;
+										} else {
+											ui = new Text(el);
+										}
+										cell.add(ui);
 
 										if (c == noCols) {
 											cell.setStyleClass("lastColumn");
