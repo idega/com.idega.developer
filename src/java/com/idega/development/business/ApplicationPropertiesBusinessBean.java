@@ -4,19 +4,25 @@
 package com.idega.development.business;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
+import com.idega.core.accesscontrol.business.StandardRoles;
 import com.idega.idegaweb.IWMainApplication;
 import com.idega.idegaweb.IWMainApplicationSettings;
 import com.idega.presentation.IWContext;
+import com.idega.util.CoreConstants;
 
 
 /**
  * <p>
- * TODO laddi Describe Type ApplicationPropertiesBusinessBean
  * </p>
  *  Last modified: $Date: 2009/01/23 15:19:19 $ by $Author: laddi $
  *
@@ -27,75 +33,89 @@ import com.idega.presentation.IWContext;
 @Service("applicationProperties")
 public class ApplicationPropertiesBusinessBean implements ApplicationPropertiesBusiness {
 
-	/* (non-Javadoc)
-	 * @see com.idega.development.business.ApplicationPropertiesBusiness#getProperty(java.lang.String)
-	 */
 	@Override
-	public String getProperty(String key) {
-		return getIWMainApplication().getSettings().getProperty(key, "");
+	public String getProperty(String key, HttpServletRequest request, HttpServletResponse response, ServletContext context) {
+		IWContext iwc = getContext(request, response, context);
+		if (iwc == null) {
+			return null;
+		}
+
+		IWMainApplicationSettings settings = iwc.getApplicationSettings();
+		return settings.getProperty(key, CoreConstants.EMPTY);
 	}
 
 	@Override
-	public boolean doesPropertyExist(String key) {
-		return getIWMainApplication().getSettings().keySet().contains(key);
+	public boolean doesPropertyExist(String key, HttpServletRequest request, HttpServletResponse response, ServletContext context) {
+		IWContext iwc = getContext(request, response, context);
+		if (iwc == null) {
+			return false;
+		}
+
+		IWMainApplicationSettings settings = iwc.getApplicationSettings();
+		return settings.keySet().contains(key);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.idega.development.business.ApplicationPropertiesBusiness#setProperty(java.lang.String, java.lang.String)
-	 */
 	@Override
-	public int setProperty(String key, String value) {
+	public int setProperty(String key, String value, HttpServletRequest request, HttpServletResponse response, ServletContext context) {
+		IWContext iwc = getContext(request, response, context);
+		if (iwc == null) {
+			return -1;
+		}
+
+		IWMainApplicationSettings settings = iwc.getApplicationSettings();
+
 		if (key.equals(IWMainApplicationSettings.ENTITY_AUTO_CREATE)) {
-			getIWMainApplication().getSettings().setEntityAutoCreation(value != null);
+			settings.setEntityAutoCreation(value != null);
 		}
 		else if (key.equals(IWMainApplicationSettings.IDO_ENTITY_BEAN_CACHING_KEY)) {
-			getIWMainApplication().getSettings().setEntityBeanCaching(value != null);
+			settings.setEntityBeanCaching(value != null);
 		}
 		else if (key.equals(IWMainApplicationSettings.IDO_ENTITY_QUERY_CACHING_KEY)) {
-			getIWMainApplication().getSettings().setEntityQueryCaching(value != null);
+			settings.setEntityQueryCaching(value != null);
 		}
 		else if (key.equals(IWMainApplicationSettings.SESSION_POLLING_KEY)) {
-			getIWMainApplication().getSettings().setEnableSessionPolling(value != null);
+			settings.setEnableSessionPolling(value != null);
 		}
 		else if (key.equals(IWMainApplicationSettings.USE_PREPARED_STATEMENT)) {
-			getIWMainApplication().getSettings().setUsePreparedStatement(value != null);
+			settings.setUsePreparedStatement(value != null);
 		}
 		else if (key.equals(IWMainApplicationSettings.AUTO_CREATE_LOCALIZED_STRINGS_KEY)) {
-			getIWMainApplication().getSettings().setAutoCreateStrings(value != null);
+			settings.setAutoCreateStrings(value != null);
 		}
 		else if (key.equals(IWMainApplicationSettings.AUTO_CREATE_PROPERTIES_KEY)) {
-			getIWMainApplication().getSettings().setAutoCreateProperties(value != null);
+			settings.setAutoCreateProperties(value != null);
 		}
 		else if (key.equals(IWMainApplicationSettings.USE_DEBUG_MODE)) {
-			getIWMainApplication().getSettings().setDebug(value != null);
+			settings.setDebug(value != null);
 		}
 		else {
-			getIWMainApplication().getSettings().setProperty(key, value);
+			settings.setProperty(key, value);
 		}
-		getIWMainApplication().storeStatus();
+		iwc.getIWMainApplication().storeStatus();
 
-		ArrayList<String> keys = new ArrayList(getIWMainApplication().getSettings().keySet());
+		List<String> keys = new ArrayList<>(settings.keySet());
 		return keys.indexOf(key);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.idega.development.business.ApplicationPropertiesBusiness#removeProperty(java.lang.String)
-	 */
 	@Override
-	public void removeProperty(String key) {
-		getIWMainApplication().getSettings().removeProperty(key);
-		getIWMainApplication().storeStatus();
+	public void removeProperty(String key, HttpServletRequest request, HttpServletResponse response, ServletContext context) {
+		IWContext iwc = getContext(request, response, context);
+		if (iwc == null) {
+			return;
+		}
+
+		IWMainApplication iwma = iwc.getIWMainApplication();
+		iwma.getSettings().removeProperty(key);
+		iwma.storeStatus();
 	}
 
-	private IWMainApplication getIWMainApplication() {
-		final IWContext iwc = IWContext.getCurrentInstance();
-		final IWMainApplication iwma;
-
-		if(iwc != null)
-			iwma = iwc.getIWMainApplication();
-		else
-			iwma = IWMainApplication.getDefaultIWMainApplication();
-
-		return iwma;
+	private IWContext getContext(HttpServletRequest request, HttpServletResponse response, ServletContext context) {
+		IWContext iwc = request == null || response == null || context == null ?
+				null :
+				new IWContext(request, response, context);
+		return iwc != null && iwc.isLoggedOn() && (iwc.isSuperAdmin() || iwc.hasRole(StandardRoles.ROLE_KEY_DEVELOPER)) ?
+				iwc :
+				null;
 	}
+
 }
