@@ -16,11 +16,15 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 import javax.faces.component.UIComponent;
 import javax.faces.component.html.HtmlOutputText;
 
+import com.idega.block.process.data.CaseBMPBean;
+import com.idega.block.process.event.CaseDeletedEvent;
 import com.idega.development.business.SQLSessionConnection;
 import com.idega.idegaweb.IWBundle;
 import com.idega.idegaweb.IWMainApplication;
@@ -45,9 +49,11 @@ import com.idega.presentation.ui.TextArea;
 import com.idega.presentation.ui.TextInput;
 import com.idega.util.CoreConstants;
 import com.idega.util.IOUtil;
+import com.idega.util.ListUtil;
 import com.idega.util.PresentationUtil;
 import com.idega.util.SQLDataDumper;
 import com.idega.util.StringHandler;
+import com.idega.util.expression.ELUtil;
 
 /**
  *
@@ -237,6 +243,7 @@ public class SQLQueryer extends Block {
 				buttonLayer.add(rollback);
 			}
 
+			Set<String> deletedCases = new HashSet<>();
 			try {
 				if (queryString != null) {
 					Connection conn = getConnection(iwc);
@@ -249,6 +256,17 @@ public class SQLQueryer extends Block {
 					while (tokener.hasMoreTokens()) {
 						queryString = tokener.nextToken();
 						if (!"".equals(queryString)) {
+							String copy = queryString.trim().toLowerCase();
+							if (
+									copy.indexOf("delete") != -1 &&
+									(
+											copy.indexOf(CaseBMPBean.TABLE_NAME.toLowerCase()) != -1 ||
+											copy.indexOf("BPM_CASES_PROCESSINSTANCES".toLowerCase()) != -1
+									)
+							) {
+								deletedCases.add(copy);
+							}
+
 							FieldSet resultSet = new FieldSet(new Legend("Result"));
 							resultSet.setStyleClass("resultSet");
 							topLayer.add(resultSet);
@@ -416,6 +434,10 @@ public class SQLQueryer extends Block {
 					this.addBreak();
 					ex = ex.getNextException();
 					// out.println("");
+				}
+			} finally {
+				if (!ListUtil.isEmpty(deletedCases)) {
+					ELUtil.getInstance().publishEvent(new CaseDeletedEvent(deletedCases));
 				}
 			}
 		}

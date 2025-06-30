@@ -59,5 +59,9 @@
       <groupId>com.idega.block.platform</groupId>
       <artifactId>com.idega.workspace</artifactId>
     </dependency>
+    <dependency>
+      <groupId>com.idega.block.platform</groupId>
+   	  <artifactId>com.idega.block.process</artifactId>
+   	</dependency>
   </dependencies>
 </project>
