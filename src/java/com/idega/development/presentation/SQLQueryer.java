@@ -66,7 +66,7 @@ public class SQLQueryer extends Block {
 
 	public final static String IW_BUNDLE_IDENTIFIER = "com.idega.developer";
 
-	private static String PARAM_QUERY = CoreConstants.PARAM_SQL_QUERY;
+	private static String PARAM_QUERY = "sqlQuery";
 	private static String PARAM_NUM_RECORDS = "sql_num_rec";
 	private static String DUMP_FILE = "dump_file";
 	private static String DUMP_TYPE = "dump_type";
@@ -113,7 +113,7 @@ public class SQLQueryer extends Block {
 		 */
 		if (iwc.isLoggedOn()) {
 
-			String queryString = iwc.getParameterWithoutEncoding(PARAM_QUERY);
+			String queryString = iwc.getParameter(PARAM_QUERY);
 
 			if (iwc.isParameterSet(DUMP_FILE)) {
 				this.dumpFileName = iwc.getParameter(DUMP_FILE);
