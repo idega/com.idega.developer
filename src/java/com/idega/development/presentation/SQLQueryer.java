@@ -108,10 +108,7 @@ public class SQLQueryer extends Block {
 		querySet.setStyleClass("querySet");
 		topLayer.add(querySet);
 
-		/**
-		 * @todo: Improve security check
-		 */
-		if (iwc.isLoggedOn()) {
+		if (iwc.isSuperAdmin()) {
 
 			String queryString = iwc.getParameterWithoutEncoding(PARAM_QUERY);
 
@@ -446,7 +443,7 @@ public class SQLQueryer extends Block {
 		}
 	}
 
-	public Connection getConnection(IWContext iwc) {
+	private Connection getConnection(IWContext iwc) {
 		SQLSessionConnection conn = (SQLSessionConnection) iwc.getSessionAttribute(SESSION_ATTRIBUTE_CONNECTION);
 		if (conn == null) {
 			conn = new SQLSessionConnection();
@@ -474,4 +471,5 @@ public class SQLQueryer extends Block {
 	public String getBundleIdentifier() {
 		return IW_BUNDLE_IDENTIFIER;
 	}
+
 }
