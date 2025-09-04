@@ -25,6 +25,7 @@ import javax.faces.component.html.HtmlOutputText;
 
 import com.idega.block.process.data.CaseBMPBean;
 import com.idega.block.process.event.CaseDeletedEvent;
+import com.idega.core.accesscontrol.business.StandardRoles;
 import com.idega.development.business.SQLSessionConnection;
 import com.idega.idegaweb.IWBundle;
 import com.idega.idegaweb.IWMainApplication;
@@ -111,6 +112,7 @@ public class SQLQueryer extends Block {
 		/**
 		 * @todo: Improve security check
 		 */
+		if (iwc.isLoggedOn() && (iwc.isSuperAdmin() || iwc.hasRole(StandardRoles.ROLE_KEY_DEVELOPER))) {
 
 			String queryString = iwc.getParameter(PARAM_QUERY);
 
