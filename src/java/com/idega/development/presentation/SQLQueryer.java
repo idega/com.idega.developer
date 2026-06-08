@@ -25,7 +25,6 @@ import javax.faces.component.html.HtmlOutputText;
 
 import com.idega.block.process.data.CaseBMPBean;
 import com.idega.block.process.event.CaseDeletedEvent;
-import com.idega.core.accesscontrol.business.StandardRoles;
 import com.idega.development.business.SQLSessionConnection;
 import com.idega.idegaweb.IWBundle;
 import com.idega.idegaweb.IWMainApplication;
@@ -117,8 +116,6 @@ public class SQLQueryer extends Block {
 			} else {
 				queryString = iwc.getParameter(PARAM_QUERY);
 			}
-
-			String queryString = iwc.getParameter(PARAM_QUERY);
 
 			if (iwc.isParameterSet(DUMP_FILE)) {
 				this.dumpFileName = iwc.getParameter(DUMP_FILE);
