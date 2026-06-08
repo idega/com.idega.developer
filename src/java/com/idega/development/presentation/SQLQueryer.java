@@ -18,12 +18,14 @@ import java.sql.Statement;
 import java.sql.Types;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.StringTokenizer;
 
 import javax.faces.component.UIComponent;
 import javax.faces.component.html.HtmlOutputText;
 
 import com.idega.block.process.data.CaseBMPBean;
 import com.idega.block.process.event.CaseDeletedEvent;
+import com.idega.core.accesscontrol.business.StandardRoles;
 import com.idega.development.business.SQLSessionConnection;
 import com.idega.idegaweb.IWBundle;
 import com.idega.idegaweb.IWMainApplication;
@@ -52,7 +54,6 @@ import com.idega.util.ListUtil;
 import com.idega.util.PresentationUtil;
 import com.idega.util.SQLDataDumper;
 import com.idega.util.StringHandler;
-import com.idega.util.StringUtil;
 import com.idega.util.expression.ELUtil;
 
 /**
@@ -117,6 +118,7 @@ public class SQLQueryer extends Block {
 				queryString = iwc.getParameter(PARAM_QUERY);
 			}
 
+			String queryString = iwc.getParameter(PARAM_QUERY);
 
 			if (iwc.isParameterSet(DUMP_FILE)) {
 				this.dumpFileName = iwc.getParameter(DUMP_FILE);
@@ -254,11 +256,12 @@ public class SQLQueryer extends Block {
 					IWMainApplication iwma = iwc.getIWMainApplication();
 
 					Statement stmt = conn.createStatement();
-					String[] queryArray = queryString.replace("\\\\r\\\\n","#####").replace("\\r\\n","#####").split(";#####");
+					StringTokenizer tokener = new StringTokenizer(queryString, ";");
 					int alterCount = 0;
-					for (String queryStringIn : queryArray) {
-						if (!StringUtil.isEmpty(queryStringIn)) {
-							String copy = queryStringIn.trim().toLowerCase();
+					while (tokener.hasMoreTokens()) {
+						queryString = tokener.nextToken();
+						if (!"".equals(queryString)) {
+							String copy = queryString.trim().toLowerCase();
 							if (
 									copy.indexOf("delete") != -1 &&
 									(
@@ -273,7 +276,7 @@ public class SQLQueryer extends Block {
 							resultSet.setStyleClass("resultSet");
 							topLayer.add(resultSet);
 
-							Text queryText = new Text(queryStringIn);
+							Text queryText = new Text(queryString);
 							queryText.setStyleClass("query");
 
 							Paragraph paragraph = new Paragraph();
@@ -282,7 +285,7 @@ public class SQLQueryer extends Block {
 							paragraph.add(queryText);
 							resultSet.add(paragraph);
 
-							if (queryStringIn.trim().toLowerCase().startsWith("select")) {
+							if (queryString.trim().toLowerCase().startsWith("select")) {
 								Table2 table = new Table2();
 								table.setCellpadding(0);
 								table.setCellspacing(0);
@@ -294,7 +297,7 @@ public class SQLQueryer extends Block {
 								TableRow row = group.createRow();
 
 								long time = System.currentTimeMillis();
-								ResultSet rs = stmt.executeQuery(queryStringIn);
+								ResultSet rs = stmt.executeQuery(queryString);
 								long queryTime = System.currentTimeMillis() - time;
 								ResultSetMetaData rsMeta = rs.getMetaData();
 
@@ -403,18 +406,18 @@ public class SQLQueryer extends Block {
 								cell.setColumnSpan(noCols + 1);
 								cell.add(new Text("Query time: " + queryTime + " ms"));
 							}
-							else if (queryStringIn.trim().toLowerCase().startsWith("commit")) {
+							else if (queryString.trim().toLowerCase().startsWith("commit")) {
 								conn.commit();
 								iwc.removeSessionAttribute(SESSION_ATTRIBUTE_CONNECTION);
 								resultSet.add(new Text("Changes commited."));
 							}
-							else if (queryStringIn.trim().toLowerCase().startsWith("rollback")) {
+							else if (queryString.trim().toLowerCase().startsWith("rollback")) {
 								conn.rollback();
 								iwc.removeSessionAttribute(SESSION_ATTRIBUTE_CONNECTION);
 								resultSet.add(new Text("Changes rollbacked."));
 							}
 							else {
-								int i = stmt.executeUpdate(queryStringIn);
+								int i = stmt.executeUpdate(queryString);
 								alterCount += i;
 								resultSet.add(new Text(alterCount + " rows altered"));
 							}
