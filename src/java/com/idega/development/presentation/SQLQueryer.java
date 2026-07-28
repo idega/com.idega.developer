@@ -111,7 +111,7 @@ public class SQLQueryer extends Block {
 		if (iwc.isSuperAdmin()) {
 
 			String queryString = null;
-			if (iwc.getIWMainApplication().getSettings().getBoolean("admin_sql_query.without_encoding", Boolean.FALSE)) {
+			if (iwc.getIWMainApplication().getSettings().getBoolean("admin_sql_query.without_encoding", Boolean.TRUE)) {
 				queryString = iwc.getParameterWithoutEncoding(PARAM_QUERY);
 			} else {
 				queryString = iwc.getParameter(PARAM_QUERY);
